@@ -47,4 +47,9 @@ public class UserRepository : IUserRepository
     {
         return _context.Users.Any(u => u.Id == id);
     }
+    
+    public bool DoesUserExist(string email)
+    {
+        return _context.Users.Any(u => u.Email == email);
+    }
 }

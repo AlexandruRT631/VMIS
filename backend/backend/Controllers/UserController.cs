@@ -1,4 +1,5 @@
 using backend.Entities;
+using backend.Exceptions;
 using backend.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,24 +25,72 @@ public class UserController : ControllerBase
     [HttpGet("{id}")]
     public IActionResult GetUserById(int id)
     {
-        return Ok(_userService.GetUserById(id));
+        try
+        {
+            return Ok(_userService.GetUserById(id));
+        }
+        catch (InvalidArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (UserNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 
     [HttpPost]
     public IActionResult CreateUser(User user)
     {
-        return Ok(_userService.CreateUser(user));
+        try
+        {
+            return Ok(_userService.CreateUser(user));
+        }
+        catch (InvalidArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (UserAlreadyExistsException e)
+        {
+            return Conflict(e.Message);
+        }
     }
 
     [HttpPut]
     public IActionResult UpdateUser(User user)
     {
-        return Ok(_userService.UpdateUser(user));
+        try
+        {
+            return Ok(_userService.UpdateUser(user));
+        }
+        catch (InvalidArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (UserNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+        catch (UserAlreadyExistsException e)
+        {
+            return Conflict(e.Message);
+        }
     }
 
     [HttpDelete("{id}")]
     public IActionResult DeleteUser(int id)
     {
-        return Ok(_userService.DeleteUser(id));
+        try
+        {
+            return Ok(_userService.DeleteUser(id));
+        }
+        catch (InvalidArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (UserNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
     }
 }

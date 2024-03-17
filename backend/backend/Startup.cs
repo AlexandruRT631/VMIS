@@ -18,9 +18,9 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddDbContext<BackendDbContext>(options =>
-            options.UseMySQL(Configuration.GetConnectionString("UserDbConnection")));
+            options.UseMySQL(Configuration.GetConnectionString("UserDbConnection")!));
         
-        services.AddScoped<DbContext>(provider => provider.GetService<BackendDbContext>());
+        services.AddScoped<DbContext>(provider => provider.GetService<BackendDbContext>()!);
 
         services.AddScoped<IUserRepository, UserRepository>();
 
@@ -49,7 +49,7 @@ public class Startup
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            c.RoutePrefix = string.Empty;
+            c.RoutePrefix = "api/swagger";
         });
         
         app.UseEndpoints(endpoints =>
