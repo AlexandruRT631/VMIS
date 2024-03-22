@@ -22,6 +22,11 @@ public class UserRepository : IUserRepository
         return _context.Users.Find(id);
     }
     
+    public User? GetUserByEmail(string email)
+    {
+        return _context.Users.FirstOrDefault(u => u.Email == email);
+    }
+    
     public User CreateUser(User user)
     {
         _context.Users.Add(user);

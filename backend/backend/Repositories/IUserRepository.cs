@@ -18,6 +18,13 @@ public interface IUserRepository
     public User? GetUserById(int id);
     
     /// <summary>
+    /// Get user with email
+    /// </summary>
+    /// <param name="email"></param>
+    /// <returns>User</returns>
+    public User? GetUserByEmail(string email);
+    
+    /// <summary>
     /// Creates a new user
     /// </summary>
     /// <param name="user"></param>

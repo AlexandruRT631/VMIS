@@ -59,7 +59,16 @@ public class UserService : IUserService
         {
             throw new InvalidArgumentException(ExceptionMessages.RequiredPassword);
         }
+        if (string.IsNullOrWhiteSpace(user.Name))
+        {
+            throw new InvalidArgumentException(ExceptionMessages.RequiredName);
+        }
+        if (!Enum.IsDefined(typeof(UserRole), user.Role) || user.Role == UserRole.None) 
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidUserRole);
+        }
         
+        user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
         return _userRepository.CreateUser(user);
     }
     
@@ -81,17 +90,29 @@ public class UserService : IUserService
         {
             throw new UserAlreadyExistsException(ExceptionMessages.UsedEmail);
         }
+        if (!Enum.IsDefined(typeof(UserRole), user.Role)) 
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidUserRole);
+        }
         
-        var oldUser = _userRepository.GetUserById(user.Id);
-        if (string.IsNullOrWhiteSpace(user.Email))
+        var existingUser = _userRepository.GetUserById(user.Id);
+        if (!string.IsNullOrWhiteSpace(user.Email))
         {
-            user.Email = oldUser!.Email;
+            existingUser!.Email = user.Email;
         }
-        if (string.IsNullOrWhiteSpace(user.Password))
+        if (!string.IsNullOrWhiteSpace(user.Password))
         {
-            user.Password = oldUser!.Password;
+            existingUser!.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
         }
-        return _userRepository.UpdateUser(user);
+        if (!string.IsNullOrWhiteSpace(user.Name))
+        {
+            existingUser!.Name = user.Name;
+        }
+        if (user.Role != UserRole.None)
+        {
+            existingUser!.Role = user.Role;
+        }
+        return _userRepository.UpdateUser(existingUser!);
     }
     
     public bool DeleteUser(int id)
