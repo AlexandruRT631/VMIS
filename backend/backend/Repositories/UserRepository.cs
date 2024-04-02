@@ -27,6 +27,11 @@ public class UserRepository : IUserRepository
         return _context.Users.FirstOrDefault(u => u.Email == email);
     }
     
+    public User? GetUserByRefreshToken(string refreshToken)
+    {
+        return _context.Users.FirstOrDefault(u => u.RefreshToken == refreshToken);
+    }
+    
     public User CreateUser(User user)
     {
         _context.Users.Add(user);

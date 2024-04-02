@@ -25,6 +25,13 @@ public interface IUserRepository
     public User? GetUserByEmail(string email);
     
     /// <summary>
+    /// Get user with refresh token
+    /// </summary>
+    /// <param name="refreshToken"></param>
+    /// <returns>User</returns>
+    public User? GetUserByRefreshToken(string refreshToken);
+    
+    /// <summary>
     /// Creates a new user
     /// </summary>
     /// <param name="user"></param>

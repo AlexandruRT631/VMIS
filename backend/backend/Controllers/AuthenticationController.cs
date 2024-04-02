@@ -22,8 +22,9 @@ public class AuthenticationController : ControllerBase
     {
         try
         {
-            var token = _authenticationService.AuthenticateUser(userLoginDto.Email, userLoginDto.Password);
-            return Ok(new { Token = token });
+            var accessToken = _authenticationService.AuthenticateUser(userLoginDto.Email, userLoginDto.Password);
+            var refreshToken = _authenticationService.GenerateRefreshToken(userLoginDto.Email);
+            return Ok(new TokenDto(accessToken, refreshToken));
         }
         catch (InvalidCredentialsException e)
         {
@@ -36,8 +37,9 @@ public class AuthenticationController : ControllerBase
     {
         try
         {
-            var token = _authenticationService.RegisterUser(user);
-            return Ok(new { Token = token });
+            var accessToken = _authenticationService.RegisterUser(user);
+            var refreshToken = _authenticationService.GenerateRefreshToken(user.Email!);
+            return Ok(new TokenDto(accessToken, refreshToken));
         }
         catch (InvalidArgumentException e)
         {
@@ -46,6 +48,24 @@ public class AuthenticationController : ControllerBase
         catch (UserAlreadyExistsException e)
         {
             return Conflict(e.Message);
+        }
+    }
+    
+    [HttpPost("refresh")]
+    public IActionResult Refresh(string refreshToken)
+    {
+        try
+        {
+            var tokenDto = _authenticationService.IsRefreshTokenValid(refreshToken);
+            return Ok(tokenDto);
+        }
+        catch (InvalidArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ExpiredException e)
+        {
+            return Unauthorized(e.Message);
         }
     }
 }
