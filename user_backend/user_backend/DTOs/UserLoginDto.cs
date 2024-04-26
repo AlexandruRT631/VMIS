@@ -1,7 +1,7 @@
 namespace user_backend.DTOs;
 
-public class UserLoginDto
+public class UserLoginDto(string email, string password)
 {
-    public string Email { get; set; }
-    public string Password { get; set; }
+    public string Email { get; } = email;
+    public string Password { get; } = password;
 }

@@ -9,19 +9,12 @@ namespace user_backend.Controllers;
 [Authorize(Roles = "Admin")]
 [ApiController]
 [Route("api/[controller]")]
-public class UserController : ControllerBase
+public class UserController(IUserService userService) : ControllerBase
 {
-    private readonly IUserService _userService;
-
-    public UserController(IUserService userService)
-    {
-        _userService = userService;
-    }
-    
     [HttpGet]
     public IActionResult GetAllUsers()
     {
-        return Ok(_userService.GetAllUsers());
+        return Ok(userService.GetAllUsers());
     }
 
     [HttpGet("{id}")]
@@ -29,7 +22,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            return Ok(_userService.GetUserById(id));
+            return Ok(userService.GetUserById(id));
         }
         catch (InvalidArgumentException e)
         {
@@ -46,7 +39,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            return Ok(_userService.CreateUser(user));
+            return Ok(userService.CreateUser(user));
         }
         catch (InvalidArgumentException e)
         {
@@ -63,7 +56,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            return Ok(_userService.UpdateUser(user));
+            return Ok(userService.UpdateUser(user));
         }
         catch (InvalidArgumentException e)
         {
@@ -84,7 +77,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            return Ok(_userService.DeleteUser(id));
+            return Ok(userService.DeleteUser(id));
         }
         catch (InvalidArgumentException e)
         {

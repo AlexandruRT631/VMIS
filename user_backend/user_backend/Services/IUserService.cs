@@ -34,7 +34,7 @@ public interface IUserService
     /// <summary>
     /// Deletes a user by id
     /// </summary>
-    /// <param name="user"></param>
+    /// <param name="id"></param>
     /// <returns>True if the user was deleted</returns>
     public bool DeleteUser(int id);
 }

@@ -9,7 +9,7 @@ using user_backend.DataAccess;
 
 namespace user_backend.Migrations
 {
-    [DbContext(typeof(BackendDbContext))]
+    [DbContext(typeof(UserDbContext))]
     [Migration("20240317130405_InitialCreate")]
     partial class InitialCreate
     {

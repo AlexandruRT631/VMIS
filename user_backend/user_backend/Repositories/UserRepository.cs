@@ -3,63 +3,56 @@ using user_backend.Entities;
 
 namespace user_backend.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository(UserDbContext context) : IUserRepository
 {
-    private readonly BackendDbContext _context;
-    
-    public UserRepository(BackendDbContext context)
-    {
-        _context = context;
-    }
-    
     public List<User> GetAllUsers()
     {
-        return _context.Users.ToList();
+        return context.Users.ToList();
     }
     
     public User? GetUserById(int id)
     {
-        return _context.Users.Find(id);
+        return context.Users.Find(id);
     }
     
     public User? GetUserByEmail(string email)
     {
-        return _context.Users.FirstOrDefault(u => u.Email == email);
+        return context.Users.FirstOrDefault(u => u.Email == email);
     }
     
     public User? GetUserByRefreshToken(string refreshToken)
     {
-        return _context.Users.FirstOrDefault(u => u.RefreshToken == refreshToken);
+        return context.Users.FirstOrDefault(u => u.RefreshToken == refreshToken);
     }
     
     public User CreateUser(User user)
     {
-        _context.Users.Add(user);
-        _context.SaveChanges();
+        context.Users.Add(user);
+        context.SaveChanges();
         return user;
     }
     
     public User UpdateUser(User user)
     {
-        _context.Users.Update(user);
-        _context.SaveChanges();
+        context.Users.Update(user);
+        context.SaveChanges();
         return user;
     }
     
     public bool DeleteUser(User user)
     {
-        _context.Users.Remove(user);
-        _context.SaveChanges();
+        context.Users.Remove(user);
+        context.SaveChanges();
         return true;
     }
     
     public bool DoesUserExist(int id)
     {
-        return _context.Users.Any(u => u.Id == id);
+        return context.Users.Any(u => u.Id == id);
     }
     
     public bool DoesUserExist(string email)
     {
-        return _context.Users.Any(u => u.Email == email);
+        return context.Users.Any(u => u.Email == email);
     }
 }

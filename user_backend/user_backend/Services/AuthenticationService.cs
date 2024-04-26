@@ -11,24 +11,16 @@ using user_backend.Repositories;
 
 namespace user_backend.Services;
 
-public class AuthenticationService : IAuthenticationService
+public class AuthenticationService(IUserRepository userRepository, IConfiguration configuration)
+    : IAuthenticationService
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IConfiguration _configuration;
-    
-    public AuthenticationService(IUserRepository userRepository, IConfiguration configuration)
-    {
-        _userRepository = userRepository;
-        _configuration = configuration;
-    }
-    
     public string AuthenticateUser(string email, string password)
     {
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
             throw new InvalidCredentialsException(ExceptionMessages.InvalidCredentials);
         }
-        var user = _userRepository.GetUserByEmail(email);
+        var user = userRepository.GetUserByEmail(email);
         if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.Password))
         {
             throw new InvalidCredentialsException(ExceptionMessages.InvalidCredentials);
@@ -47,7 +39,7 @@ public class AuthenticationService : IAuthenticationService
         {
             throw new InvalidArgumentException(ExceptionMessages.RequiredEmail);
         }
-        if (_userRepository.DoesUserExist(user.Email))
+        if (userRepository.DoesUserExist(user.Email))
         {
             throw new UserAlreadyExistsException(ExceptionMessages.UsedEmail);
         }
@@ -70,7 +62,7 @@ public class AuthenticationService : IAuthenticationService
         
         user.Id = 0;
         user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-        user = _userRepository.CreateUser(user);
+        user = userRepository.CreateUser(user);
         return GenerateJwtToken(user);
     }
 
@@ -80,7 +72,7 @@ public class AuthenticationService : IAuthenticationService
         {
             throw new InvalidArgumentException(ExceptionMessages.RequiredEmail);
         }
-        var user = _userRepository.GetUserByEmail(email);
+        var user = userRepository.GetUserByEmail(email);
         if (user == null)
         {
             throw new UserNotFoundException(ExceptionMessages.UserNotFound);
@@ -89,7 +81,7 @@ public class AuthenticationService : IAuthenticationService
         var token = GenerateRandomToken();
         user.RefreshToken = token;
         user.RefreshTokenExpiration = DateTime.UtcNow.AddDays(7);
-        _userRepository.UpdateUser(user);
+        userRepository.UpdateUser(user);
         return token;
     }
     
@@ -99,7 +91,7 @@ public class AuthenticationService : IAuthenticationService
         {
             throw new InvalidArgumentException(ExceptionMessages.RequiredRefreshToken);
         }
-        var user = _userRepository.GetUserByRefreshToken(refreshToken);
+        var user = userRepository.GetUserByRefreshToken(refreshToken);
         if (user == null)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidRefreshToken);
@@ -107,13 +99,13 @@ public class AuthenticationService : IAuthenticationService
         if (user.RefreshTokenExpiration < DateTime.UtcNow)
         {
             user.RefreshToken = null;
-            _userRepository.UpdateUser(user);
+            userRepository.UpdateUser(user);
             throw new ExpiredException(ExceptionMessages.ExpiredRefreshToken);
         }
         
         var newRefreshToken = GenerateRandomToken();
         user.RefreshToken = newRefreshToken;
-        _userRepository.UpdateUser(user);
+        userRepository.UpdateUser(user);
         var accessToken = GenerateJwtToken(user);
         return new TokenDto(accessToken, newRefreshToken);
     }
@@ -121,7 +113,7 @@ public class AuthenticationService : IAuthenticationService
     public bool IsTokenValid(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
+        var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]!);
         try
         {
             tokenHandler.ValidateToken(token, new TokenValidationParameters
@@ -143,7 +135,7 @@ public class AuthenticationService : IAuthenticationService
     private string GenerateJwtToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
+        var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]!);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[]

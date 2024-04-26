@@ -9,7 +9,7 @@ using user_backend.DataAccess;
 
 namespace user_backend.Migrations
 {
-    [DbContext(typeof(BackendDbContext))]
+    [DbContext(typeof(UserDbContext))]
     partial class BackendDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

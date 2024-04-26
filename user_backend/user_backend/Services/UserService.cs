@@ -5,18 +5,11 @@ using user_backend.Repositories;
 
 namespace user_backend.Services;
 
-public class UserService : IUserService
+public class UserService(IUserRepository userRepository) : IUserService
 {
-    private readonly IUserRepository _userRepository;
-
-    public UserService(IUserRepository userRepository)
-    {
-        _userRepository = userRepository;
-    }
-    
     public List<User> GetAllUsers()
     {
-        return _userRepository.GetAllUsers();
+        return userRepository.GetAllUsers();
     }
 
     public User? GetUserById(int id)
@@ -25,12 +18,12 @@ public class UserService : IUserService
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidId);
         }
-        if (!_userRepository.DoesUserExist(id))
+        if (!userRepository.DoesUserExist(id))
         {
             throw new UserNotFoundException(ExceptionMessages.UserNotFound);
         }
         
-        return _userRepository.GetUserById(id);
+        return userRepository.GetUserById(id);
     }
     
     public User CreateUser(User user)
@@ -43,7 +36,7 @@ public class UserService : IUserService
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidId);
         }
-        if (user.Id != 0 && _userRepository.DoesUserExist(user.Id))
+        if (user.Id != 0 && userRepository.DoesUserExist(user.Id))
         {
             throw new UserAlreadyExistsException(ExceptionMessages.UserAlreadyExists);
         }
@@ -51,7 +44,7 @@ public class UserService : IUserService
         {
             throw new InvalidArgumentException(ExceptionMessages.RequiredEmail);
         }
-        if (_userRepository.DoesUserExist(user.Email))
+        if (userRepository.DoesUserExist(user.Email))
         {
             throw new UserAlreadyExistsException(ExceptionMessages.UsedEmail);
         }
@@ -69,7 +62,7 @@ public class UserService : IUserService
         }
         
         user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-        return _userRepository.CreateUser(user);
+        return userRepository.CreateUser(user);
     }
     
     public User UpdateUser(User user)
@@ -82,11 +75,11 @@ public class UserService : IUserService
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidId);
         }
-        if (!_userRepository.DoesUserExist(user.Id))
+        if (!userRepository.DoesUserExist(user.Id))
         {
             throw new UserNotFoundException(ExceptionMessages.UserNotFound);
         }
-        if (!string.IsNullOrWhiteSpace(user.Email) && _userRepository.DoesUserExist(user.Email))
+        if (!string.IsNullOrWhiteSpace(user.Email) && userRepository.DoesUserExist(user.Email))
         {
             throw new UserAlreadyExistsException(ExceptionMessages.UsedEmail);
         }
@@ -95,7 +88,7 @@ public class UserService : IUserService
             throw new InvalidArgumentException(ExceptionMessages.InvalidUserRole);
         }
         
-        var existingUser = _userRepository.GetUserById(user.Id);
+        var existingUser = userRepository.GetUserById(user.Id);
         if (!string.IsNullOrWhiteSpace(user.Email))
         {
             existingUser!.Email = user.Email;
@@ -112,7 +105,7 @@ public class UserService : IUserService
         {
             existingUser!.Role = user.Role;
         }
-        return _userRepository.UpdateUser(existingUser!);
+        return userRepository.UpdateUser(existingUser!);
     }
     
     public bool DeleteUser(int id)
@@ -121,12 +114,12 @@ public class UserService : IUserService
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidId);
         }
-        if (!_userRepository.DoesUserExist(id))
+        if (!userRepository.DoesUserExist(id))
         {
             throw new UserNotFoundException(ExceptionMessages.UserNotFound);
         }
         
-        var user = _userRepository.GetUserById(id);
-        return _userRepository.DeleteUser(user!);
+        var user = userRepository.GetUserById(id);
+        return userRepository.DeleteUser(user!);
     }
 }

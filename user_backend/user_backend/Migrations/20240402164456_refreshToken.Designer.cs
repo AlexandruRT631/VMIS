@@ -10,7 +10,7 @@ using user_backend.DataAccess;
 
 namespace user_backend.Migrations
 {
-    [DbContext(typeof(BackendDbContext))]
+    [DbContext(typeof(UserDbContext))]
     [Migration("20240402164456_refreshToken")]
     partial class refreshToken
     {

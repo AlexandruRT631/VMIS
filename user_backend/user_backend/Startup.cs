@@ -21,10 +21,10 @@ public class Startup
     
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddDbContext<BackendDbContext>(options =>
+        services.AddDbContext<UserDbContext>(options =>
             options.UseMySQL(Configuration.GetConnectionString("UserDbConnection")!));
         
-        services.AddScoped<DbContext>(provider => provider.GetService<BackendDbContext>()!);
+        services.AddScoped<DbContext>(provider => provider.GetService<UserDbContext>()!);
 
         services.AddScoped<IUserRepository, UserRepository>();
 

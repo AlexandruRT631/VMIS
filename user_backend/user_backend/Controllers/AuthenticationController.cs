@@ -8,22 +8,15 @@ namespace user_backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthenticationController : ControllerBase
+public class AuthenticationController(IAuthenticationService authenticationService) : ControllerBase
 {
-    private readonly IAuthenticationService _authenticationService;
-    
-    public AuthenticationController(IAuthenticationService authenticationService)
-    {
-        _authenticationService = authenticationService;
-    }
-    
     [HttpPost("login")]
     public IActionResult Login(UserLoginDto userLoginDto)
     {
         try
         {
-            var accessToken = _authenticationService.AuthenticateUser(userLoginDto.Email, userLoginDto.Password);
-            var refreshToken = _authenticationService.GenerateRefreshToken(userLoginDto.Email);
+            var accessToken = authenticationService.AuthenticateUser(userLoginDto.Email, userLoginDto.Password);
+            var refreshToken = authenticationService.GenerateRefreshToken(userLoginDto.Email);
             return Ok(new TokenDto(accessToken, refreshToken));
         }
         catch (InvalidCredentialsException e)
@@ -37,8 +30,8 @@ public class AuthenticationController : ControllerBase
     {
         try
         {
-            var accessToken = _authenticationService.RegisterUser(user);
-            var refreshToken = _authenticationService.GenerateRefreshToken(user.Email!);
+            var accessToken = authenticationService.RegisterUser(user);
+            var refreshToken = authenticationService.GenerateRefreshToken(user.Email!);
             return Ok(new TokenDto(accessToken, refreshToken));
         }
         catch (InvalidArgumentException e)
@@ -56,7 +49,7 @@ public class AuthenticationController : ControllerBase
     {
         try
         {
-            var tokenDto = _authenticationService.IsRefreshTokenValid(refreshToken);
+            var tokenDto = authenticationService.IsRefreshTokenValid(refreshToken);
             return Ok(tokenDto);
         }
         catch (InvalidArgumentException e)
