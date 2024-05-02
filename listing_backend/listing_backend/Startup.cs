@@ -1,6 +1,7 @@
 using System.Text;
 using listing_backend.Constants;
 using listing_backend.DataAccess;
+using listing_backend.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -24,8 +25,20 @@ public class Startup
         
         services.AddScoped<DbContext>(provider => provider.GetService<ListingDbContext>()!);
 
-        // services.AddScoped<IUserRepository, UserRepository>();
-        //
+        services.AddScoped<ICarRepository, CarRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IColorRepository, ColorRepository>();
+        services.AddScoped<IDoorTypeRepository, DoorTypeRepository>();
+        services.AddScoped<IEngineRepository, EngineRepository>();
+        services.AddScoped<IFeatureExteriorRepository, FeatureExteriorRepository>();
+        services.AddScoped<IFeatureInteriorRepository, FeatureInteriorRepository>();
+        services.AddScoped<IFuelRepository, FuelRepository>();
+        services.AddScoped<IListingRepository, ListingRepository>();
+        services.AddScoped<IMakeRepository, MakeRepository>();
+        services.AddScoped<IModelRepository, ModelRepository>();
+        services.AddScoped<ITractionRepository, TractionRepository>();
+        services.AddScoped<ITransmissionRepository, TransmissionRepository>();
+        
         // services.AddScoped<IUserService, UserService>();
         // services.AddScoped<IAuthenticationService, AuthenticationService>();
         

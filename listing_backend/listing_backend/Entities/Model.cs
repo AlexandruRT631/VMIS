@@ -9,4 +9,5 @@ public class Model
     public Make Make { get; set; } = null!;
     [MaxLength(100)]
     public string Name { get; set; } = null!;
+    public List<Car> PossibleCars { get; set; } = [];
 }
