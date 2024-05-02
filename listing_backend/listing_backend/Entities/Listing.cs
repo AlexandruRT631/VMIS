@@ -8,7 +8,7 @@ public class Listing
     public int Id { get; set; }
     public int SellerId { get; set; }
     public int Price { get; set; }
-    public Model Model { get; set; } = null!;
+    public Car Car { get; set; } = null!;
     public int Year { get; set; }
     public Category Category { get; set; } = null!;
     public Engine Engine { get; set; } = null!;

@@ -13,8 +13,11 @@ public class ListingDbContext(DbContextOptions options) : DbContext(options)
     public DbSet<Listing> Listings { get; init; }
     public DbSet<Make> Makes { get; init; }
     public DbSet<Model> Models { get; init; }
+    public DbSet<Car> Cars { get; init; }
     public DbSet<Traction> Tractions { get; init; }
     public DbSet<Transmission> Transmissions { get; init; }
+    public DbSet<FeatureInterior> FeaturesInterior { get; init; }
+    public DbSet<FeatureExterior> FeaturesExterior { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

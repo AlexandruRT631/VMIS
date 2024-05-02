@@ -57,6 +57,34 @@ namespace listing_backend.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "FeaturesExterior",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FeaturesExterior", x => x.Id);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "FeaturesInterior",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FeaturesInterior", x => x.Id);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Fuels",
                 columns: table => new
                 {
@@ -150,9 +178,7 @@ namespace listing_backend.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     MakeId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "longtext", nullable: false),
-                    StartYear = table.Column<int>(type: "int", nullable: false),
-                    EndYear = table.Column<int>(type: "int", nullable: false)
+                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -167,75 +193,147 @@ namespace listing_backend.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "CategoryModel",
+                name: "Cars",
                 columns: table => new
                 {
-                    PossibleCategoriesId = table.Column<int>(type: "int", nullable: false),
-                    PossibleModelsId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    ModelId = table.Column<int>(type: "int", nullable: false),
+                    StartYear = table.Column<int>(type: "int", nullable: false),
+                    EndYear = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CategoryModel", x => new { x.PossibleCategoriesId, x.PossibleModelsId });
+                    table.PrimaryKey("PK_Cars", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CategoryModel_Categories_PossibleCategoriesId",
+                        name: "FK_Cars_Models_ModelId",
+                        column: x => x.ModelId,
+                        principalTable: "Models",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "CarCategory",
+                columns: table => new
+                {
+                    PossibleCarsId = table.Column<int>(type: "int", nullable: false),
+                    PossibleCategoriesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CarCategory", x => new { x.PossibleCarsId, x.PossibleCategoriesId });
+                    table.ForeignKey(
+                        name: "FK_CarCategory_Cars_PossibleCarsId",
+                        column: x => x.PossibleCarsId,
+                        principalTable: "Cars",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CarCategory_Categories_PossibleCategoriesId",
                         column: x => x.PossibleCategoriesId,
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CategoryModel_Models_PossibleModelsId",
-                        column: x => x.PossibleModelsId,
-                        principalTable: "Models",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "DoorTypeModel",
+                name: "CarDoorType",
                 columns: table => new
                 {
-                    PossibleDoorTypesId = table.Column<int>(type: "int", nullable: false),
-                    PossibleModelsId = table.Column<int>(type: "int", nullable: false)
+                    PossibleCarsId = table.Column<int>(type: "int", nullable: false),
+                    PossibleDoorTypesId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DoorTypeModel", x => new { x.PossibleDoorTypesId, x.PossibleModelsId });
+                    table.PrimaryKey("PK_CarDoorType", x => new { x.PossibleCarsId, x.PossibleDoorTypesId });
                     table.ForeignKey(
-                        name: "FK_DoorTypeModel_DoorTypes_PossibleDoorTypesId",
+                        name: "FK_CarDoorType_Cars_PossibleCarsId",
+                        column: x => x.PossibleCarsId,
+                        principalTable: "Cars",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CarDoorType_DoorTypes_PossibleDoorTypesId",
                         column: x => x.PossibleDoorTypesId,
                         principalTable: "DoorTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "CarEngine",
+                columns: table => new
+                {
+                    PossibleCarsId = table.Column<int>(type: "int", nullable: false),
+                    PossibleEnginesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CarEngine", x => new { x.PossibleCarsId, x.PossibleEnginesId });
                     table.ForeignKey(
-                        name: "FK_DoorTypeModel_Models_PossibleModelsId",
-                        column: x => x.PossibleModelsId,
-                        principalTable: "Models",
+                        name: "FK_CarEngine_Cars_PossibleCarsId",
+                        column: x => x.PossibleCarsId,
+                        principalTable: "Cars",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CarEngine_Engines_PossibleEnginesId",
+                        column: x => x.PossibleEnginesId,
+                        principalTable: "Engines",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "EngineModel",
+                name: "CarTraction",
                 columns: table => new
                 {
-                    PossibleEnginesId = table.Column<int>(type: "int", nullable: false),
-                    PossibleModelsId = table.Column<int>(type: "int", nullable: false)
+                    PossibleCarsId = table.Column<int>(type: "int", nullable: false),
+                    PossibleTractionsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EngineModel", x => new { x.PossibleEnginesId, x.PossibleModelsId });
+                    table.PrimaryKey("PK_CarTraction", x => new { x.PossibleCarsId, x.PossibleTractionsId });
                     table.ForeignKey(
-                        name: "FK_EngineModel_Engines_PossibleEnginesId",
-                        column: x => x.PossibleEnginesId,
-                        principalTable: "Engines",
+                        name: "FK_CarTraction_Cars_PossibleCarsId",
+                        column: x => x.PossibleCarsId,
+                        principalTable: "Cars",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_EngineModel_Models_PossibleModelsId",
-                        column: x => x.PossibleModelsId,
-                        principalTable: "Models",
+                        name: "FK_CarTraction_Tractions_PossibleTractionsId",
+                        column: x => x.PossibleTractionsId,
+                        principalTable: "Tractions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "CarTransmission",
+                columns: table => new
+                {
+                    PossibleCarsId = table.Column<int>(type: "int", nullable: false),
+                    PossibleTransmissionsId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CarTransmission", x => new { x.PossibleCarsId, x.PossibleTransmissionsId });
+                    table.ForeignKey(
+                        name: "FK_CarTransmission_Cars_PossibleCarsId",
+                        column: x => x.PossibleCarsId,
+                        principalTable: "Cars",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CarTransmission_Transmissions_PossibleTransmissionsId",
+                        column: x => x.PossibleTransmissionsId,
+                        principalTable: "Transmissions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -249,7 +347,7 @@ namespace listing_backend.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     SellerId = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
-                    ModelId = table.Column<int>(type: "int", nullable: false),
+                    CarId = table.Column<int>(type: "int", nullable: false),
                     Year = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     EngineId = table.Column<int>(type: "int", nullable: false),
@@ -261,6 +359,12 @@ namespace listing_backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Listings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Listings_Cars_CarId",
+                        column: x => x.CarId,
+                        principalTable: "Cars",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Listings_Categories_CategoryId",
                         column: x => x.CategoryId,
@@ -291,79 +395,88 @@ namespace listing_backend.Migrations
                         principalTable: "Engines",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "FeatureExteriorListing",
+                columns: table => new
+                {
+                    FeaturesExteriorId = table.Column<int>(type: "int", nullable: false),
+                    ListingsId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FeatureExteriorListing", x => new { x.FeaturesExteriorId, x.ListingsId });
                     table.ForeignKey(
-                        name: "FK_Listings_Models_ModelId",
-                        column: x => x.ModelId,
-                        principalTable: "Models",
+                        name: "FK_FeatureExteriorListing_FeaturesExterior_FeaturesExteriorId",
+                        column: x => x.FeaturesExteriorId,
+                        principalTable: "FeaturesExterior",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FeatureExteriorListing_Listings_ListingsId",
+                        column: x => x.ListingsId,
+                        principalTable: "Listings",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "ModelTraction",
+                name: "FeatureInteriorListing",
                 columns: table => new
                 {
-                    PossibleModelsId = table.Column<int>(type: "int", nullable: false),
-                    PossibleTractionsId = table.Column<int>(type: "int", nullable: false)
+                    FeaturesInteriorId = table.Column<int>(type: "int", nullable: false),
+                    ListingsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ModelTraction", x => new { x.PossibleModelsId, x.PossibleTractionsId });
+                    table.PrimaryKey("PK_FeatureInteriorListing", x => new { x.FeaturesInteriorId, x.ListingsId });
                     table.ForeignKey(
-                        name: "FK_ModelTraction_Models_PossibleModelsId",
-                        column: x => x.PossibleModelsId,
-                        principalTable: "Models",
+                        name: "FK_FeatureInteriorListing_FeaturesInterior_FeaturesInteriorId",
+                        column: x => x.FeaturesInteriorId,
+                        principalTable: "FeaturesInterior",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ModelTraction_Tractions_PossibleTractionsId",
-                        column: x => x.PossibleTractionsId,
-                        principalTable: "Tractions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySQL:Charset", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "ModelTransmission",
-                columns: table => new
-                {
-                    PossibleModelsId = table.Column<int>(type: "int", nullable: false),
-                    PossibleTransmissionsId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ModelTransmission", x => new { x.PossibleModelsId, x.PossibleTransmissionsId });
-                    table.ForeignKey(
-                        name: "FK_ModelTransmission_Models_PossibleModelsId",
-                        column: x => x.PossibleModelsId,
-                        principalTable: "Models",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ModelTransmission_Transmissions_PossibleTransmissionsId",
-                        column: x => x.PossibleTransmissionsId,
-                        principalTable: "Transmissions",
+                        name: "FK_FeatureInteriorListing_Listings_ListingsId",
+                        column: x => x.ListingsId,
+                        principalTable: "Listings",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CategoryModel_PossibleModelsId",
-                table: "CategoryModel",
-                column: "PossibleModelsId");
+                name: "IX_CarCategory_PossibleCategoriesId",
+                table: "CarCategory",
+                column: "PossibleCategoriesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DoorTypeModel_PossibleModelsId",
-                table: "DoorTypeModel",
-                column: "PossibleModelsId");
+                name: "IX_CarDoorType_PossibleDoorTypesId",
+                table: "CarDoorType",
+                column: "PossibleDoorTypesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EngineModel_PossibleModelsId",
-                table: "EngineModel",
-                column: "PossibleModelsId");
+                name: "IX_CarEngine_PossibleEnginesId",
+                table: "CarEngine",
+                column: "PossibleEnginesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cars_ModelId",
+                table: "Cars",
+                column: "ModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CarTraction_PossibleTractionsId",
+                table: "CarTraction",
+                column: "PossibleTractionsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CarTransmission_PossibleTransmissionsId",
+                table: "CarTransmission",
+                column: "PossibleTransmissionsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Engines_FuelId",
@@ -374,6 +487,21 @@ namespace listing_backend.Migrations
                 name: "IX_Engines_MakeId",
                 table: "Engines",
                 column: "MakeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FeatureExteriorListing_ListingsId",
+                table: "FeatureExteriorListing",
+                column: "ListingsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FeatureInteriorListing_ListingsId",
+                table: "FeatureInteriorListing",
+                column: "ListingsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Listings_CarId",
+                table: "Listings",
+                column: "CarId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Listings_CategoryId",
@@ -401,46 +529,52 @@ namespace listing_backend.Migrations
                 column: "InteriorColorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Listings_ModelId",
-                table: "Listings",
-                column: "ModelId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Models_MakeId",
                 table: "Models",
                 column: "MakeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ModelTraction_PossibleTractionsId",
-                table: "ModelTraction",
-                column: "PossibleTractionsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ModelTransmission_PossibleTransmissionsId",
-                table: "ModelTransmission",
-                column: "PossibleTransmissionsId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CategoryModel");
+                name: "CarCategory");
 
             migrationBuilder.DropTable(
-                name: "DoorTypeModel");
+                name: "CarDoorType");
 
             migrationBuilder.DropTable(
-                name: "EngineModel");
+                name: "CarEngine");
+
+            migrationBuilder.DropTable(
+                name: "CarTraction");
+
+            migrationBuilder.DropTable(
+                name: "CarTransmission");
+
+            migrationBuilder.DropTable(
+                name: "FeatureExteriorListing");
+
+            migrationBuilder.DropTable(
+                name: "FeatureInteriorListing");
+
+            migrationBuilder.DropTable(
+                name: "Tractions");
+
+            migrationBuilder.DropTable(
+                name: "Transmissions");
+
+            migrationBuilder.DropTable(
+                name: "FeaturesExterior");
+
+            migrationBuilder.DropTable(
+                name: "FeaturesInterior");
 
             migrationBuilder.DropTable(
                 name: "Listings");
 
             migrationBuilder.DropTable(
-                name: "ModelTraction");
-
-            migrationBuilder.DropTable(
-                name: "ModelTransmission");
+                name: "Cars");
 
             migrationBuilder.DropTable(
                 name: "Categories");
@@ -455,13 +589,7 @@ namespace listing_backend.Migrations
                 name: "Engines");
 
             migrationBuilder.DropTable(
-                name: "Tractions");
-
-            migrationBuilder.DropTable(
                 name: "Models");
-
-            migrationBuilder.DropTable(
-                name: "Transmissions");
 
             migrationBuilder.DropTable(
                 name: "Fuels");

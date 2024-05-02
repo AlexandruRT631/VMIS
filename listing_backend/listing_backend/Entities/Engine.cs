@@ -12,6 +12,6 @@ public class Engine
     public Fuel Fuel { get; set; } = null!;
     public int Power { get; set; }
     public int Torque { get; set; }
-    public List<Model> PossibleModels { get; set; } = [];
+    public List<Car> PossibleCars { get; set; } = [];
     public List<Listing> Listings { get; set; } = [];
 }

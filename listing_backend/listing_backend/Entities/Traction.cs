@@ -8,5 +8,5 @@ public class Traction
     public int Id { get; set; }
     [MaxLength(100)]
     public string Name { get; set; } = null!;
-    public List<Model> PossibleModels { get; set; } = [];
+    public List<Car> PossibleCars { get; set; } = [];
 }

@@ -18,49 +18,79 @@ namespace listing_backend.Migrations
                 .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("CategoryModel", b =>
+            modelBuilder.Entity("CarCategory", b =>
                 {
+                    b.Property<int>("PossibleCarsId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PossibleCategoriesId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PossibleModelsId")
-                        .HasColumnType("int");
+                    b.HasKey("PossibleCarsId", "PossibleCategoriesId");
 
-                    b.HasKey("PossibleCategoriesId", "PossibleModelsId");
+                    b.HasIndex("PossibleCategoriesId");
 
-                    b.HasIndex("PossibleModelsId");
-
-                    b.ToTable("CategoryModel");
+                    b.ToTable("CarCategory");
                 });
 
-            modelBuilder.Entity("DoorTypeModel", b =>
+            modelBuilder.Entity("CarDoorType", b =>
                 {
+                    b.Property<int>("PossibleCarsId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PossibleDoorTypesId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PossibleModelsId")
-                        .HasColumnType("int");
+                    b.HasKey("PossibleCarsId", "PossibleDoorTypesId");
 
-                    b.HasKey("PossibleDoorTypesId", "PossibleModelsId");
+                    b.HasIndex("PossibleDoorTypesId");
 
-                    b.HasIndex("PossibleModelsId");
-
-                    b.ToTable("DoorTypeModel");
+                    b.ToTable("CarDoorType");
                 });
 
-            modelBuilder.Entity("EngineModel", b =>
+            modelBuilder.Entity("CarEngine", b =>
                 {
+                    b.Property<int>("PossibleCarsId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PossibleEnginesId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PossibleModelsId")
+                    b.HasKey("PossibleCarsId", "PossibleEnginesId");
+
+                    b.HasIndex("PossibleEnginesId");
+
+                    b.ToTable("CarEngine");
+                });
+
+            modelBuilder.Entity("CarTraction", b =>
+                {
+                    b.Property<int>("PossibleCarsId")
                         .HasColumnType("int");
 
-                    b.HasKey("PossibleEnginesId", "PossibleModelsId");
+                    b.Property<int>("PossibleTractionsId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("PossibleModelsId");
+                    b.HasKey("PossibleCarsId", "PossibleTractionsId");
 
-                    b.ToTable("EngineModel");
+                    b.HasIndex("PossibleTractionsId");
+
+                    b.ToTable("CarTraction");
+                });
+
+            modelBuilder.Entity("CarTransmission", b =>
+                {
+                    b.Property<int>("PossibleCarsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PossibleTransmissionsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PossibleCarsId", "PossibleTransmissionsId");
+
+                    b.HasIndex("PossibleTransmissionsId");
+
+                    b.ToTable("CarTransmission");
                 });
 
             modelBuilder.Entity("FeatureExteriorListing", b =>
@@ -93,34 +123,26 @@ namespace listing_backend.Migrations
                     b.ToTable("FeatureInteriorListing");
                 });
 
-            modelBuilder.Entity("ModelTraction", b =>
+            modelBuilder.Entity("listing_backend.Entities.Car", b =>
                 {
-                    b.Property<int>("PossibleModelsId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("PossibleTractionsId")
+                    b.Property<int>("EndYear")
                         .HasColumnType("int");
 
-                    b.HasKey("PossibleModelsId", "PossibleTractionsId");
-
-                    b.HasIndex("PossibleTractionsId");
-
-                    b.ToTable("ModelTraction");
-                });
-
-            modelBuilder.Entity("ModelTransmission", b =>
-                {
-                    b.Property<int>("PossibleModelsId")
+                    b.Property<int>("ModelId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PossibleTransmissionsId")
+                    b.Property<int>("StartYear")
                         .HasColumnType("int");
 
-                    b.HasKey("PossibleModelsId", "PossibleTransmissionsId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("PossibleTransmissionsId");
+                    b.HasIndex("ModelId");
 
-                    b.ToTable("ModelTransmission");
+                    b.ToTable("Cars");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.Category", b =>
@@ -218,7 +240,7 @@ namespace listing_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FeatureExterior");
+                    b.ToTable("FeaturesExterior");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.FeatureInterior", b =>
@@ -234,7 +256,7 @@ namespace listing_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FeatureInterior");
+                    b.ToTable("FeaturesInterior");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.Fuel", b =>
@@ -259,6 +281,9 @@ namespace listing_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int>("CarId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -277,9 +302,6 @@ namespace listing_backend.Migrations
                     b.Property<int>("Mileage")
                         .HasColumnType("int");
 
-                    b.Property<int>("ModelId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
@@ -291,6 +313,8 @@ namespace listing_backend.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CarId");
+
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("DoorTypeId");
@@ -300,8 +324,6 @@ namespace listing_backend.Migrations
                     b.HasIndex("ExteriorColorId");
 
                     b.HasIndex("InteriorColorId");
-
-                    b.HasIndex("ModelId");
 
                     b.ToTable("Listings");
                 });
@@ -328,18 +350,13 @@ namespace listing_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("EndYear")
-                        .HasColumnType("int");
-
                     b.Property<int>("MakeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("StartYear")
-                        .HasColumnType("int");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.HasKey("Id");
 
@@ -380,47 +397,77 @@ namespace listing_backend.Migrations
                     b.ToTable("Transmissions");
                 });
 
-            modelBuilder.Entity("CategoryModel", b =>
+            modelBuilder.Entity("CarCategory", b =>
                 {
+                    b.HasOne("listing_backend.Entities.Car", null)
+                        .WithMany()
+                        .HasForeignKey("PossibleCarsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("listing_backend.Entities.Category", null)
                         .WithMany()
                         .HasForeignKey("PossibleCategoriesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("listing_backend.Entities.Model", null)
-                        .WithMany()
-                        .HasForeignKey("PossibleModelsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
-            modelBuilder.Entity("DoorTypeModel", b =>
+            modelBuilder.Entity("CarDoorType", b =>
                 {
+                    b.HasOne("listing_backend.Entities.Car", null)
+                        .WithMany()
+                        .HasForeignKey("PossibleCarsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("listing_backend.Entities.DoorType", null)
                         .WithMany()
                         .HasForeignKey("PossibleDoorTypesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("listing_backend.Entities.Model", null)
-                        .WithMany()
-                        .HasForeignKey("PossibleModelsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
-            modelBuilder.Entity("EngineModel", b =>
+            modelBuilder.Entity("CarEngine", b =>
                 {
+                    b.HasOne("listing_backend.Entities.Car", null)
+                        .WithMany()
+                        .HasForeignKey("PossibleCarsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("listing_backend.Entities.Engine", null)
                         .WithMany()
                         .HasForeignKey("PossibleEnginesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.HasOne("listing_backend.Entities.Model", null)
+            modelBuilder.Entity("CarTraction", b =>
+                {
+                    b.HasOne("listing_backend.Entities.Car", null)
                         .WithMany()
-                        .HasForeignKey("PossibleModelsId")
+                        .HasForeignKey("PossibleCarsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("listing_backend.Entities.Traction", null)
+                        .WithMany()
+                        .HasForeignKey("PossibleTractionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CarTransmission", b =>
+                {
+                    b.HasOne("listing_backend.Entities.Car", null)
+                        .WithMany()
+                        .HasForeignKey("PossibleCarsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("listing_backend.Entities.Transmission", null)
+                        .WithMany()
+                        .HasForeignKey("PossibleTransmissionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -455,34 +502,15 @@ namespace listing_backend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ModelTraction", b =>
+            modelBuilder.Entity("listing_backend.Entities.Car", b =>
                 {
-                    b.HasOne("listing_backend.Entities.Model", null)
+                    b.HasOne("listing_backend.Entities.Model", "Model")
                         .WithMany()
-                        .HasForeignKey("PossibleModelsId")
+                        .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("listing_backend.Entities.Traction", null)
-                        .WithMany()
-                        .HasForeignKey("PossibleTractionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ModelTransmission", b =>
-                {
-                    b.HasOne("listing_backend.Entities.Model", null)
-                        .WithMany()
-                        .HasForeignKey("PossibleModelsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("listing_backend.Entities.Transmission", null)
-                        .WithMany()
-                        .HasForeignKey("PossibleTransmissionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Model");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.Engine", b =>
@@ -506,6 +534,12 @@ namespace listing_backend.Migrations
 
             modelBuilder.Entity("listing_backend.Entities.Listing", b =>
                 {
+                    b.HasOne("listing_backend.Entities.Car", "Car")
+                        .WithMany("Listings")
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("listing_backend.Entities.Category", "Category")
                         .WithMany("Listings")
                         .HasForeignKey("CategoryId")
@@ -536,11 +570,7 @@ namespace listing_backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("listing_backend.Entities.Model", "Model")
-                        .WithMany("Listings")
-                        .HasForeignKey("ModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Car");
 
                     b.Navigation("Category");
 
@@ -551,8 +581,6 @@ namespace listing_backend.Migrations
                     b.Navigation("ExteriorColor");
 
                     b.Navigation("InteriorColor");
-
-                    b.Navigation("Model");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.Model", b =>
@@ -564,6 +592,11 @@ namespace listing_backend.Migrations
                         .IsRequired();
 
                     b.Navigation("Make");
+                });
+
+            modelBuilder.Entity("listing_backend.Entities.Car", b =>
+                {
+                    b.Navigation("Listings");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.Category", b =>
@@ -591,11 +624,6 @@ namespace listing_backend.Migrations
             modelBuilder.Entity("listing_backend.Entities.Fuel", b =>
                 {
                     b.Navigation("PossibleEngines");
-                });
-
-            modelBuilder.Entity("listing_backend.Entities.Model", b =>
-                {
-                    b.Navigation("Listings");
                 });
 #pragma warning restore 612, 618
         }
