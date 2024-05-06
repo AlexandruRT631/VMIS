@@ -40,4 +40,9 @@ public class FeatureInteriorRepository(ListingDbContext context) : IFeatureInter
     {
         return context.FeaturesInterior.Any(e => e.Id == id);
     }
+    
+    public bool DoesFeatureInteriorExist(string name)
+    {
+        return context.FeaturesInterior.Any(e => e.Name == name);
+    }
 }

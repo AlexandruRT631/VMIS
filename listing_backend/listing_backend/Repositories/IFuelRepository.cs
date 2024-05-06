@@ -10,4 +10,5 @@ public interface IFuelRepository
     public Fuel UpdateFuel(Fuel fuel);
     public bool DeleteFuel(Fuel fuel);
     public bool DoesFuelExist(int id);
+    public bool DoesFuelExist(string name);
 }

@@ -9,22 +9,22 @@ namespace listing_backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ColorController(IColorService colorService, IMapper mapper) : ControllerBase
+public class TractionController(ITractionService tractionService, IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    public IActionResult GetAllColors()
+    public IActionResult GetAllTractions()
     {
-        var colorDtos = colorService.GetAllColors().Select(mapper.Map<ColorDto>).ToList();
-        return Ok(colorDtos);
+        var tractionDtos = tractionService.GetAllTractions().Select(mapper.Map<TractionDto>).ToList();
+        return Ok(tractionDtos);
     }
     
     [HttpGet("{id:int}")]
-    public IActionResult GetColorById(int id)
+    public IActionResult GetTractionById(int id)
     {
         try
         {
-            var colorDto = mapper.Map<ColorDto>(colorService.GetColorById(id));
-            return Ok(colorDto);
+            var tractionDto = mapper.Map<TractionDto>(tractionService.GetTractionById(id));
+            return Ok(tractionDto);
         }
         catch (InvalidArgumentException e)
         {
@@ -37,14 +37,14 @@ public class ColorController(IColorService colorService, IMapper mapper) : Contr
     }
     
     [HttpPost]
-    public IActionResult CreateColor(ColorDto colorDto)
+    public IActionResult CreateTraction(TractionDto tractionDto)
     {
         try
         {
-            var inputColor = mapper.Map<Color>(colorDto);
-            var color = colorService.CreateColor(inputColor);
-            var outputColor = mapper.Map<ColorDto>(color);
-            return Ok(outputColor);
+            var inputTraction = mapper.Map<Traction>(tractionDto);
+            var traction = tractionService.CreateTraction(inputTraction);
+            var outputTraction = mapper.Map<TractionDto>(traction);
+            return Ok(outputTraction);
         }
         catch (InvalidArgumentException e)
         {
@@ -57,14 +57,14 @@ public class ColorController(IColorService colorService, IMapper mapper) : Contr
     }
     
     [HttpPut]
-    public IActionResult UpdateColor(ColorDto colorDto)
+    public IActionResult UpdateTraction(TractionDto tractionDto)
     {
         try
         {
-            var inputColor = mapper.Map<Color>(colorDto);
-            var color = colorService.UpdateColor(inputColor);
-            var outputColor = mapper.Map<ColorDto>(color);
-            return Ok(outputColor);
+            var inputTraction = mapper.Map<Traction>(tractionDto);
+            var traction = tractionService.UpdateTraction(inputTraction);
+            var outputTraction = mapper.Map<TractionDto>(traction);
+            return Ok(outputTraction);
         }
         catch (InvalidArgumentException e)
         {
@@ -77,11 +77,11 @@ public class ColorController(IColorService colorService, IMapper mapper) : Contr
     }
     
     [HttpDelete("{id:int}")]
-    public IActionResult DeleteColor(int id)
+    public IActionResult DeleteTraction(int id)
     {
         try
         {
-            return Ok(colorService.DeleteColor(id));
+            return Ok(tractionService.DeleteTraction(id));
         }
         catch (InvalidArgumentException e)
         {

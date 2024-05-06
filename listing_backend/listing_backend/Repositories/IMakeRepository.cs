@@ -10,4 +10,5 @@ public interface IMakeRepository
     public Make UpdateMake(Make make);
     public bool DeleteMake(Make make);
     public bool DoesMakeExist(int id);
+    public bool DoesMakeExist(string name);
 }

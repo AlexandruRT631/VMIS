@@ -10,4 +10,5 @@ public interface IDoorTypeRepository
     public DoorType UpdateDoorType(DoorType doorType);
     public bool DeleteDoorType(DoorType doorType);
     public bool DoesDoorTypeExist(int id);
+    public bool DoesDoorTypeExist(string name);
 }

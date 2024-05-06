@@ -22,6 +22,7 @@ public class ColorService(IColorRepository colorRepository) : IColorService
         {
             throw new ObjectNotFoundException(ExceptionMessages.ColorNotFound);
         }
+        
         return colorRepository.GetColorById(id);
     }
 
@@ -35,7 +36,7 @@ public class ColorService(IColorRepository colorRepository) : IColorService
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidId);
         }
-        if (color.Id != 0 && colorRepository.DoesColorExist(color.Id))
+        if (colorRepository.DoesColorExist(color.Id))
         {
             throw new ObjectAlreadyExistsException(ExceptionMessages.ColorAlreadyExists);
         }

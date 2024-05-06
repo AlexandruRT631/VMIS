@@ -10,4 +10,5 @@ public interface IFeatureExteriorRepository
     public FeatureExterior UpdateFeatureExterior(FeatureExterior featureExterior);
     public bool DeleteFeatureExterior(FeatureExterior featureExterior);
     public bool DoesFeatureExteriorExist(int id);
+    public bool DoesFeatureExteriorExist(string name);
 }

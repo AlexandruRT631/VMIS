@@ -10,4 +10,5 @@ public interface ITractionRepository
     public Traction UpdateTraction(Traction traction);
     public bool DeleteTraction(Traction traction);
     public bool DoesTractionExist(int id);
+    public bool DoesTractionExist(string name);
 }

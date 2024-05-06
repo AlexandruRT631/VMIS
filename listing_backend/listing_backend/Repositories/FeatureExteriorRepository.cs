@@ -40,4 +40,9 @@ public class FeatureExteriorRepository(ListingDbContext context) : IFeatureExter
     {
         return context.FeaturesExterior.Any(e => e.Id == id);
     }
+    
+    public bool DoesFeatureExteriorExist(string name)
+    {
+        return context.FeaturesExterior.Any(e => e.Name == name);
+    }
 }

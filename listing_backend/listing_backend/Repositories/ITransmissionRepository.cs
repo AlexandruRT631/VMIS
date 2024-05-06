@@ -10,4 +10,5 @@ public interface ITransmissionRepository
     public Transmission UpdateTransmission(Transmission transmission);
     public bool DeleteTransmission(Transmission transmission);
     public bool DoesTransmissionExist(int id);
+    public bool DoesTransmissionExist(string name);
 }

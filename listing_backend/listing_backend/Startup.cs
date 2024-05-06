@@ -37,7 +37,15 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<ITractionRepository, TractionRepository>();
         services.AddScoped<ITransmissionRepository, TransmissionRepository>();
 
+        services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IColorService, ColorService>();
+        services.AddScoped<IDoorTypeService, DoorTypeService>();
+        services.AddScoped<IFeatureExteriorService, FeatureExteriorService>();
+        services.AddScoped<IFeatureInteriorService, FeatureInteriorService>();
+        services.AddScoped<IFuelService, FuelService>();
+        services.AddScoped<IMakeService, MakeService>();
+        services.AddScoped<ITractionService, TractionService>();
+        services.AddScoped<ITransmissionService, TransmissionService>();
         
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>

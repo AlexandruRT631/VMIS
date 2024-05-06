@@ -40,4 +40,9 @@ public class MakeRepository(ListingDbContext context) : IMakeRepository
     {
         return context.Makes.Any(e => e.Id == id);
     }
+    
+    public bool DoesMakeExist(string name)
+    {
+        return context.Makes.Any(e => e.Name == name);
+    }
 }

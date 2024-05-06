@@ -9,22 +9,22 @@ namespace listing_backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ColorController(IColorService colorService, IMapper mapper) : ControllerBase
+public class CategoryController(ICategoryService categoryService, IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    public IActionResult GetAllColors()
+    public IActionResult GetAllCategories()
     {
-        var colorDtos = colorService.GetAllColors().Select(mapper.Map<ColorDto>).ToList();
-        return Ok(colorDtos);
+        var categoryDtos = categoryService.GetAllCategories().Select(mapper.Map<CategoryDto>).ToList();
+        return Ok(categoryDtos);
     }
     
     [HttpGet("{id:int}")]
-    public IActionResult GetColorById(int id)
+    public IActionResult GetCategoryById(int id)
     {
         try
         {
-            var colorDto = mapper.Map<ColorDto>(colorService.GetColorById(id));
-            return Ok(colorDto);
+            var categoryDto = mapper.Map<CategoryDto>(categoryService.GetCategoryById(id));
+            return Ok(categoryDto);
         }
         catch (InvalidArgumentException e)
         {
@@ -37,14 +37,14 @@ public class ColorController(IColorService colorService, IMapper mapper) : Contr
     }
     
     [HttpPost]
-    public IActionResult CreateColor(ColorDto colorDto)
+    public IActionResult CreateCategory(CategoryDto categoryDto)
     {
         try
         {
-            var inputColor = mapper.Map<Color>(colorDto);
-            var color = colorService.CreateColor(inputColor);
-            var outputColor = mapper.Map<ColorDto>(color);
-            return Ok(outputColor);
+            var inputCategory = mapper.Map<Category>(categoryDto);
+            var category = categoryService.CreateCategory(inputCategory);
+            var outputCategory = mapper.Map<CategoryDto>(category);
+            return Ok(outputCategory);
         }
         catch (InvalidArgumentException e)
         {
@@ -57,14 +57,14 @@ public class ColorController(IColorService colorService, IMapper mapper) : Contr
     }
     
     [HttpPut]
-    public IActionResult UpdateColor(ColorDto colorDto)
+    public IActionResult UpdateCategory(CategoryDto categoryDto)
     {
         try
         {
-            var inputColor = mapper.Map<Color>(colorDto);
-            var color = colorService.UpdateColor(inputColor);
-            var outputColor = mapper.Map<ColorDto>(color);
-            return Ok(outputColor);
+            var inputCategory = mapper.Map<Category>(categoryDto);
+            var category = categoryService.UpdateCategory(inputCategory);
+            var outputCategory = mapper.Map<CategoryDto>(category);
+            return Ok(outputCategory);
         }
         catch (InvalidArgumentException e)
         {
@@ -77,11 +77,11 @@ public class ColorController(IColorService colorService, IMapper mapper) : Contr
     }
     
     [HttpDelete("{id:int}")]
-    public IActionResult DeleteColor(int id)
+    public IActionResult DeleteCategory(int id)
     {
         try
         {
-            return Ok(colorService.DeleteColor(id));
+            return Ok(categoryService.DeleteCategory(id));
         }
         catch (InvalidArgumentException e)
         {

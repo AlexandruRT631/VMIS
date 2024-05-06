@@ -9,22 +9,22 @@ namespace listing_backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ColorController(IColorService colorService, IMapper mapper) : ControllerBase
+public class FuelController(IFuelService fuelService, IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    public IActionResult GetAllColors()
+    public IActionResult GetAllFuels()
     {
-        var colorDtos = colorService.GetAllColors().Select(mapper.Map<ColorDto>).ToList();
-        return Ok(colorDtos);
+        var fuelDtos = fuelService.GetAllFuels().Select(mapper.Map<FuelDto>).ToList();
+        return Ok(fuelDtos);
     }
     
     [HttpGet("{id:int}")]
-    public IActionResult GetColorById(int id)
+    public IActionResult GetFuelById(int id)
     {
         try
         {
-            var colorDto = mapper.Map<ColorDto>(colorService.GetColorById(id));
-            return Ok(colorDto);
+            var fuelDto = mapper.Map<FuelDto>(fuelService.GetFuelById(id));
+            return Ok(fuelDto);
         }
         catch (InvalidArgumentException e)
         {
@@ -37,14 +37,14 @@ public class ColorController(IColorService colorService, IMapper mapper) : Contr
     }
     
     [HttpPost]
-    public IActionResult CreateColor(ColorDto colorDto)
+    public IActionResult CreateFuel(FuelDto fuelDto)
     {
         try
         {
-            var inputColor = mapper.Map<Color>(colorDto);
-            var color = colorService.CreateColor(inputColor);
-            var outputColor = mapper.Map<ColorDto>(color);
-            return Ok(outputColor);
+            var inputFuel = mapper.Map<Fuel>(fuelDto);
+            var fuel = fuelService.CreateFuel(inputFuel);
+            var outputFuel = mapper.Map<FuelDto>(fuel);
+            return Ok(outputFuel);
         }
         catch (InvalidArgumentException e)
         {
@@ -57,14 +57,14 @@ public class ColorController(IColorService colorService, IMapper mapper) : Contr
     }
     
     [HttpPut]
-    public IActionResult UpdateColor(ColorDto colorDto)
+    public IActionResult UpdateFuel(FuelDto fuelDto)
     {
         try
         {
-            var inputColor = mapper.Map<Color>(colorDto);
-            var color = colorService.UpdateColor(inputColor);
-            var outputColor = mapper.Map<ColorDto>(color);
-            return Ok(outputColor);
+            var inputFuel = mapper.Map<Fuel>(fuelDto);
+            var fuel = fuelService.UpdateFuel(inputFuel);
+            var outputFuel = mapper.Map<FuelDto>(fuel);
+            return Ok(outputFuel);
         }
         catch (InvalidArgumentException e)
         {
@@ -77,11 +77,11 @@ public class ColorController(IColorService colorService, IMapper mapper) : Contr
     }
     
     [HttpDelete("{id:int}")]
-    public IActionResult DeleteColor(int id)
+    public IActionResult DeleteFuel(int id)
     {
         try
         {
-            return Ok(colorService.DeleteColor(id));
+            return Ok(fuelService.DeleteFuel(id));
         }
         catch (InvalidArgumentException e)
         {

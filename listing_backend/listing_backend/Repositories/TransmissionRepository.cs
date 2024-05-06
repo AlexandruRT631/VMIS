@@ -40,4 +40,9 @@ public class TransmissionRepository(ListingDbContext context) : ITransmissionRep
     {
         return context.Transmissions.Any(e => e.Id == id);
     }
+    
+    public bool DoesTransmissionExist(string name)
+    {
+        return context.Transmissions.Any(e => e.Name == name);
+    }
 }

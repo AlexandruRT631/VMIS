@@ -40,4 +40,9 @@ public class DoorTypeRepository(ListingDbContext context) : IDoorTypeRepository
     {
         return context.DoorTypes.Any(e => e.Id == id);
     }
+    
+    public bool DoesDoorTypeExist(string name)
+    {
+        return context.DoorTypes.Any(e => e.Name == name);
+    }
 }

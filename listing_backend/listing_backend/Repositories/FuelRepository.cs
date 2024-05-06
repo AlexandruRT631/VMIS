@@ -40,4 +40,9 @@ public class FuelRepository(ListingDbContext context) : IFuelRepository
     {
         return context.Fuels.Any(e => e.Id == id);
     }
+    
+    public bool DoesFuelExist(string name)
+    {
+        return context.Fuels.Any(e => e.Name == name);
+    }
 }

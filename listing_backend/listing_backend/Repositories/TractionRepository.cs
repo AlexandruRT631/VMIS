@@ -40,4 +40,9 @@ public class TractionRepository(ListingDbContext context) : ITractionRepository
     {
         return context.Tractions.Any(e => e.Id == id);
     }
+    
+    public bool DoesTractionExist(string name)
+    {
+        return context.Tractions.Any(e => e.Name == name);
+    }
 }

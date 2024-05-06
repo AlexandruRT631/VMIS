@@ -8,7 +8,23 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        CreateMap<Category, CategoryDto>()
+            .ReverseMap();
         CreateMap<Color, ColorDto>()
+            .ReverseMap();
+        CreateMap<DoorType, DoorTypeDto>()
+            .ReverseMap();
+        CreateMap<FeatureExterior, FeatureExteriorDto>()
+            .ReverseMap();
+        CreateMap<FeatureInterior, FeatureInteriorDto>()
+            .ReverseMap();
+        CreateMap<Fuel, FuelDto>()
+            .ReverseMap();
+        CreateMap<Make, MakeDto>()
+            .ReverseMap();
+        CreateMap<Traction, TractionDto>()
+            .ReverseMap();
+        CreateMap<Transmission, TransmissionDto>()
             .ReverseMap();
     }
 }

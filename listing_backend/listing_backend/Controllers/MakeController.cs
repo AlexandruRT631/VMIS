@@ -9,22 +9,22 @@ namespace listing_backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ColorController(IColorService colorService, IMapper mapper) : ControllerBase
+public class MakeController(IMakeService makeService, IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    public IActionResult GetAllColors()
+    public IActionResult GetAllMakes()
     {
-        var colorDtos = colorService.GetAllColors().Select(mapper.Map<ColorDto>).ToList();
-        return Ok(colorDtos);
+        var makeDtos = makeService.GetAllMakes().Select(mapper.Map<MakeDto>).ToList();
+        return Ok(makeDtos);
     }
     
     [HttpGet("{id:int}")]
-    public IActionResult GetColorById(int id)
+    public IActionResult GetMakeById(int id)
     {
         try
         {
-            var colorDto = mapper.Map<ColorDto>(colorService.GetColorById(id));
-            return Ok(colorDto);
+            var makeDto = mapper.Map<MakeDto>(makeService.GetMakeById(id));
+            return Ok(makeDto);
         }
         catch (InvalidArgumentException e)
         {
@@ -37,14 +37,14 @@ public class ColorController(IColorService colorService, IMapper mapper) : Contr
     }
     
     [HttpPost]
-    public IActionResult CreateColor(ColorDto colorDto)
+    public IActionResult CreateMake(MakeDto makeDto)
     {
         try
         {
-            var inputColor = mapper.Map<Color>(colorDto);
-            var color = colorService.CreateColor(inputColor);
-            var outputColor = mapper.Map<ColorDto>(color);
-            return Ok(outputColor);
+            var inputMake = mapper.Map<Make>(makeDto);
+            var make = makeService.CreateMake(inputMake);
+            var outputMake = mapper.Map<MakeDto>(make);
+            return Ok(outputMake);
         }
         catch (InvalidArgumentException e)
         {
@@ -57,14 +57,14 @@ public class ColorController(IColorService colorService, IMapper mapper) : Contr
     }
     
     [HttpPut]
-    public IActionResult UpdateColor(ColorDto colorDto)
+    public IActionResult UpdateMake(MakeDto makeDto)
     {
         try
         {
-            var inputColor = mapper.Map<Color>(colorDto);
-            var color = colorService.UpdateColor(inputColor);
-            var outputColor = mapper.Map<ColorDto>(color);
-            return Ok(outputColor);
+            var inputMake = mapper.Map<Make>(makeDto);
+            var make = makeService.UpdateMake(inputMake);
+            var outputMake = mapper.Map<MakeDto>(make);
+            return Ok(outputMake);
         }
         catch (InvalidArgumentException e)
         {
@@ -77,11 +77,11 @@ public class ColorController(IColorService colorService, IMapper mapper) : Contr
     }
     
     [HttpDelete("{id:int}")]
-    public IActionResult DeleteColor(int id)
+    public IActionResult DeleteMake(int id)
     {
         try
         {
-            return Ok(colorService.DeleteColor(id));
+            return Ok(makeService.DeleteMake(id));
         }
         catch (InvalidArgumentException e)
         {

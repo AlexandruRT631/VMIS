@@ -40,4 +40,9 @@ public class CategoryRepository(ListingDbContext context) : ICategoryRepository
     {
         return context.Categories.Any(e => e.Id == id);
     }
+    
+    public bool DoesCategoryExist(string name)
+    {
+        return context.Categories.Any(e => e.Name == name);
+    }
 }
