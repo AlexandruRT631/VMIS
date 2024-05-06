@@ -2,6 +2,7 @@ using System.Text;
 using listing_backend.Constants;
 using listing_backend.DataAccess;
 using listing_backend.Repositories;
+using listing_backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -9,21 +10,18 @@ using Microsoft.OpenApi.Models;
 
 namespace listing_backend;
 
-public class Startup
+public class Startup(IConfiguration configuration)
 {
-    public Startup(IConfiguration configuration)
-    {
-        Configuration = configuration;
-    }
-    
-    public IConfiguration Configuration { get; }
-    
+    private IConfiguration Configuration { get; } = configuration;
+
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddDbContext<ListingDbContext>(options =>
             options.UseMySQL(Configuration.GetConnectionString("ListingDbConnection")!));
         
         services.AddScoped<DbContext>(provider => provider.GetService<ListingDbContext>()!);
+
+        services.AddAutoMapper(typeof(Startup));
 
         services.AddScoped<ICarRepository, CarRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -38,9 +36,8 @@ public class Startup
         services.AddScoped<IModelRepository, ModelRepository>();
         services.AddScoped<ITractionRepository, TractionRepository>();
         services.AddScoped<ITransmissionRepository, TransmissionRepository>();
-        
-        // services.AddScoped<IUserService, UserService>();
-        // services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+        services.AddScoped<IColorService, ColorService>();
         
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>

@@ -40,4 +40,9 @@ public class ColorRepository(ListingDbContext context) : IColorRepository
     {
         return context.Colors.Any(e => e.Id == id);
     }
+    
+    public bool DoesColorExist(string name)
+    {
+        return context.Colors.Any(e => e.Name == name);
+    }
 }

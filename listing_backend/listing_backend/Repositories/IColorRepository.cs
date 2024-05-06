@@ -10,4 +10,5 @@ public interface IColorRepository
     public Color UpdateColor(Color color);
     public bool DeleteColor(Color color);
     public bool DoesColorExist(int id);
+    public bool DoesColorExist(string name);
 }
