@@ -7,12 +7,14 @@ public class DoorTypeRepository(ListingDbContext context) : IDoorTypeRepository
 {
     public List<DoorType> GetAllDoorTypes()
     {
-        return context.DoorTypes.ToList();
+        return context.DoorTypes
+            .ToList();
     }
 
     public DoorType? GetDoorTypeById(int id)
     {
-        return context.DoorTypes.Find(id);
+        return context.DoorTypes
+            .FirstOrDefault(c => c.Id == id);
     }
     
     public DoorType CreateDoorType(DoorType doorType)

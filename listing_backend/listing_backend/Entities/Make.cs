@@ -8,6 +8,6 @@ public class Make
    public int Id { get; set; }
    [MaxLength(100)] 
    public string Name { get; set; } = null!;
-   public List<Model> PossibleModels { get; set; } = [];
-   public List<Engine> PossibleEngines { get; set; } = [];
+   public virtual List<Model> PossibleModels { get; set; } = [];
+   public virtual List<Engine> PossibleEngines { get; set; } = [];
 }

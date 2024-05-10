@@ -7,12 +7,14 @@ public class CategoryRepository(ListingDbContext context) : ICategoryRepository
 {
     public List<Category> GetAllCategories()
     {
-        return context.Categories.ToList();
+        return context.Categories
+            .ToList();
     }
 
     public Category? GetCategoryById(int id)
     {
-        return context.Categories.Find(id);
+        return context.Categories
+            .FirstOrDefault(c => c.Id == id);
     }
 
     public Category CreateCategory(Category category)

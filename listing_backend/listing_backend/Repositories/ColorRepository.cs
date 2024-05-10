@@ -7,12 +7,14 @@ public class ColorRepository(ListingDbContext context) : IColorRepository
 {
     public List<Color> GetAllColors()
     {
-        return context.Colors.ToList();
+        return context.Colors
+            .ToList();
     }
 
     public Color? GetColorById(int id)
     {
-        return context.Colors.Find(id);
+        return context.Colors
+            .FirstOrDefault(c => c.Id == id);
     }
 
     public Color CreateColor(Color color)

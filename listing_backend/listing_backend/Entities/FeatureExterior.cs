@@ -8,5 +8,5 @@ public class FeatureExterior
     public int Id { get; set; }
     [MaxLength(100)]
     public string Name { get; set; } = null!;
-    public List<Listing> Listings { get; set; } = [];
+    public virtual List<Listing> Listings { get; set; } = [];
 }

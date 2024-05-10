@@ -7,12 +7,14 @@ public class FeatureInteriorRepository(ListingDbContext context) : IFeatureInter
 {
     public List<FeatureInterior> GetAllFeaturesInterior()
     {
-        return context.FeaturesInterior.ToList();
+        return context.FeaturesInterior
+            .ToList();
     }
 
     public FeatureInterior? GetFeatureInteriorById(int id)
     {
-        return context.FeaturesInterior.Find(id);
+        return context.FeaturesInterior
+            .FirstOrDefault(e => e.Id == id);
     }
     
     public FeatureInterior CreateFeatureInterior(FeatureInterior featureInterior)

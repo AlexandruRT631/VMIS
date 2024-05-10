@@ -8,6 +8,6 @@ public class DoorType
     public int Id { get; set; }
     [MaxLength(100)]
     public string Name { get; set; } = null!;
-    public List<Car> PossibleCars { get; set; } = [];
-    public List<Listing> Listings { get; set; } = [];
+    public virtual List<Car> PossibleCars { get; set; } = [];
+    public virtual List<Listing> Listings { get; set; } = [];
 }

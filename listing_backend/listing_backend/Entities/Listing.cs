@@ -8,14 +8,14 @@ public class Listing
     public int Id { get; set; }
     public int SellerId { get; set; }
     public int Price { get; set; }
-    public Car Car { get; set; } = null!;
+    public virtual Car Car { get; set; } = null!;
     public int Year { get; set; }
-    public Category Category { get; set; } = null!;
-    public Engine Engine { get; set; } = null!;
-    public DoorType DoorType { get; set; } = null!;
-    public Color InteriorColor { get; set; } = null!;
-    public Color ExteriorColor { get; set; } = null!;
+    public virtual Category Category { get; set; } = null!;
+    public virtual Engine Engine { get; set; } = null!;
+    public virtual DoorType DoorType { get; set; } = null!;
+    public virtual Color InteriorColor { get; set; } = null!;
+    public virtual Color ExteriorColor { get; set; } = null!;
     public int Mileage { get; set; }
-    public List<FeatureExterior> FeaturesExterior { get; set; } = [];
-    public List<FeatureInterior> FeaturesInterior { get; set; } = [];
+    public virtual List<FeatureExterior> FeaturesExterior { get; set; } = [];
+    public virtual List<FeatureInterior> FeaturesInterior { get; set; } = [];
 }

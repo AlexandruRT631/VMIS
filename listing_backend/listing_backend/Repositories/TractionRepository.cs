@@ -7,12 +7,14 @@ public class TractionRepository(ListingDbContext context) : ITractionRepository
 {
     public List<Traction> GetAllTractions()
     {
-        return context.Tractions.ToList();
+        return context.Tractions
+            .ToList();
     }
 
     public Traction? GetTractionById(int id)
     {
-        return context.Tractions.Find(id);
+        return context.Tractions
+            .FirstOrDefault(e => e.Id == id);
     }
     
     public Traction CreateTraction(Traction traction)

@@ -8,6 +8,6 @@ public class Color
     public int Id { get; set; }
     [MaxLength(100)]
     public string Name { get; set; } = null!;
-    public List<Listing> ListingsInterior { get; set; } = [];
-    public List<Listing> ListingsExterior { get; set; } = [];
+    public virtual List<Listing> ListingsInterior { get; set; } = [];
+    public virtual List<Listing> ListingsExterior { get; set; } = [];
 }

@@ -7,12 +7,14 @@ public class FeatureExteriorRepository(ListingDbContext context) : IFeatureExter
 {
     public List<FeatureExterior> GetAllFeaturesExterior()
     {
-        return context.FeaturesExterior.ToList();
+        return context.FeaturesExterior
+            .ToList();
     }
 
     public FeatureExterior? GetFeatureExteriorById(int id)
     {
-        return context.FeaturesExterior.Find(id);
+        return context.FeaturesExterior
+            .FirstOrDefault(e => e.Id == id);
     }
     
     public FeatureExterior CreateFeatureExterior(FeatureExterior featureExterior)

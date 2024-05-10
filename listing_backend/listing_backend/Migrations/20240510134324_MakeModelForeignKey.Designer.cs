@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using listing_backend.DataAccess;
 
@@ -10,9 +11,11 @@ using listing_backend.DataAccess;
 namespace listing_backend.Migrations
 {
     [DbContext(typeof(ListingDbContext))]
-    partial class ListingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240510134324_MakeModelForeignKey")]
+    partial class MakeModelForeignKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,7 +34,7 @@ namespace listing_backend.Migrations
 
                     b.HasIndex("PossibleCategoriesId");
 
-                    b.ToTable("CarCategory", (string)null);
+                    b.ToTable("CarCategory");
                 });
 
             modelBuilder.Entity("CarDoorType", b =>
@@ -46,7 +49,7 @@ namespace listing_backend.Migrations
 
                     b.HasIndex("PossibleDoorTypesId");
 
-                    b.ToTable("CarDoorType", (string)null);
+                    b.ToTable("CarDoorType");
                 });
 
             modelBuilder.Entity("CarEngine", b =>
@@ -61,7 +64,7 @@ namespace listing_backend.Migrations
 
                     b.HasIndex("PossibleEnginesId");
 
-                    b.ToTable("CarEngine", (string)null);
+                    b.ToTable("CarEngine");
                 });
 
             modelBuilder.Entity("CarTraction", b =>
@@ -76,7 +79,7 @@ namespace listing_backend.Migrations
 
                     b.HasIndex("PossibleTractionsId");
 
-                    b.ToTable("CarTraction", (string)null);
+                    b.ToTable("CarTraction");
                 });
 
             modelBuilder.Entity("CarTransmission", b =>
@@ -91,7 +94,7 @@ namespace listing_backend.Migrations
 
                     b.HasIndex("PossibleTransmissionsId");
 
-                    b.ToTable("CarTransmission", (string)null);
+                    b.ToTable("CarTransmission");
                 });
 
             modelBuilder.Entity("FeatureExteriorListing", b =>
@@ -106,7 +109,7 @@ namespace listing_backend.Migrations
 
                     b.HasIndex("ListingsId");
 
-                    b.ToTable("FeatureExteriorListing", (string)null);
+                    b.ToTable("FeatureExteriorListing");
                 });
 
             modelBuilder.Entity("FeatureInteriorListing", b =>
@@ -121,7 +124,7 @@ namespace listing_backend.Migrations
 
                     b.HasIndex("ListingsId");
 
-                    b.ToTable("FeatureInteriorListing", (string)null);
+                    b.ToTable("FeatureInteriorListing");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.Car", b =>
@@ -143,7 +146,7 @@ namespace listing_backend.Migrations
 
                     b.HasIndex("ModelId");
 
-                    b.ToTable("Cars", (string)null);
+                    b.ToTable("Cars");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.Category", b =>
@@ -159,7 +162,7 @@ namespace listing_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.Color", b =>
@@ -175,7 +178,7 @@ namespace listing_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Colors", (string)null);
+                    b.ToTable("Colors");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.DoorType", b =>
@@ -191,7 +194,7 @@ namespace listing_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DoorTypes", (string)null);
+                    b.ToTable("DoorTypes");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.Engine", b =>
@@ -225,7 +228,7 @@ namespace listing_backend.Migrations
 
                     b.HasIndex("MakeId");
 
-                    b.ToTable("Engines", (string)null);
+                    b.ToTable("Engines");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.FeatureExterior", b =>
@@ -241,7 +244,7 @@ namespace listing_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FeaturesExterior", (string)null);
+                    b.ToTable("FeaturesExterior");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.FeatureInterior", b =>
@@ -257,7 +260,7 @@ namespace listing_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FeaturesInterior", (string)null);
+                    b.ToTable("FeaturesInterior");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.Fuel", b =>
@@ -273,7 +276,7 @@ namespace listing_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Fuels", (string)null);
+                    b.ToTable("Fuels");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.Listing", b =>
@@ -326,7 +329,7 @@ namespace listing_backend.Migrations
 
                     b.HasIndex("InteriorColorId");
 
-                    b.ToTable("Listings", (string)null);
+                    b.ToTable("Listings");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.Make", b =>
@@ -342,7 +345,7 @@ namespace listing_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Makes", (string)null);
+                    b.ToTable("Makes");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.Model", b =>
@@ -362,7 +365,7 @@ namespace listing_backend.Migrations
 
                     b.HasIndex("MakeId");
 
-                    b.ToTable("Models", (string)null);
+                    b.ToTable("Models");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.Traction", b =>
@@ -378,7 +381,7 @@ namespace listing_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tractions", (string)null);
+                    b.ToTable("Tractions");
                 });
 
             modelBuilder.Entity("listing_backend.Entities.Transmission", b =>
@@ -394,7 +397,7 @@ namespace listing_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Transmissions", (string)null);
+                    b.ToTable("Transmissions");
                 });
 
             modelBuilder.Entity("CarCategory", b =>

@@ -26,5 +26,7 @@ public class MappingProfile : Profile
             .ReverseMap();
         CreateMap<Transmission, TransmissionDto>()
             .ReverseMap();
+        CreateMap<Model, ModelDto>()
+            .ReverseMap();
     }
 }

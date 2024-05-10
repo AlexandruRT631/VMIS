@@ -6,8 +6,8 @@ public class Model
 {
     [Key]
     public int Id { get; set; }
-    public Make Make { get; set; } = null!;
+    public virtual Make? Make { get; set; }
     [MaxLength(100)]
-    public string Name { get; set; } = null!;
-    public List<Car> PossibleCars { get; set; } = [];
+    public string? Name { get; set; }
+    public virtual List<Car> PossibleCars { get; set; } = [];
 }

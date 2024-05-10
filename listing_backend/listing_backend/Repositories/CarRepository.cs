@@ -7,12 +7,14 @@ public class CarRepository(ListingDbContext context) : ICarRepository
 {
     public List<Car> GetAllCars()
     {
-        return context.Cars.ToList();
+        return context.Cars
+            .ToList();
     }
 
     public Car? GetCarById(int id)
     {
-        return context.Cars.Find(id);
+        return context.Cars
+            .FirstOrDefault(c => c.Id == id);
     }
 
     public Car CreateCar(Car car)

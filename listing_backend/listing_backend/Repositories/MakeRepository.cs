@@ -1,5 +1,6 @@
 using listing_backend.DataAccess;
 using listing_backend.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace listing_backend.Repositories;
 
@@ -7,12 +8,14 @@ public class MakeRepository(ListingDbContext context) : IMakeRepository
 {
     public List<Make> GetAllMakes()
     {
-        return context.Makes.ToList();
+        return context.Makes
+            .ToList();
     }
 
     public Make? GetMakeById(int id)
     {
-        return context.Makes.Find(id);
+        return context.Makes
+            .FirstOrDefault(m => m.Id == id);
     }
     
     public Make CreateMake(Make make)

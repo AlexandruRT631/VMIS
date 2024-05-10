@@ -1,14 +1,12 @@
 using listing_backend.Entities;
 
-namespace listing_backend.Repositories;
+namespace listing_backend.Services;
 
-public interface IModelRepository
+public interface IModelService
 {
     public List<Model> GetAllModels();
     public Model? GetModelById(int id);
     public Model CreateModel(Model model);
     public Model UpdateModel(Model model);
-    public bool DeleteModel(Model model);
-    public bool DoesModelExist(int id);
-    public bool DoesModelExist(string name);
+    public bool DeleteModel(int id);
 }

@@ -8,5 +8,5 @@ public class Fuel
     public int Id { get; set; }
     [MaxLength(100)]
     public string Name { get; set; } = null!;
-    public List<Engine> PossibleEngines { get; set; } = [];
+    public virtual List<Engine> PossibleEngines { get; set; } = [];
 }

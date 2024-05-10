@@ -7,12 +7,14 @@ public class ListingRepository(ListingDbContext context) : IListingRepository
 {
     public List<Listing> GetAllListings()
     {
-        return context.Listings.ToList();
+        return context.Listings
+            .ToList();
     }
 
     public Listing? GetListingById(int id)
     {
-        return context.Listings.Find(id);
+        return context.Listings
+            .FirstOrDefault(e => e.Id == id);
     }
     
     public Listing CreateListing(Listing listing)

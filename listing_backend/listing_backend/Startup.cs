@@ -17,7 +17,8 @@ public class Startup(IConfiguration configuration)
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddDbContext<ListingDbContext>(options =>
-            options.UseMySQL(Configuration.GetConnectionString("ListingDbConnection")!));
+            options.UseLazyLoadingProxies()
+                .UseMySQL(Configuration.GetConnectionString("ListingDbConnection")!));
         
         services.AddScoped<DbContext>(provider => provider.GetService<ListingDbContext>()!);
 
@@ -44,6 +45,7 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<IFeatureInteriorService, FeatureInteriorService>();
         services.AddScoped<IFuelService, FuelService>();
         services.AddScoped<IMakeService, MakeService>();
+        services.AddScoped<IModelService, ModelService>();
         services.AddScoped<ITractionService, TractionService>();
         services.AddScoped<ITransmissionService, TransmissionService>();
         

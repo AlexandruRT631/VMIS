@@ -1,5 +1,6 @@
 using listing_backend.DataAccess;
 using listing_backend.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace listing_backend.Repositories;
 
@@ -7,12 +8,14 @@ public class ModelRepository(ListingDbContext context) : IModelRepository
 {
     public List<Model> GetAllModels()
     {
-        return context.Models.ToList();
+        return context.Models
+            .ToList();
     }
 
     public Model? GetModelById(int id)
     {
-        return context.Models.Find(id);
+        return context.Models
+            .FirstOrDefault(m => m.Id == id);
     }
     
     public Model CreateModel(Model model)
@@ -39,5 +42,10 @@ public class ModelRepository(ListingDbContext context) : IModelRepository
     public bool DoesModelExist(int id)
     {
         return context.Models.Any(e => e.Id == id);
+    }
+    
+    public bool DoesModelExist(string name)
+    {
+        return context.Models.Any(e => e.Name == name);
     }
 }

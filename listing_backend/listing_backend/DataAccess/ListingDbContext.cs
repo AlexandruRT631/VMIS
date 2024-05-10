@@ -30,5 +30,9 @@ public class ListingDbContext(DbContextOptions options) : DbContext(options)
         modelBuilder.Entity<Listing>()
             .HasOne(m => m.ExteriorColor)
             .WithMany(m => m.ListingsExterior);
+
+        modelBuilder.Entity<Make>()
+            .HasMany(m => m.PossibleModels)
+            .WithOne(m => m.Make);
     }
 }

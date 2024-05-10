@@ -7,12 +7,14 @@ public class EngineRepository(ListingDbContext context) : IEngineRepository
 {
     public List<Engine> GetAllEngines()
     {
-        return context.Engines.ToList();
+        return context.Engines
+            .ToList();
     }
 
     public Engine? GetEngineById(int id)
     {
-        return context.Engines.Find(id);
+        return context.Engines
+            .FirstOrDefault(e => e.Id == id);
     }
     
     public Engine CreateEngine(Engine engine)

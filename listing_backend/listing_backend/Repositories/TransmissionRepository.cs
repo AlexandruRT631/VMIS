@@ -7,12 +7,14 @@ public class TransmissionRepository(ListingDbContext context) : ITransmissionRep
 {
     public List<Transmission> GetAllTransmissions()
     {
-        return context.Transmissions.ToList();
+        return context.Transmissions
+            .ToList();
     }
     
     public Transmission? GetTransmissionById(int id)
     {
-        return context.Transmissions.Find(id);
+        return context.Transmissions
+            .FirstOrDefault(e => e.Id == id);
     }
 
     public Transmission CreateTransmission(Transmission transmission)

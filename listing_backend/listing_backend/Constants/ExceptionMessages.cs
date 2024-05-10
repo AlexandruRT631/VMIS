@@ -33,4 +33,8 @@ public static class ExceptionMessages
     public const string TransmissionNotFound = "Transmission not found";
     public const string InvalidTransmission = "Invalid transmission";
     public const string TransmissionAlreadyExists = "Transmission already exists";
+    public const string ModelNotFound = "Model not found";
+    public const string InvalidModel = "Invalid model";
+    public const string ModelAlreadyExists = "Model already exists";
+    public const string MakeNameConflict = "Name in the make database for this id differs";
 }

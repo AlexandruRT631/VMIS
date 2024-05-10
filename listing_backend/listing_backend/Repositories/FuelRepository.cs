@@ -7,12 +7,14 @@ public class FuelRepository(ListingDbContext context) : IFuelRepository
 {
     public List<Fuel> GetAllFuels()
     {
-        return context.Fuels.ToList();
+        return context.Fuels
+            .ToList();
     }
 
     public Fuel? GetFuelById(int id)
     {
-        return context.Fuels.Find(id);
+        return context.Fuels
+            .FirstOrDefault(e => e.Id == id);
     }
     
     public Fuel CreateFuel(Fuel fuel)
