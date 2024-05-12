@@ -14,7 +14,7 @@ public class ColorService(IColorRepository colorRepository) : IColorService
 
     public Color? GetColorById(int id)
     {
-        if (id < 0)
+        if (id <= 0)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidId);
         }

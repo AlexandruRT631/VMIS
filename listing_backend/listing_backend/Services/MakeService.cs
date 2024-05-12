@@ -14,7 +14,7 @@ public class MakeService(IMakeRepository makeRepository) : IMakeService
 
     public Make? GetMakeById(int id)
     {
-        if (id < 0)
+        if (id <= 0)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidId);
         }

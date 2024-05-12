@@ -9,4 +9,5 @@ public class Transmission
     [MaxLength(100)]
     public string Name { get; set; } = null!;
     public virtual List<Car> PossibleCars { get; set; } = [];
+    public virtual List<Listing> Listings { get; set; } = [];
 }

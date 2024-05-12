@@ -42,4 +42,9 @@ public class EngineRepository(ListingDbContext context) : IEngineRepository
     {
         return context.Engines.Any(e => e.Id == id);
     }
+    
+    public bool DoesEngineExist(string engineCode)
+    {
+        return context.Engines.Any(e => e.EngineCode == engineCode);
+    }
 }

@@ -14,7 +14,7 @@ public class FeatureExteriorService(IFeatureExteriorRepository featureExteriorRe
 
     public FeatureExterior? GetFeatureExteriorById(int id)
     {
-        if (id < 0)
+        if (id <= 0)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidId);
         }

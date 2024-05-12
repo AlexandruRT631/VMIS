@@ -14,7 +14,7 @@ public class FuelService(IFuelRepository fuelRepository) : IFuelService
 
     public Fuel? GetFuelById(int id)
     {
-        if (id < 0)
+        if (id <= 0)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidId);
         }

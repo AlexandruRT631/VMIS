@@ -22,6 +22,66 @@ public class ListingDbContext(DbContextOptions options) : DbContext(options)
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        
+        modelBuilder.Entity<Model>()
+            .HasOne(m => m.Make)
+            .WithMany(m => m.PossibleModels);
+
+        modelBuilder.Entity<Engine>()
+            .HasOne(m => m.Make)
+            .WithMany(m => m.PossibleEngines);
+
+        modelBuilder.Entity<Engine>()
+            .HasOne(m => m.Fuel)
+            .WithMany(m => m.PossibleEngines);
+
+        modelBuilder.Entity<Car>()
+            .HasOne(m => m.Model)
+            .WithMany(m => m.PossibleCars);
+
+        modelBuilder.Entity<Car>()
+            .HasMany(m => m.PossibleCategories)
+            .WithMany(m => m.PossibleCars);
+        
+        modelBuilder.Entity<Car>()
+            .HasMany(m => m.PossibleDoorTypes)
+            .WithMany(m => m.PossibleCars);
+        
+        modelBuilder.Entity<Car>()
+            .HasMany(m => m.PossibleTransmissions)
+            .WithMany(m => m.PossibleCars);
+        
+        modelBuilder.Entity<Car>()
+            .HasMany(m => m.PossibleTractions)
+            .WithMany(m => m.PossibleCars);
+        
+        modelBuilder.Entity<Car>()
+            .HasMany(m => m.PossibleEngines)
+            .WithMany(m => m.PossibleCars);
+
+        modelBuilder.Entity<Listing>()
+            .HasOne(m => m.Car)
+            .WithMany(m => m.Listings);
+
+        modelBuilder.Entity<Listing>()
+            .HasOne(m => m.Category)
+            .WithMany(m => m.Listings);
+
+        modelBuilder.Entity<Listing>()
+            .HasOne(m => m.Engine)
+            .WithMany(m => m.Listings);
+
+        modelBuilder.Entity<Listing>()
+            .HasOne(m => m.DoorType)
+            .WithMany(m => m.Listings);
+
+        modelBuilder.Entity<Listing>()
+            .HasOne(m => m.Transmission)
+            .WithMany(m => m.Listings);
+
+        modelBuilder.Entity<Listing>()
+            .HasOne(m => m.Traction)
+            .WithMany(m => m.Listings);
 
         modelBuilder.Entity<Listing>()
             .HasOne(m => m.InteriorColor)
@@ -31,8 +91,12 @@ public class ListingDbContext(DbContextOptions options) : DbContext(options)
             .HasOne(m => m.ExteriorColor)
             .WithMany(m => m.ListingsExterior);
 
-        modelBuilder.Entity<Make>()
-            .HasMany(m => m.PossibleModels)
-            .WithOne(m => m.Make);
+        modelBuilder.Entity<Listing>()
+            .HasMany(m => m.FeaturesExterior)
+            .WithMany(m => m.Listings);
+
+        modelBuilder.Entity<Listing>()
+            .HasMany(m => m.FeaturesInterior)
+            .WithMany(m => m.Listings);
     }
 }

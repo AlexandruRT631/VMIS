@@ -14,7 +14,7 @@ public class FeatureInteriorService(IFeatureInteriorRepository featureInteriorRe
 
     public FeatureInterior? GetFeatureInteriorById(int id)
     {
-        if (id < 0)
+        if (id <= 0)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidId);
         }

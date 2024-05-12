@@ -14,7 +14,7 @@ public class DoorTypeService(IDoorTypeRepository doorTypeRepository) : IDoorType
 
     public DoorType? GetDoorTypeById(int id)
     {
-        if (id < 0)
+        if (id <= 0)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidId);
         }

@@ -14,7 +14,7 @@ public class TransmissionService(ITransmissionRepository transmissionRepository)
 
     public Transmission? GetTransmissionById(int id)
     {
-        if (id < 0)
+        if (id <= 0)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidId);
         }

@@ -14,7 +14,7 @@ public class TractionService(ITractionRepository tractionRepository) : ITraction
 
     public Traction? GetTractionById(int id)
     {
-        if (id < 0)
+        if (id <= 0)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidId);
         }

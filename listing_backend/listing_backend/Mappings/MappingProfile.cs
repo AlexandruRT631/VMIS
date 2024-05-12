@@ -28,5 +28,11 @@ public class MappingProfile : Profile
             .ReverseMap();
         CreateMap<Model, ModelDto>()
             .ReverseMap();
+        CreateMap<Engine, EngineDto>()
+            .ReverseMap();
+        CreateMap<Car, CarDto>()
+            .ReverseMap();
+        CreateMap<Listing, ListingDto>()
+            .ReverseMap();
     }
 }

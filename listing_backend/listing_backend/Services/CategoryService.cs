@@ -14,7 +14,7 @@ public class CategoryService(ICategoryRepository categoryRepository) : ICategory
 
     public Category? GetCategoryById(int id)
     {
-        if (id < 0)
+        if (id <= 0)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidId);
         }

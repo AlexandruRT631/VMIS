@@ -38,12 +38,15 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<ITractionRepository, TractionRepository>();
         services.AddScoped<ITransmissionRepository, TransmissionRepository>();
 
+        services.AddScoped<ICarService, CarService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IColorService, ColorService>();
         services.AddScoped<IDoorTypeService, DoorTypeService>();
+        services.AddScoped<IEngineService, EngineService>();
         services.AddScoped<IFeatureExteriorService, FeatureExteriorService>();
         services.AddScoped<IFeatureInteriorService, FeatureInteriorService>();
         services.AddScoped<IFuelService, FuelService>();
+        services.AddScoped<IListingService, ListingService>();
         services.AddScoped<IMakeService, MakeService>();
         services.AddScoped<IModelService, ModelService>();
         services.AddScoped<ITractionService, TractionService>();

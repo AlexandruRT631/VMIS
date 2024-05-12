@@ -14,7 +14,7 @@ public class ModelService(IModelRepository modelRepository, IMakeRepository make
 
     public Model? GetModelById(int id)
     {
-        if (id < 0)
+        if (id <= 0)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidId);
         }
@@ -61,7 +61,7 @@ public class ModelService(IModelRepository modelRepository, IMakeRepository make
             throw new ObjectNotFoundException(ExceptionMessages.MakeNotFound);
         }
         var make = makeRepository.GetMakeById(model.Make.Id);
-        if (model.Make.Name != null && model.Make.Name != make!.Name)
+        if (!string.IsNullOrWhiteSpace(model.Make.Name) && model.Make.Name != make!.Name)
         {
             throw new InvalidArgumentException(ExceptionMessages.MakeNameConflict);
         }
@@ -101,7 +101,7 @@ public class ModelService(IModelRepository modelRepository, IMakeRepository make
                 throw new ObjectNotFoundException(ExceptionMessages.MakeNotFound);
             }
             var make = makeRepository.GetMakeById(model.Make.Id);
-            if (model.Make.Name != null && model.Make.Name != make!.Name)
+            if (!string.IsNullOrWhiteSpace(model.Make.Name) && model.Make.Name != make!.Name)
             {
                 throw new InvalidArgumentException(ExceptionMessages.MakeNameConflict);
             }
