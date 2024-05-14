@@ -70,7 +70,7 @@ public class ListingService(
         }
         if (listing.Car == null)
         {
-            throw new InvalidArgumentException(ExceptionMessages.InvalidCar);
+            throw new InvalidArgumentException(ExceptionMessages.RequiredCar);
         }
         if (listing.Car.Id <= 0)
         {
@@ -87,7 +87,7 @@ public class ListingService(
         }
         if (listing.Category == null)
         {
-            throw new InvalidArgumentException(ExceptionMessages.InvalidCategory);
+            throw new InvalidArgumentException(ExceptionMessages.RequiredCategory);
         }
         if (listing.Category.Id <= 0)
         {
@@ -102,9 +102,13 @@ public class ListingService(
         {
             throw new InvalidArgumentException(ExceptionMessages.CategoryNameConflict);
         }
+        if (!car.PossibleCategories!.Contains(category!))
+        {
+            throw new InvalidArgumentException(ExceptionMessages.CategoryNotPossible);
+        }
         if (listing.Engine == null)
         {
-            throw new InvalidArgumentException(ExceptionMessages.InvalidEngine);
+            throw new InvalidArgumentException(ExceptionMessages.RequiredEngine);
         }
         if (listing.Engine.Id <= 0)
         {
@@ -121,7 +125,7 @@ public class ListingService(
         }
         if (listing.DoorType == null)
         {
-            throw new InvalidArgumentException(ExceptionMessages.InvalidDoorType);
+            throw new InvalidArgumentException(ExceptionMessages.RequiredDoorType);
         }
         if (listing.DoorType.Id <= 0)
         {
@@ -136,9 +140,13 @@ public class ListingService(
         {
             throw new InvalidArgumentException(ExceptionMessages.DoorTypeNameConflict);
         }
+        if (!car.PossibleDoorTypes!.Contains(doorType!))
+        {
+            throw new InvalidArgumentException(ExceptionMessages.DoorTypeNotPossible);
+        }
         if (listing.Transmission == null)
         {
-            throw new InvalidArgumentException(ExceptionMessages.InvalidTransmission);
+            throw new InvalidArgumentException(ExceptionMessages.RequiredTransmission);
         }
         if (listing.Transmission.Id <= 0)
         {
@@ -155,7 +163,7 @@ public class ListingService(
         }
         if (listing.Traction == null)
         {
-            throw new InvalidArgumentException(ExceptionMessages.InvalidTraction);
+            throw new InvalidArgumentException(ExceptionMessages.RequiredTraction);
         }
         if (listing.Traction.Id <= 0)
         {
@@ -172,7 +180,7 @@ public class ListingService(
         }
         if (listing.InteriorColor == null)
         {
-            throw new InvalidArgumentException(ExceptionMessages.InvalidInteriorColor);
+            throw new InvalidArgumentException(ExceptionMessages.RequiredInteriorColor);
         }
         if (listing.InteriorColor.Id <= 0)
         {
@@ -189,7 +197,7 @@ public class ListingService(
         }
         if (listing.ExteriorColor == null)
         {
-            throw new InvalidArgumentException(ExceptionMessages.InvalidExteriorColor);
+            throw new InvalidArgumentException(ExceptionMessages.RequiredExteriorColor);
         }
         if (listing.ExteriorColor.Id <= 0)
         {
@@ -213,7 +221,7 @@ public class ListingService(
         {
             if (featureExterior.Id <= 0)
             {
-                throw new InvalidArgumentException(ExceptionMessages.InvalidFeatureExterior);
+                throw new InvalidArgumentException(ExceptionMessages.InvalidFeatureExterior + " ID: " + featureExterior.Id);
             }
             if (!featureExteriorRepository.DoesFeatureExteriorExist(featureExterior.Id))
             {
@@ -222,7 +230,7 @@ public class ListingService(
             var featureExteriorEntity = featureExteriorRepository.GetFeatureExteriorById(featureExterior.Id);
             if (!string.IsNullOrWhiteSpace(featureExterior.Name) && featureExterior.Name != featureExteriorEntity!.Name)
             {
-                throw new InvalidArgumentException(ExceptionMessages.FeatureExteriorAlreadyExists);
+                throw new InvalidArgumentException(ExceptionMessages.FeatureExteriorNameConflict);
             }
             if (!featuresExterior.Contains(featureExteriorEntity!))
             {
@@ -238,7 +246,7 @@ public class ListingService(
         {
             if (featureInterior.Id <= 0)
             {
-                throw new InvalidArgumentException(ExceptionMessages.InvalidFeatureInterior);
+                throw new InvalidArgumentException(ExceptionMessages.InvalidFeatureInterior + " ID: " + featureInterior.Id);
             }
             if (!featureInteriorRepository.DoesFeatureInteriorExist(featureInterior.Id))
             {
@@ -247,7 +255,7 @@ public class ListingService(
             var featureInteriorEntity = featureInteriorRepository.GetFeatureInteriorById(featureInterior.Id);
             if (!string.IsNullOrWhiteSpace(featureInterior.Name) && featureInterior.Name != featureInteriorEntity!.Name)
             {
-                throw new InvalidArgumentException(ExceptionMessages.FeatureInteriorAlreadyExists);
+                throw new InvalidArgumentException(ExceptionMessages.FeatureInteriorNameConflict);
             }
             if (!featuresInterior.Contains(featureInteriorEntity!))
             {
@@ -261,6 +269,8 @@ public class ListingService(
         listing.DoorType = doorType;
         listing.InteriorColor = interiorColor;
         listing.ExteriorColor = exteriorColor;
+        listing.Transmission = transmission;
+        listing.Traction = traction;
         listing.FeaturesExterior = featuresExterior;
         listing.FeaturesInterior = featuresInterior;
         return listingRepository.CreateListing(listing);
@@ -334,6 +344,10 @@ public class ListingService(
             {
                 throw new InvalidArgumentException(ExceptionMessages.CategoryNameConflict);
             }
+            if (!existingListing!.Car!.PossibleCategories!.Contains(category!))
+            {
+                throw new InvalidArgumentException(ExceptionMessages.CategoryNotPossible);
+            }
             existingListing!.Category = category;
         }
         if (listing.Engine != null)
@@ -367,6 +381,10 @@ public class ListingService(
             if (!string.IsNullOrWhiteSpace(listing.DoorType.Name) && listing.DoorType.Name != doorType!.Name)
             {
                 throw new InvalidArgumentException(ExceptionMessages.DoorTypeNameConflict);
+            }
+            if (!existingListing!.Car!.PossibleDoorTypes!.Contains(doorType!))
+            {
+                throw new InvalidArgumentException(ExceptionMessages.DoorTypeNotPossible);
             }
             existingListing!.DoorType = doorType;
         }
@@ -446,7 +464,7 @@ public class ListingService(
             {
                 if (featureExterior.Id <= 0)
                 {
-                    throw new InvalidArgumentException(ExceptionMessages.InvalidFeatureExterior);
+                    throw new InvalidArgumentException(ExceptionMessages.InvalidFeatureExterior + " ID: " + featureExterior.Id);
                 }
                 if (!featureExteriorRepository.DoesFeatureExteriorExist(featureExterior.Id))
                 {
@@ -455,7 +473,7 @@ public class ListingService(
                 var featureExteriorEntity = featureExteriorRepository.GetFeatureExteriorById(featureExterior.Id);
                 if (!string.IsNullOrWhiteSpace(featureExterior.Name) && featureExterior.Name != featureExteriorEntity!.Name)
                 {
-                    throw new InvalidArgumentException(ExceptionMessages.FeatureExteriorAlreadyExists);
+                    throw new InvalidArgumentException(ExceptionMessages.FeatureExteriorNameConflict);
                 }
                 if (!featuresExterior.Contains(featureExteriorEntity!))
                 {
@@ -471,7 +489,7 @@ public class ListingService(
             {
                 if (featureInterior.Id <= 0)
                 {
-                    throw new InvalidArgumentException(ExceptionMessages.InvalidFeatureInterior);
+                    throw new InvalidArgumentException(ExceptionMessages.InvalidFeatureInterior + " ID: " + featureInterior.Id);
                 }
                 if (!featureInteriorRepository.DoesFeatureInteriorExist(featureInterior.Id))
                 {
@@ -480,7 +498,7 @@ public class ListingService(
                 var featureInteriorEntity = featureInteriorRepository.GetFeatureInteriorById(featureInterior.Id);
                 if (!string.IsNullOrWhiteSpace(featureInterior.Name) && featureInterior.Name != featureInteriorEntity!.Name)
                 {
-                    throw new InvalidArgumentException(ExceptionMessages.FeatureInteriorAlreadyExists);
+                    throw new InvalidArgumentException(ExceptionMessages.FeatureInteriorNameConflict);
                 }
                 if (!featuresInterior.Contains(featureInteriorEntity!))
                 {
@@ -489,8 +507,6 @@ public class ListingService(
             }
             existingListing!.FeaturesInterior = featuresInterior;
         }
-        
-        //TODO: Checking if categories and things like that are in the possiblecategories list
 
         return listingRepository.UpdateListing(existingListing!);
     }

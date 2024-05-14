@@ -74,6 +74,10 @@ public class TransmissionController(ITransmissionService transmissionService, IM
         {
             return NotFound(e.Message);
         }
+        catch (ObjectAlreadyExistsException e)
+        {
+            return Conflict(e.Message);
+        }
     }
 
     [HttpDelete("{id:int}")]

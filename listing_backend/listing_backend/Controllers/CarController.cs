@@ -54,6 +54,10 @@ public class CarController(ICarService carService, IMapper mapper) : ControllerB
         {
             return Conflict(e.Message);
         }
+        catch (ObjectNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
     }
     
     [HttpPut]

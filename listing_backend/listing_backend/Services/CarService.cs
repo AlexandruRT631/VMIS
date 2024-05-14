@@ -58,11 +58,11 @@ public class CarService(
         }
         if (car.Model == null)
         {
-            throw new InvalidArgumentException(ExceptionMessages.InvalidModel);
+            throw new InvalidArgumentException(ExceptionMessages.RequiredModel);
         }
         if (car.Model.Id <= 0)
         {
-            throw new InvalidArgumentException(ExceptionMessages.InvalidId);
+            throw new InvalidArgumentException(ExceptionMessages.InvalidModel);
         }
         if (!modelRepository.DoesModelExist(car.Model.Id))
         {
@@ -84,7 +84,7 @@ public class CarService(
         {
             if (possibleCategory.Id <= 0)
             {
-                throw new InvalidArgumentException(ExceptionMessages.InvalidId + " ID: " + possibleCategory.Id);
+                throw new InvalidArgumentException(ExceptionMessages.InvalidCategory + " ID: " + possibleCategory.Id);
             }
             if (!categoryRepository.DoesCategoryExist(possibleCategory.Id))
             {
@@ -111,7 +111,7 @@ public class CarService(
         {
             if (possibleDoorType.Id <= 0)
             {
-                throw new InvalidArgumentException(ExceptionMessages.InvalidId + " ID: " + possibleDoorType.Id);
+                throw new InvalidArgumentException(ExceptionMessages.InvalidDoorType + " ID: " + possibleDoorType.Id);
             }
             if (!doorTypeRepository.DoesDoorTypeExist(possibleDoorType.Id))
             {
@@ -138,7 +138,7 @@ public class CarService(
         {
             if (possibleTransmission.Id <= 0)
             {
-                throw new InvalidArgumentException(ExceptionMessages.InvalidId + " ID: " + possibleTransmission.Id);
+                throw new InvalidArgumentException(ExceptionMessages.InvalidTransmission + " ID: " + possibleTransmission.Id);
             }
             if (!transmissionRepository.DoesTransmissionExist(possibleTransmission.Id))
             {
@@ -166,7 +166,7 @@ public class CarService(
         {
             if (possibleTraction.Id <= 0)
             {
-                throw new InvalidArgumentException(ExceptionMessages.InvalidId + " ID: " + possibleTraction.Id);
+                throw new InvalidArgumentException(ExceptionMessages.InvalidTraction + " ID: " + possibleTraction.Id);
             }
             if (!tractionRepository.DoesTractionExist(possibleTraction.Id))
             {
@@ -193,7 +193,7 @@ public class CarService(
         {
             if (possibleEngine.Id <= 0)
             {
-                throw new InvalidArgumentException(ExceptionMessages.InvalidId + " ID: " + possibleEngine.Id);
+                throw new InvalidArgumentException(ExceptionMessages.InvalidEngine + " ID: " + possibleEngine.Id);
             }
             if (!engineRepository.DoesEngineExist(possibleEngine.Id))
             {
@@ -250,7 +250,7 @@ public class CarService(
         {
             if (car.Model.Id <= 0)
             {
-                throw new InvalidArgumentException(ExceptionMessages.InvalidId);
+                throw new InvalidArgumentException(ExceptionMessages.InvalidModel);
             }
             if (!modelRepository.DoesModelExist(car.Model.Id))
             {
@@ -270,7 +270,7 @@ public class CarService(
             {
                 if (possibleCategory.Id <= 0)
                 {
-                    throw new InvalidArgumentException(ExceptionMessages.InvalidId + " ID: " + possibleCategory.Id);
+                    throw new InvalidArgumentException(ExceptionMessages.InvalidCategory + " ID: " + possibleCategory.Id);
                 }
                 if (!categoryRepository.DoesCategoryExist(possibleCategory.Id))
                 {
@@ -295,7 +295,7 @@ public class CarService(
             {
                 if (possibleDoorType.Id <= 0)
                 {
-                    throw new InvalidArgumentException(ExceptionMessages.InvalidId + " ID: " + possibleDoorType.Id);
+                    throw new InvalidArgumentException(ExceptionMessages.InvalidDoorType + " ID: " + possibleDoorType.Id);
                 }
                 if (!doorTypeRepository.DoesDoorTypeExist(possibleDoorType.Id))
                 {
@@ -320,7 +320,7 @@ public class CarService(
             {
                 if (possibleTransmission.Id <= 0)
                 {
-                    throw new InvalidArgumentException(ExceptionMessages.InvalidId + " ID: " + possibleTransmission.Id);
+                    throw new InvalidArgumentException(ExceptionMessages.InvalidTransmission + " ID: " + possibleTransmission.Id);
                 }
                 if (!transmissionRepository.DoesTransmissionExist(possibleTransmission.Id))
                 {
@@ -346,7 +346,7 @@ public class CarService(
             {
                 if (possibleTraction.Id <= 0)
                 {
-                    throw new InvalidArgumentException(ExceptionMessages.InvalidId + " ID: " + possibleTraction.Id);
+                    throw new InvalidArgumentException(ExceptionMessages.InvalidTraction + " ID: " + possibleTraction.Id);
                 }
                 if (!tractionRepository.DoesTractionExist(possibleTraction.Id))
                 {
@@ -371,7 +371,7 @@ public class CarService(
             {
                 if (possibleEngine.Id <= 0)
                 {
-                    throw new InvalidArgumentException(ExceptionMessages.InvalidId + " ID: " + possibleEngine.Id);
+                    throw new InvalidArgumentException(ExceptionMessages.InvalidEngine + " ID: " + possibleEngine.Id);
                 }
                 if (!engineRepository.DoesEngineExist(possibleEngine.Id))
                 {

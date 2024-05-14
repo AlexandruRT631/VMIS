@@ -74,6 +74,21 @@ public static class ExceptionMessages
     public const string InteriorColorNotFound = "Interior color not found.";
     public const string InvalidExteriorColor = "Invalid exterior color.";
     public const string ExteriorColorNotFound = "Exterior color not found.";
-    public const string RequiredFeaturesExterior = "Feature exteriors are required.";
-    public const string RequiredFeaturesInterior = "Feature interiors are required.";
+    public const string RequiredFeaturesExterior = "Features exterior are required.";
+    public const string RequiredFeaturesInterior = "Features interior are required.";
+    public const string CategoryNotPossible = "Category is not possible for this car.";
+    public const string DoorTypeNotPossible = "Door type is not possible for this car.";
+    public const string RequiredModel = "Model is required.";
+    public const string RequiredMake = "Make is required.";
+    public const string RequiredFuel = "Fuel is required.";
+    public const string RequiredCar = "Car is required.";
+    public const string RequiredCategory = "Category is required.";
+    public const string RequiredEngine = "Engine is required.";
+    public const string RequiredDoorType = "Door type is required.";
+    public const string RequiredTransmission = "Transmission is required.";
+    public const string RequiredTraction = "Traction is required.";
+    public const string RequiredInteriorColor = "Interior color is required.";
+    public const string RequiredExteriorColor = "Exterior color is required.";
+    public const string FeatureExteriorNameConflict = "Name in the feature exterior database for this id differs.";
+    public const string FeatureInteriorNameConflict = "Name in the feature interior database for this id differs.";
 }

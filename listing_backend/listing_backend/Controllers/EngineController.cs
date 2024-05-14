@@ -74,6 +74,10 @@ public class EngineController(IEngineService engineService, IMapper mapper) : Co
         {
             return NotFound(e.Message);
         }
+        catch (ObjectAlreadyExistsException e)
+        {
+            return Conflict(e.Message);
+        }
     }
     
     [HttpDelete("{id:int}")]

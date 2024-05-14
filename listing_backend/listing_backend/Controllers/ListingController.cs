@@ -50,6 +50,10 @@ public class ListingController(IListingService listingService, IMapper mapper) :
         {
             return BadRequest(e.Message);
         }
+        catch (ObjectNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
         catch (ObjectAlreadyExistsException e)
         {
             return Conflict(e.Message);

@@ -15,6 +15,6 @@ public class ListingDto
     public TractionDto? Traction { get; set; }
     public ColorDto? InteriorColor { get; set; }
     public ColorDto? ExteriorColor { get; set; }
-    public List<FeatureExteriorDto>? ExteriorFeatures { get; set; } = [];
-    public List<FeatureInteriorDto>? InteriorFeatures { get; set; } = [];
+    public List<FeatureExteriorDto>? FeaturesExterior { get; set; } = [];
+    public List<FeatureInteriorDto>? FeaturesInterior { get; set; } = [];
 }

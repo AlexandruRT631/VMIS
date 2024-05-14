@@ -50,7 +50,7 @@ public class ModelService(IModelRepository modelRepository, IMakeRepository make
         }
         if (model.Make == null)
         {
-            throw new InvalidArgumentException(ExceptionMessages.InvalidMake);
+            throw new InvalidArgumentException(ExceptionMessages.RequiredMake);
         }
         if (model.Make.Id <= 0)
         {
@@ -84,10 +84,13 @@ public class ModelService(IModelRepository modelRepository, IMakeRepository make
         {
             throw new ObjectNotFoundException(ExceptionMessages.ModelNotFound);
         }
-        
         var existingModel = modelRepository.GetModelById(model.Id);
         if (!string.IsNullOrWhiteSpace(model.Name))
         {
+            if (modelRepository.DoesModelExist(model.Name))
+            {
+                throw new ObjectAlreadyExistsException(ExceptionMessages.ModelAlreadyExists);
+            }
             existingModel!.Name = model.Name;
         }
         if (model.Make != null)

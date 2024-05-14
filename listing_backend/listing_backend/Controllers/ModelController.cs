@@ -54,6 +54,10 @@ public class ModelController(IModelService modelService, IMapper mapper) : Contr
         {
             return Conflict(e.Message);
         }
+        catch (ObjectNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
     }
     
     [HttpPut]
@@ -73,6 +77,10 @@ public class ModelController(IModelService modelService, IMapper mapper) : Contr
         catch (ObjectNotFoundException e)
         {
             return NotFound(e.Message);
+        }
+        catch (ObjectAlreadyExistsException e)
+        {
+            return Conflict(e.Message);
         }
     }
     

@@ -74,6 +74,10 @@ public class FuelController(IFuelService fuelService, IMapper mapper) : Controll
         {
             return NotFound(e.Message);
         }
+        catch (ObjectAlreadyExistsException e)
+        {
+            return Conflict(e.Message);
+        }
     }
     
     [HttpDelete("{id:int}")]

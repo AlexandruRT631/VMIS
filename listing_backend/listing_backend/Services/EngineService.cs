@@ -62,7 +62,7 @@ public class EngineService(IEngineRepository engineRepository, IMakeRepository m
         }
         if (engine.Make == null)
         {
-            throw new InvalidArgumentException(ExceptionMessages.InvalidMake);
+            throw new InvalidArgumentException(ExceptionMessages.RequiredMake);
         }
         if (engine.Make.Id <= 0)
         {
@@ -79,7 +79,7 @@ public class EngineService(IEngineRepository engineRepository, IMakeRepository m
         }
         if (engine.Fuel == null)
         {
-            throw new InvalidArgumentException(ExceptionMessages.InvalidFuel);
+            throw new InvalidArgumentException(ExceptionMessages.RequiredFuel);
         }
         if (engine.Fuel.Id <= 0)
         {
@@ -113,6 +113,10 @@ public class EngineService(IEngineRepository engineRepository, IMakeRepository m
         if (!engineRepository.DoesEngineExist(engine.Id))
         {
             throw new ObjectNotFoundException(ExceptionMessages.EngineNotFound);
+        }
+        if (engineRepository.DoesEngineExist(engine.EngineCode))
+        {
+            throw new ObjectAlreadyExistsException(ExceptionMessages.EngineAlreadyExists);
         }
         var existingEngine = engineRepository.GetEngineById(engine.Id);
         if (engine.Make != null)

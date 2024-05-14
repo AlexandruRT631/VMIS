@@ -74,6 +74,10 @@ public class FeatureInteriorController(IFeatureInteriorService featureInteriorSe
         {
             return NotFound(e.Message);
         }
+        catch (ObjectAlreadyExistsException e)
+        {
+            return Conflict(e.Message);
+        }
     }
     
     [HttpDelete("{id:int}")]
