@@ -15,9 +15,14 @@ public class ListingService(
     ITractionRepository tractionRepository,
     IColorRepository colorRepository,
     IFeatureExteriorRepository featureExteriorRepository,
-    IFeatureInteriorRepository featureInteriorRepository
+    IFeatureInteriorRepository featureInteriorRepository,
+    IImageService imageService
 ) : IListingService
 {
+    private static readonly string[] AllowedFileTypes = [".jpg", ".jpeg", ".png"];
+    private const long MaxFileSize = 5 * 1024 * 1024; // 5 MB
+    private const int MaxFileCount = 30;
+    
     public List<Listing> GetAllListings()
     {
         return listingRepository.GetAllListings();
@@ -37,7 +42,7 @@ public class ListingService(
         return listingRepository.GetListingById(id);
     }
 
-    public Listing CreateListing(Listing listing)
+    public Listing CreateListing(Listing listing, List<IFormFile>? images = null)
     {
         if (listing == null)
         {
@@ -262,6 +267,33 @@ public class ListingService(
                 featuresInterior.Add(featureInteriorEntity!);
             }
         }
+        if (images == null || images.Count == 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.RequiredImages);
+        }
+        if (images.Count > MaxFileCount)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.TooManyImages);
+        }
+        var listingImages = new List<ListingImage>();
+
+        for (int i = 0; i < images.Count; i++)
+        {
+            var extension = Path.GetExtension(images[i].FileName).ToLowerInvariant();
+            if (!AllowedFileTypes.Contains(extension))
+            { 
+                throw new InvalidArgumentException(ExceptionMessages.InvalidImageType + " File: " + i);
+            }
+            
+            if (images[i].Length > MaxFileSize)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.ImageTooLarge + " File: " + i);
+            }
+                
+            var url = imageService.SaveImage(images[i]);
+            listingImages.Add(new ListingImage { Url = url });
+        }
+        
 
         listing.Car = car;
         listing.Category = category;
@@ -273,10 +305,11 @@ public class ListingService(
         listing.Traction = traction;
         listing.FeaturesExterior = featuresExterior;
         listing.FeaturesInterior = featuresInterior;
+        listing.ListingImages = listingImages;
         return listingRepository.CreateListing(listing);
     }
 
-    public Listing UpdateListing(Listing listing)
+    public Listing UpdateListing(Listing listing, List<IFormFile>? images = null)
     {
         if (listing == null)
         {
@@ -506,6 +539,41 @@ public class ListingService(
                 }
             }
             existingListing!.FeaturesInterior = featuresInterior;
+        }
+        if (images != null && images.Count > 0)
+        {
+            if (images.Count > MaxFileCount)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.TooManyImages);
+            }
+
+            var listingImages = new List<ListingImage>();
+            for (int i = 0; i < images.Count; i++)
+            {
+                var extension = Path.GetExtension(images[i].FileName).ToLowerInvariant();
+                if (!AllowedFileTypes.Contains(extension))
+                {
+                    throw new InvalidArgumentException(ExceptionMessages.InvalidImageType + " File: " + i);
+                }
+
+                if (images[i].Length > MaxFileSize)
+                {
+                    throw new InvalidArgumentException(ExceptionMessages.ImageTooLarge + " File: " + i);
+                }
+                
+                var url = imageService.SaveImage(images[i]);
+                listingImages.Add(new ListingImage { Url = url });
+            }
+            
+            if (existingListing!.ListingImages != null)
+            {
+                foreach (var listingImage in existingListing.ListingImages)
+                {
+                    imageService.DeleteImage(listingImage.Url!);
+                }
+            }
+            
+            existingListing.ListingImages = listingImages;
         }
 
         return listingRepository.UpdateListing(existingListing!);

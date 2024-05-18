@@ -18,6 +18,7 @@ public class ListingDbContext(DbContextOptions options) : DbContext(options)
     public DbSet<Transmission> Transmissions { get; init; }
     public DbSet<FeatureInterior> FeaturesInterior { get; init; }
     public DbSet<FeatureExterior> FeaturesExterior { get; init; }
+    public DbSet<ListingImage> ListingImages { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -98,5 +99,9 @@ public class ListingDbContext(DbContextOptions options) : DbContext(options)
         modelBuilder.Entity<Listing>()
             .HasMany(m => m.FeaturesInterior)
             .WithMany(m => m.Listings);
+
+        modelBuilder.Entity<Listing>()
+            .HasMany(m => m.ListingImages)
+            .WithOne(m => m.Listing);
     }
 }

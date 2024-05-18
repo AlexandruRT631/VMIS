@@ -91,4 +91,8 @@ public static class ExceptionMessages
     public const string RequiredExteriorColor = "Exterior color is required.";
     public const string FeatureExteriorNameConflict = "Name in the feature exterior database for this id differs.";
     public const string FeatureInteriorNameConflict = "Name in the feature interior database for this id differs.";
+    public const string TooManyImages = "Too many images.";
+    public const string InvalidImageType = "Invalid image type.";
+    public const string ImageTooLarge = "Image too large.";
+    public const string RequiredImages = "Images are required.";
 }

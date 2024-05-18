@@ -17,4 +17,5 @@ public class ListingDto
     public ColorDto? ExteriorColor { get; set; }
     public List<FeatureExteriorDto>? FeaturesExterior { get; set; } = [];
     public List<FeatureInteriorDto>? FeaturesInterior { get; set; } = [];
+    public List<ListingImageDto>? ListingImages { get; set; } = [];
 }

@@ -34,5 +34,7 @@ public class MappingProfile : Profile
             .ReverseMap();
         CreateMap<Listing, ListingDto>()
             .ReverseMap();
+        CreateMap<ListingImage, ListingImageDto>()
+            .ReverseMap();
     }
 }

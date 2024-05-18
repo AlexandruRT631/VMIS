@@ -1,12 +1,14 @@
 using System.Text;
 using listing_backend.Constants;
 using listing_backend.DataAccess;
+using listing_backend.DTOs;
 using listing_backend.Repositories;
 using listing_backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace listing_backend;
 
@@ -46,6 +48,7 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<IFeatureExteriorService, FeatureExteriorService>();
         services.AddScoped<IFeatureInteriorService, FeatureInteriorService>();
         services.AddScoped<IFuelService, FuelService>();
+        services.AddScoped<IImageService, ImageService>();
         services.AddScoped<IListingService, ListingService>();
         services.AddScoped<IMakeService, MakeService>();
         services.AddScoped<IModelService, ModelService>();
@@ -110,6 +113,7 @@ public class Startup(IConfiguration configuration)
                     Array.Empty<string>()
                 }
             });
+            c.OperationFilter<AddFileParamTypes>();
         });
     }
     
@@ -125,6 +129,7 @@ public class Startup(IConfiguration configuration)
         }
 
         app.UseHttpsRedirection();
+        app.UseStaticFiles();
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
@@ -140,5 +145,39 @@ public class Startup(IConfiguration configuration)
         {
             endpoints.MapControllers();
         });
+    }
+
+    private class AddFileParamTypes : IOperationFilter
+    {
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
+        {
+            var fileParams = context.MethodInfo.GetParameters()
+                .Where(p => p.ParameterType == typeof(IFormFile) || p.ParameterType == typeof(List<IFormFile>))
+                .ToList();
+
+            if (!fileParams.Any()) return;
+
+            operation.Parameters.Clear();
+
+            operation.RequestBody = new OpenApiRequestBody
+            {
+                Content =
+                {
+                    ["multipart/form-data"] = new OpenApiMediaType
+                    {
+                        Schema = new OpenApiSchema
+                        {
+                            Type = "object",
+                            Properties = new Dictionary<string, OpenApiSchema>
+                            {
+                                { "listingDto", new OpenApiSchema { Type = "string", Format = "json" } },
+                                { "images", new OpenApiSchema { Type = "array", Items = new OpenApiSchema { Type = "string", Format = "binary" } } }
+                            },
+                            Required = new HashSet<string> { "listingDto", "images" }
+                        }
+                    }
+                }
+            };
+        }
     }
 }

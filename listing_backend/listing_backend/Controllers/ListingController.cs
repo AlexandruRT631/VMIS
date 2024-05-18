@@ -37,12 +37,12 @@ public class ListingController(IListingService listingService, IMapper mapper) :
     }
     
     [HttpPost]
-    public IActionResult CreateListing(ListingDto listingDto)
+    public IActionResult CreateListing([FromForm] ListingDto listingDto, [FromForm] List<IFormFile> images)
     {
         try
         {
             var inputListing = mapper.Map<Listing>(listingDto);
-            var listing = listingService.CreateListing(inputListing);
+            var listing = listingService.CreateListing(inputListing, images);
             var outputListing = mapper.Map<ListingDto>(listing);
             return Ok(outputListing);
         }
@@ -61,12 +61,12 @@ public class ListingController(IListingService listingService, IMapper mapper) :
     }
     
     [HttpPut]
-    public IActionResult UpdateListing(ListingDto listingDto)
+    public IActionResult UpdateListing([FromForm] ListingDto listingDto, [FromForm] List<IFormFile> images)
     {
         try
         {
             var inputListing = mapper.Map<Listing>(listingDto);
-            var listing = listingService.UpdateListing(inputListing);
+            var listing = listingService.UpdateListing(inputListing, images);
             var outputListing = mapper.Map<ListingDto>(listing);
             return Ok(outputListing);
         }

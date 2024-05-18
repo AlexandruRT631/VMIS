@@ -20,4 +20,5 @@ public class Listing
     public int Mileage { get; set; }
     public virtual List<FeatureExterior>? FeaturesExterior { get; set; } = [];
     public virtual List<FeatureInterior>? FeaturesInterior { get; set; } = [];
+    public virtual List<ListingImage>? ListingImages { get; set; } = [];
 }
