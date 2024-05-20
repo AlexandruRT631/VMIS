@@ -84,6 +84,15 @@ public class Startup(IConfiguration configuration)
                     }
                 };
             });
+        
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAllOrigins",
+                builder => builder.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
+        });
+
 
         services.AddControllers();
         
@@ -133,7 +142,9 @@ public class Startup(IConfiguration configuration)
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
-
+        
+        app.UseCors("AllowAllOrigins");
+        
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
