@@ -1,11 +1,35 @@
-import React, {useState} from 'react';
-import {Box, Stack, Button, useTheme} from '@mui/material';
+import React, {useRef, useState} from 'react';
+import {Box, Stack, Button, useTheme, IconButton} from '@mui/material';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 
 const BASE_URL = process.env.REACT_APP_LISTING_API_URL;
 
 const ListingImages = ({listing}) => {
-    const [selectedImage, setSelectedImage] = useState(listing.listingImages[0].url);
+    const [selectedImage, setSelectedImage] = useState(0);
     const theme = useTheme();
+    const refs = useRef([]);
+
+    const handleNext = () => {
+        setSelectedImage((prevIndex) => {
+            const newIndex = prevIndex === listing.listingImages.length - 1 ? 0 : prevIndex + 1;
+            refs.current[newIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            return newIndex;
+        });
+    };
+
+    const handlePrev = () => {
+        setSelectedImage((prevIndex) => {
+            const newIndex = prevIndex === 0 ? listing.listingImages.length - 1 : prevIndex - 1;
+            refs.current[newIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            return newIndex;
+        });
+    };
+
+    const handleSelectImage = (index) => {
+        setSelectedImage(index);
+        refs.current[index].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    };
 
     return (
         <React.Fragment>
@@ -18,8 +42,8 @@ const ListingImages = ({listing}) => {
             >
                 <Box
                     component="img"
-                    src={BASE_URL + selectedImage}
-                    alt={BASE_URL + selectedImage}
+                    src={BASE_URL + listing.listingImages[selectedImage].url}
+                    alt={BASE_URL + listing.listingImages[selectedImage].url}
                     sx={{
                         position: 'absolute',
                         top: 0,
@@ -29,6 +53,38 @@ const ListingImages = ({listing}) => {
                         objectFit: 'cover',
                     }}
                 />
+                <IconButton
+                    onClick={handlePrev}
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '10px',
+                        transform: 'translateY(-50%)',
+                        backgroundColor: 'rgba(0,0,0,0.5)',
+                        color: 'white',
+                        '&:hover': {
+                            backgroundColor: 'rgba(0,0,0,0.7)',
+                        },
+                    }}
+                >
+                    <NavigateBeforeIcon />
+                </IconButton>
+                <IconButton
+                    onClick={handleNext}
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        right: '10px',
+                        transform: 'translateY(-50%)',
+                        backgroundColor: 'rgba(0,0,0,0.5)',
+                        color: 'white',
+                        '&:hover': {
+                            backgroundColor: 'rgba(0,0,0,0.7)',
+                        },
+                    }}
+                >
+                    <NavigateNextIcon />
+                </IconButton>
             </Box>
             <Stack
                 direction={"row"}
@@ -40,14 +96,15 @@ const ListingImages = ({listing}) => {
                     px: 2,
                 }}
             >
-                {listing.listingImages.map((image) => (
+                {listing.listingImages.map((image, index) => (
                     <Button
-                        key={image.id}
-                        onClick={() => setSelectedImage(image.url)}
+                        key={index}
+                        onClick={() => handleSelectImage(index)}
                         sx={{
                             padding: 0,
                             '&:focus': { outline: 'none' },
                         }}
+                        ref={el => refs.current[index] = el}
                     >
                         <Box
                             component="img"
@@ -57,8 +114,8 @@ const ListingImages = ({listing}) => {
                             width={75}
                             sx={{
                                 objectFit: 'cover',
-                                filter: selectedImage === image.url ? 'none' : 'brightness(0.5)',
-                                border: selectedImage === image.url ? `2px solid ${theme.palette.secondary.main}` : 'none',
+                                filter: selectedImage === index ? 'none' : 'brightness(0.5)',
+                                border: selectedImage === index ? `2px solid ${theme.palette.secondary.main}` : 'none',
                             }}
                         />
                     </Button>

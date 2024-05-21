@@ -95,4 +95,5 @@ public static class ExceptionMessages
     public const string InvalidImageType = "Invalid image type.";
     public const string ImageTooLarge = "Image too large.";
     public const string RequiredImages = "Images are required.";
+    public const string RequiredTitle = "Title is required.";
 }

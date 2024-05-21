@@ -3,6 +3,7 @@ namespace listing_backend.DTOs;
 public class ListingDto
 {
     public int Id { get; set; }
+    public string Title { get; set; }
     public int SellerId { get; set; }
     public int Price { get; set; }
     public CarDto? Car { get; set; }

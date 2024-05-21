@@ -1,5 +1,5 @@
 import {useParams} from "react-router-dom";
-import {getListingById} from "./api/listing-api";
+import {getListingById} from "./listing-api";
 import {useEffect, useState} from "react";
 import {
     Box,
@@ -8,6 +8,8 @@ import {
 } from "@mui/material";
 import ListingTechnicalData from "./listing-technical-data";
 import ListingImages from "./listing-images";
+import ListingTitle from "./listing-title";
+import ListingFeatures from "./listing-features";
 
 const Listing = () => {
     const {id} = useParams();
@@ -21,6 +23,9 @@ const Listing = () => {
     }, [id]);
 
     if (error) {
+        if (error.response && error.response.status === 404) {
+            return <div>Error: listing not found</div>;
+        }
         return <div>Error: {error.message}</div>;
     }
 
@@ -41,7 +46,7 @@ const Listing = () => {
                 mt={4}
                 mb={4}
             >
-                <Grid item xs={8}>
+                <Grid item xs={8} sx={{ position: 'sticky', top: 0, alignSelf: 'flex-start' }}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <Paper variant={"outlined"} sx={{p: 2}}>
@@ -49,14 +54,7 @@ const Listing = () => {
                             </Paper>
                         </Grid>
                             <Grid item xs={12}>
-                            <Paper variant={"outlined"}>
-                                <Typography>TEST</Typography>
-                                <Typography>TEST</Typography>
-                                <Typography>TEST</Typography>
-                                <Typography>TEST</Typography>
-                                <Typography>TEST</Typography>
-                                <Typography>TEST</Typography>
-                            </Paper>
+                                <ListingTitle listing={listing} />
                         </Grid>
                     </Grid>
                 </Grid>
@@ -66,7 +64,7 @@ const Listing = () => {
                             <ListingTechnicalData listing={listing} />
                         </Grid>
                         <Grid item xs={12}>
-                            <ListingTechnicalData listing={listing} />
+                            <ListingFeatures listing={listing} />
                         </Grid>
                     </Grid>
                 </Grid>

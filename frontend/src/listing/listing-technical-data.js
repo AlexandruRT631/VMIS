@@ -1,10 +1,12 @@
 import React from "react";
-import {Table, TableBody, TableCell, TableRow, Typography} from "@mui/material";
+import {Table, TableBody, TableCell, TableRow} from "@mui/material";
 import CommonPaper from "../common/common-paper";
 
 const ListingTechnicalData = ({listing}) => {
+    const numberFormat = new Intl.NumberFormat('en-US');
+
     return (
-        <CommonPaper title={"TechnicalData"}>
+        <CommonPaper title={"Technical Data"}>
             <Table>
                 <TableBody>
                     <TableRow>
@@ -25,7 +27,7 @@ const ListingTechnicalData = ({listing}) => {
                     </TableRow>
                     <TableRow>
                         <TableCell>Mileage</TableCell>
-                        <TableCell>{listing.mileage}</TableCell>
+                        <TableCell>{numberFormat.format(listing.mileage)} km</TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell>Engine Code</TableCell>
@@ -33,15 +35,15 @@ const ListingTechnicalData = ({listing}) => {
                     </TableRow>
                     <TableRow>
                         <TableCell>Cubic Capacity</TableCell>
-                        <TableCell>{listing.engine.displacement}</TableCell>
+                        <TableCell>{numberFormat.format(listing.engine.displacement)} cm<sup>2</sup></TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell>Power</TableCell>
-                        <TableCell>{listing.engine.power}</TableCell>
+                        <TableCell>{numberFormat.format(listing.engine.power)} hp</TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell>Torque</TableCell>
-                        <TableCell>{listing.engine.torque}</TableCell>
+                        <TableCell>{numberFormat.format(listing.engine.torque)} nm</TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell>Fuel</TableCell>

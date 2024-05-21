@@ -56,6 +56,10 @@ public class ListingService(
         {
             throw new ObjectAlreadyExistsException(ExceptionMessages.ListingAlreadyExists);
         }
+        if (string.IsNullOrWhiteSpace(listing.Title))
+        {
+            throw new InvalidArgumentException(ExceptionMessages.RequiredTitle);
+        }
         if (listing.SellerId < 0)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidSellerId);
@@ -323,8 +327,11 @@ public class ListingService(
         {
             throw new ObjectNotFoundException(ExceptionMessages.ListingNotFound);
         }
-        
         var existingListing = listingRepository.GetListingById(listing.Id);
+        if (!string.IsNullOrWhiteSpace(listing.Title))
+        {
+            existingListing!.Title = listing.Title;
+        }
         if (listing.SellerId > 0)
         {
             existingListing!.SellerId = listing.SellerId;

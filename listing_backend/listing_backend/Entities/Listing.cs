@@ -6,6 +6,7 @@ public class Listing
 {
     [Key]
     public int Id { get; set; }
+    public string Title { get; set; }
     public int SellerId { get; set; }
     public int Price { get; set; }
     public virtual Car? Car { get; set; }
