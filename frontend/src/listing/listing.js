@@ -3,8 +3,7 @@ import {getListingById} from "./listing-api";
 import {useEffect, useState} from "react";
 import {
     Box,
-    Grid,
-    Paper, Typography
+    Grid
 } from "@mui/material";
 import ListingTechnicalData from "./listing-technical-data";
 import ListingImages from "./listing-images";
@@ -49,12 +48,10 @@ const Listing = () => {
                 <Grid item xs={8} sx={{ position: 'sticky', top: 0, alignSelf: 'flex-start' }}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <Paper variant={"outlined"} sx={{p: 2}}>
-                                <ListingImages listing={listing} />
-                            </Paper>
+                            <ListingImages listing={listing} />
                         </Grid>
-                            <Grid item xs={12}>
-                                <ListingTitle listing={listing} />
+                        <Grid item xs={12}>
+                            <ListingTitle listing={listing} />
                         </Grid>
                     </Grid>
                 </Grid>

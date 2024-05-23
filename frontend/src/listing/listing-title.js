@@ -1,4 +1,4 @@
-import {Avatar, Grid, Link, Paper, Stack, Typography} from "@mui/material";
+import {Avatar, Button, Grid, Link, Paper, Stack, Typography} from "@mui/material";
 import React from "react";
 
 const ListingTitle = ({ listing }) => {
@@ -22,6 +22,18 @@ const ListingTitle = ({ listing }) => {
                             <Typography variant="h6" >Alexandru Radu-Todor</Typography>
                         </Stack>
                     </Link>
+                </Grid>
+            </Grid>
+            <Grid container sx={{mt: 2}}>
+                <Grid item xs={6}>
+                    <Button variant="contained">
+                        Save listing
+                    </Button>
+                </Grid>
+                <Grid item xs={6}>
+                    <Button variant="contained">
+                        Contact seller
+                    </Button>
                 </Grid>
             </Grid>
         </Paper>

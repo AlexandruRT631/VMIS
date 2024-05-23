@@ -1,5 +1,5 @@
 import CommonPaper from "../common/common-paper";
-import {Box, List, ListItem, ListItemText, Table, TableBody, TableCell, TableRow, Typography} from "@mui/material";
+import {Box, Table, TableBody, TableCell, TableRow, Typography} from "@mui/material";
 import CheckIcon from '@mui/icons-material/Check';
 
 const ListingFeatures = ({ listing }) => {
