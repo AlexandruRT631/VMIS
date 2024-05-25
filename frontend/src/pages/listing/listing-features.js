@@ -1,4 +1,4 @@
-import CommonPaper from "../common/common-paper";
+import CommonPaper from "../../common/common-paper";
 import {Box, Table, TableBody, TableCell, TableRow, Typography} from "@mui/material";
 import CheckIcon from '@mui/icons-material/Check';
 

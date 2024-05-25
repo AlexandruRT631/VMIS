@@ -1,5 +1,5 @@
 import {useParams} from "react-router-dom";
-import {getListingById} from "./listing-api";
+import {getListingById} from "../../api/listing-api";
 import {useEffect, useState} from "react";
 import {
     Box,

@@ -100,4 +100,22 @@ public class ModelController(IModelService modelService, IMapper mapper) : Contr
             return NotFound(e.Message);
         }
     }
+    
+    [HttpGet("make/{makeId:int}")]
+    public IActionResult GetModelsByMakeId(int makeId)
+    {
+        try
+        {
+            var modelDtos = modelService.GetModelsByMakeId(makeId).Select(mapper.Map<ModelDto>).ToList();
+            return Ok(modelDtos);
+        }
+        catch (InvalidArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ObjectNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
 }

@@ -11,4 +11,5 @@ public interface IModelRepository
     public bool DeleteModel(Model model);
     public bool DoesModelExist(int id);
     public bool DoesModelExist(string name);
+    public List<Model> GetModelsByMakeId(int makeId);
 }

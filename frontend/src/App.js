@@ -1,8 +1,9 @@
 import {Component} from "react";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
-import Home from "./home/home";
-import Listing from "./listing/listing";
+import Home from "./pages/home/home";
+import Listing from "./pages/listing/listing";
 import {Container, createTheme, CssBaseline, ThemeProvider} from "@mui/material";
+import ListingCreate from "./pages/listing-create/listing-create";
 
 const theme = createTheme({
     palette: {
@@ -30,6 +31,7 @@ class App extends Component {
                         <Routes>
                             <Route path="/" element={<Home/>}/>
                             <Route path="/listing/:id" element={<Listing/>}/>
+                            <Route path="/createListing" element={<ListingCreate/>}/>
                         </Routes>
                     </Router>
                 </Container>

@@ -7,6 +7,7 @@ namespace listing_backend.Services;
 
 public class CarService(
     ICarRepository carRepository,
+    IMakeRepository makeRepository,
     IModelRepository modelRepository,
     ICategoryRepository categoryRepository,
     IDoorTypeRepository doorTypeRepository,
@@ -406,5 +407,51 @@ public class CarService(
 
         var car = carRepository.GetCarById(id);
         return carRepository.DeleteCar(car!);
+    }
+    
+    public Car GetCarByMakeModelYear(int makeId, int modelId, int year)
+    {
+        if (makeId <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidMake);
+        }
+        if (!makeRepository.DoesMakeExist(makeId))
+        {
+            throw new ObjectNotFoundException(ExceptionMessages.MakeNotFound);
+        }
+        if (modelId <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidModel);
+        }
+        if (!modelRepository.DoesModelExist(modelId))
+        {
+            throw new ObjectNotFoundException(ExceptionMessages.ModelNotFound);
+        }
+        if (year < 1900)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidYear);
+        }
+        var possibleCars = carRepository.GetCarsByMakeModelYear(makeId, modelId, year);
+        if (possibleCars.Count == 0)
+        {
+            throw new ObjectNotFoundException(ExceptionMessages.CarNotFound);
+        }
+        
+        var car = new Car();
+        car.Model = possibleCars[0].Model;
+        car.PossibleCategories = possibleCars[0].PossibleCategories;
+        car.PossibleDoorTypes = possibleCars[0].PossibleDoorTypes;
+        car.PossibleTransmissions = possibleCars[0].PossibleTransmissions;
+        car.PossibleTractions = possibleCars[0].PossibleTractions;
+        car.PossibleEngines = possibleCars[0].PossibleEngines;
+        for (int i = 1; i < possibleCars.Count; i++)
+        {
+            car.PossibleCategories = car.PossibleCategories!.Intersect(possibleCars[i].PossibleCategories!).ToList();
+            car.PossibleDoorTypes = car.PossibleDoorTypes!.Intersect(possibleCars[i].PossibleDoorTypes!).ToList();
+            car.PossibleTransmissions = car.PossibleTransmissions!.Intersect(possibleCars[i].PossibleTransmissions!).ToList();
+            car.PossibleTractions = car.PossibleTractions!.Intersect(possibleCars[i].PossibleTractions!).ToList();
+            car.PossibleEngines = car.PossibleEngines!.Intersect(possibleCars[i].PossibleEngines!).ToList();
+        }
+        return car;
     }
 }

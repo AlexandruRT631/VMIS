@@ -96,4 +96,26 @@ public class CarController(ICarService carService, IMapper mapper) : ControllerB
             return NotFound(e.Message);
         }
     }
+    
+    [HttpGet("getCarByMakeModelYear")]
+    public IActionResult GetCarByMakeModelYear([FromQuery] int? makeId, [FromQuery] int? modelId, [FromQuery] int? year)
+    {
+        try
+        {
+            var methodMakeId = makeId.GetValueOrDefault();
+            var methodModelId = modelId.GetValueOrDefault();
+            var methodYear = year.GetValueOrDefault();
+            
+            var carDto = mapper.Map<CarDto>(carService.GetCarByMakeModelYear(methodMakeId, methodModelId, methodYear));
+            return Ok(carDto);
+        }
+        catch (InvalidArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ObjectNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
 }

@@ -48,4 +48,11 @@ public class ModelRepository(ListingDbContext context) : IModelRepository
     {
         return context.Models.Any(e => e.Name == name);
     }
+    
+    public List<Model> GetModelsByMakeId(int makeId)
+    {
+        return context.Models
+            .Where(m => m.Make!.Id == makeId)
+            .ToList();
+    }
 }

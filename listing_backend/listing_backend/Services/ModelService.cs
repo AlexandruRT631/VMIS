@@ -127,4 +127,18 @@ public class ModelService(IModelRepository modelRepository, IMakeRepository make
         var model = modelRepository.GetModelById(id);
         return modelRepository.DeleteModel(model!);
     }
+    
+    public List<Model> GetModelsByMakeId(int makeId)
+    {
+        if (makeId <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidId);
+        }
+        if (!makeRepository.DoesMakeExist(makeId))
+        {
+            throw new ObjectNotFoundException(ExceptionMessages.MakeNotFound);
+        }
+        
+        return modelRepository.GetModelsByMakeId(makeId);
+    }
 }

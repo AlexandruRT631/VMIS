@@ -1,6 +1,6 @@
 import React from "react";
 import {Table, TableBody, TableCell, TableRow} from "@mui/material";
-import CommonPaper from "../common/common-paper";
+import CommonPaper from "../../common/common-paper";
 
 const ListingTechnicalData = ({listing}) => {
     const numberFormat = new Intl.NumberFormat('en-US');
