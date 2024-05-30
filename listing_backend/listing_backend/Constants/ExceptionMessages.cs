@@ -96,4 +96,6 @@ public static class ExceptionMessages
     public const string ImageTooLarge = "Image too large.";
     public const string RequiredImages = "Images are required.";
     public const string RequiredTitle = "Title is required.";
+    public const string RequiredHexCode = "Hex code is required.";
+    public const string RequiredIsInteriorCommon = "Is interior common is required.";
 }

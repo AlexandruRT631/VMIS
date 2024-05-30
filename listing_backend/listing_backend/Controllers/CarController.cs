@@ -106,8 +106,8 @@ public class CarController(ICarService carService, IMapper mapper) : ControllerB
             var methodModelId = modelId.GetValueOrDefault();
             var methodYear = year.GetValueOrDefault();
             
-            var carDto = mapper.Map<CarDto>(carService.GetCarByMakeModelYear(methodMakeId, methodModelId, methodYear));
-            return Ok(carDto);
+            var carDtos = carService.GetCarByMakeModelYear(methodMakeId, methodModelId, methodYear).Select(mapper.Map<CarDto>).ToList();
+            return Ok(carDtos);
         }
         catch (InvalidArgumentException e)
         {

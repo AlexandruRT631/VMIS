@@ -1,4 +1,5 @@
 import axios from 'axios';
+import imageCompression from 'browser-image-compression';
 
 const BASE_URL = process.env.REACT_APP_LISTING_API_URL + '/api/listing';
 
@@ -26,9 +27,14 @@ export const createListing = async (listingDto, images) => {
     try {
         const formData = new FormData();
         formData.append('listingDto', JSON.stringify(listingDto));
-        images.forEach((image, index) => {
-            formData.append('images', image);
-        });
+        for (const image of images) {
+            const compressedImage = await imageCompression(image, {
+                maxSizeMB: 1,
+                maxWidthOrHeight: 1920,
+                useWebWorker: true,
+            });
+            formData.append('images', compressedImage, compressedImage.name);
+        }
 
         const response = await axios.post(BASE_URL, formData, {
             headers: {

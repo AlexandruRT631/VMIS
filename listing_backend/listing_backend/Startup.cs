@@ -1,10 +1,10 @@
 using System.Text;
 using listing_backend.Constants;
 using listing_backend.DataAccess;
-using listing_backend.DTOs;
 using listing_backend.Repositories;
 using listing_backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -93,6 +93,10 @@ public class Startup(IConfiguration configuration)
                     .AllowAnyMethod());
         });
 
+        services.Configure<FormOptions>(options =>
+        {
+            options.MultipartBodyLengthLimit = 300 * 1000 * 1000; // 300 MB
+        });
 
         services.AddControllers();
         

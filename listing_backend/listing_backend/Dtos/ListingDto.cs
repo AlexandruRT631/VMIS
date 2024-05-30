@@ -3,12 +3,12 @@ namespace listing_backend.DTOs;
 public class ListingDto
 {
     public int Id { get; set; }
-    public string Title { get; set; }
+    public string? Title { get; set; }
     public int SellerId { get; set; }
-    public int Price { get; set; }
+    public int? Price { get; set; }
     public CarDto? Car { get; set; }
-    public int Year { get; set; }
-    public int Mileage { get; set; }
+    public int? Year { get; set; }
+    public int? Mileage { get; set; }
     public CategoryDto? Category { get; set; }
     public EngineDto? Engine { get; set; }
     public DoorTypeDto? DoorType { get; set; }

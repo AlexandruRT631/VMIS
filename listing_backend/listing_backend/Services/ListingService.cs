@@ -20,7 +20,7 @@ public class ListingService(
 ) : IListingService
 {
     private static readonly string[] AllowedFileTypes = [".jpg", ".jpeg", ".png"];
-    private const long MaxFileSize = 5 * 1024 * 1024; // 5 MB
+    private const long MaxFileSize = 10 * 1024 * 1024; // 5 MB
     private const int MaxFileCount = 30;
     
     public List<Listing> GetAllListings()

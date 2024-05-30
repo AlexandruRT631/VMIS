@@ -48,6 +48,14 @@ public class ColorService(IColorRepository colorRepository) : IColorService
         {
             throw new ObjectAlreadyExistsException(ExceptionMessages.ColorAlreadyExists);
         }
+        if (string.IsNullOrWhiteSpace(color.HexCode))
+        {
+            throw new InvalidArgumentException(ExceptionMessages.RequiredHexCode);
+        }
+        if (color.IsInteriorCommon == null)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.RequiredIsInteriorCommon);
+        }
         
         return colorRepository.CreateColor(color);
     }
@@ -67,16 +75,25 @@ public class ColorService(IColorRepository colorRepository) : IColorService
         {
             throw new ObjectNotFoundException(ExceptionMessages.ColorNotFound);
         }
-        if (string.IsNullOrWhiteSpace(color.Name))
+        var existingColor = colorRepository.GetColorById(color.Id);
+        if (!string.IsNullOrWhiteSpace(color.Name))
         {
-            throw new InvalidArgumentException(ExceptionMessages.RequiredName);
+            if (colorRepository.DoesColorExist(color.Name))
+            {
+                throw new ObjectAlreadyExistsException(ExceptionMessages.ColorAlreadyExists);
+            }
+            existingColor!.Name = color.Name;
         }
-        if (colorRepository.DoesColorExist(color.Name))
+        if (!string.IsNullOrWhiteSpace(color.HexCode))
         {
-            throw new ObjectAlreadyExistsException(ExceptionMessages.ColorAlreadyExists);
+            existingColor!.HexCode = color.HexCode;
+        }
+        if (color.IsInteriorCommon != null)
+        {
+            existingColor!.IsInteriorCommon = color.IsInteriorCommon;
         }
         
-        return colorRepository.UpdateColor(color);
+        return colorRepository.UpdateColor(existingColor!);
     }
 
     public bool DeleteColor(int id)

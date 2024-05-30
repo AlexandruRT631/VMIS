@@ -1,3 +1,4 @@
+using System.Text.Json;
 using AutoMapper;
 using listing_backend.DTOs;
 using listing_backend.Entities;
@@ -37,11 +38,12 @@ public class ListingController(IListingService listingService, IMapper mapper) :
     }
     
     [HttpPost]
-    public IActionResult CreateListing([FromForm] ListingDto listingDto, [FromForm] List<IFormFile> images)
+    public IActionResult CreateListing([FromForm] string listingDto, [FromForm] List<IFormFile> images)
     {
         try
         {
-            var inputListing = mapper.Map<Listing>(listingDto);
+            var listingDtoObject = JsonSerializer.Deserialize<ListingDto>(listingDto);
+            var inputListing = mapper.Map<Listing>(listingDtoObject);
             var listing = listingService.CreateListing(inputListing, images);
             var outputListing = mapper.Map<ListingDto>(listing);
             return Ok(outputListing);

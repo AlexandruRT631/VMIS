@@ -409,7 +409,7 @@ public class CarService(
         return carRepository.DeleteCar(car!);
     }
     
-    public Car GetCarByMakeModelYear(int makeId, int modelId, int year)
+    public List<Car> GetCarByMakeModelYear(int makeId, int modelId, int year)
     {
         if (makeId <= 0)
         {
@@ -437,21 +437,6 @@ public class CarService(
             throw new ObjectNotFoundException(ExceptionMessages.CarNotFound);
         }
         
-        var car = new Car();
-        car.Model = possibleCars[0].Model;
-        car.PossibleCategories = possibleCars[0].PossibleCategories;
-        car.PossibleDoorTypes = possibleCars[0].PossibleDoorTypes;
-        car.PossibleTransmissions = possibleCars[0].PossibleTransmissions;
-        car.PossibleTractions = possibleCars[0].PossibleTractions;
-        car.PossibleEngines = possibleCars[0].PossibleEngines;
-        for (int i = 1; i < possibleCars.Count; i++)
-        {
-            car.PossibleCategories = car.PossibleCategories!.Intersect(possibleCars[i].PossibleCategories!).ToList();
-            car.PossibleDoorTypes = car.PossibleDoorTypes!.Intersect(possibleCars[i].PossibleDoorTypes!).ToList();
-            car.PossibleTransmissions = car.PossibleTransmissions!.Intersect(possibleCars[i].PossibleTransmissions!).ToList();
-            car.PossibleTractions = car.PossibleTractions!.Intersect(possibleCars[i].PossibleTractions!).ToList();
-            car.PossibleEngines = car.PossibleEngines!.Intersect(possibleCars[i].PossibleEngines!).ToList();
-        }
-        return car;
+        return possibleCars;
     }
 }

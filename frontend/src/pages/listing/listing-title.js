@@ -26,12 +26,26 @@ const ListingTitle = ({ listing }) => {
             </Grid>
             <Grid container sx={{mt: 2}}>
                 <Grid item xs={6}>
-                    <Button variant="contained">
+                    <Button
+                        variant="contained"
+                        sx={{
+                            '&:focus': {
+                                outline: 'none',
+                            },
+                        }}
+                    >
                         Save listing
                     </Button>
                 </Grid>
                 <Grid item xs={6}>
-                    <Button variant="contained">
+                    <Button
+                        variant="contained"
+                        sx={{
+                            '&:focus': {
+                                outline: 'none',
+                            },
+                        }}
+                    >
                         Contact seller
                     </Button>
                 </Grid>
