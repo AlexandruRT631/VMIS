@@ -13,9 +13,9 @@ namespace listing_backend.Controllers;
 public class ListingController(IListingService listingService, IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    public IActionResult GetAllListings()
+    public IActionResult GetAllListings(int pageIndex = 1, int pageSize = 1)
     {
-        var listingDtos = listingService.GetAllListings().Select(mapper.Map<ListingDto>).ToList();
+        var listingDtos = listingService.GetAllListings(pageIndex, pageSize).Select(mapper.Map<ListingDto>).ToList();
         return Ok(listingDtos);
     }
     

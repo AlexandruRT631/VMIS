@@ -98,4 +98,6 @@ public static class ExceptionMessages
     public const string RequiredTitle = "Title is required.";
     public const string RequiredHexCode = "Hex code is required.";
     public const string RequiredIsInteriorCommon = "Is interior common is required.";
+    public const string InvalidPageIndex = "Invalid page index.";
+    public const string InvalidPageSize = "Invalid page size.";
 }

@@ -59,7 +59,8 @@ const ListingCreate = () => {
                 Price: finalDetails.price,
                 Title: finalDetails.title,
                 SellerId: finalDetails.sellerId,
-                Year: year
+                Year: year,
+                CreatedAt: new Date(),
             }, finalDetails.images)
                 .then(console.log)
                 .catch(console.error);

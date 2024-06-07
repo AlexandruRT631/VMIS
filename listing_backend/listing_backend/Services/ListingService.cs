@@ -23,9 +23,18 @@ public class ListingService(
     private const long MaxFileSize = 10 * 1024 * 1024; // 5 MB
     private const int MaxFileCount = 30;
     
-    public List<Listing> GetAllListings()
+    public List<Listing> GetAllListings(int pageIndex, int pageSize)
     {
-        return listingRepository.GetAllListings();
+        if (pageIndex <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidPageIndex);
+        }
+        if (pageSize <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidPageSize);
+        }
+        
+        return listingRepository.GetAllListings(pageIndex, pageSize);
     }
 
     public Listing? GetListingById(int id)
@@ -294,7 +303,7 @@ public class ListingService(
                 throw new InvalidArgumentException(ExceptionMessages.ImageTooLarge + " File: " + i);
             }
                 
-            var url = imageService.SaveImage(images[i]);
+            var url = imageService.SaveImage(images[i], car!);
             listingImages.Add(new ListingImage { Url = url });
         }
         
@@ -568,7 +577,7 @@ public class ListingService(
                     throw new InvalidArgumentException(ExceptionMessages.ImageTooLarge + " File: " + i);
                 }
                 
-                var url = imageService.SaveImage(images[i]);
+                var url = imageService.SaveImage(images[i], existingListing!.Car!);
                 listingImages.Add(new ListingImage { Url = url });
             }
             
@@ -598,6 +607,11 @@ public class ListingService(
         }
         
         var listing = listingRepository.GetListingById(id);
+        foreach (var listingImage in listing!.ListingImages!)
+        {
+            imageService.DeleteImage(listingImage.Url!);
+        }
+        
         return listingRepository.DeleteListing(listing!);
     }
 }

@@ -4,7 +4,7 @@ namespace listing_backend.Repositories;
 
 public interface IListingRepository
 {
-    public List<Listing> GetAllListings();
+    public List<Listing> GetAllListings(int pageIndex, int pageSize);
     public Listing? GetListingById(int id);
     public Listing CreateListing(Listing listing);
     public Listing UpdateListing(Listing listing);

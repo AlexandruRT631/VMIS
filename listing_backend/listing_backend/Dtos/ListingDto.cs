@@ -19,4 +19,5 @@ public class ListingDto
     public List<FeatureExteriorDto>? FeaturesExterior { get; set; } = [];
     public List<FeatureInteriorDto>? FeaturesInterior { get; set; } = [];
     public List<ListingImageDto>? ListingImages { get; set; } = [];
+    public DateTime CreatedAt { get; set; }
 }

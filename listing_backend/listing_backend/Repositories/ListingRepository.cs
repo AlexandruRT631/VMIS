@@ -7,9 +7,12 @@ namespace listing_backend.Repositories;
 
 public class ListingRepository(ListingDbContext context) : IListingRepository
 {
-    public List<Listing> GetAllListings()
+    public List<Listing> GetAllListings(int pageIndex, int pageSize)
     {
         return context.Listings
+            .OrderBy(l => l.CreatedAt)
+            .Skip((pageIndex - 1) * pageSize)
+            .Take(pageSize)
             .ToList();
     }
 
