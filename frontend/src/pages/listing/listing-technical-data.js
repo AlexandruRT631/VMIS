@@ -63,11 +63,7 @@ const ListingTechnicalData = ({listing}) => {
                     </TableRow>
                     <TableRow>
                         <TableCell>Color</TableCell>
-                        <TableCell>{listing.exteriorColor.name}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell>Interior Color</TableCell>
-                        <TableCell>{listing.interiorColor.name}</TableCell>
+                        <TableCell>{listing.color.name}</TableCell>
                     </TableRow>
                 </TableBody>
             </Table>

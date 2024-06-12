@@ -1,6 +1,6 @@
 namespace listing_backend.DTOs;
 
-public class FeatureInteriorDto
+public class FeatureDto
 {
     public int Id { get; init; }
     public string? Name { get; init; } = null!;

@@ -14,9 +14,7 @@ public class MappingProfile : Profile
             .ReverseMap();
         CreateMap<DoorType, DoorTypeDto>()
             .ReverseMap();
-        CreateMap<FeatureExterior, FeatureExteriorDto>()
-            .ReverseMap();
-        CreateMap<FeatureInterior, FeatureInteriorDto>()
+        CreateMap<Feature, FeatureDto>()
             .ReverseMap();
         CreateMap<Fuel, FuelDto>()
             .ReverseMap();

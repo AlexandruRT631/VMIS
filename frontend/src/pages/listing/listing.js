@@ -9,6 +9,7 @@ import ListingTechnicalData from "./listing-technical-data";
 import ListingImages from "./listing-images";
 import ListingTitle from "./listing-title";
 import ListingFeatures from "./listing-features";
+import ListingDescription from "./listing-description";
 
 const Listing = () => {
     const {id} = useParams();
@@ -62,6 +63,9 @@ const Listing = () => {
                         </Grid>
                         <Grid item xs={12}>
                             <ListingFeatures listing={listing} />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <ListingDescription listing={listing} />
                         </Grid>
                     </Grid>
                 </Grid>

@@ -65,10 +65,10 @@ public class CarRepository(ListingDbContext context) : ICarRepository
         return context.Cars.Any(c => c.Id == id);
     }
     
-    public List<Car> GetCarsByMakeModelYear(int makeId, int modelId, int year)
+    public List<Car> GetCarsByModelYear(int modelId, int year)
     {
         return context.Cars
-            .Where(c => c.Model!.Make!.Id == makeId && c.Model!.Id == modelId && c.StartYear <= year && c.EndYear >= year)
+            .Where(c => c.Model!.Id == modelId && c.StartYear <= year && c.EndYear >= year)
             .ToList();
     }
 }

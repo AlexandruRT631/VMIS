@@ -16,8 +16,7 @@ public class ListingDbContext(DbContextOptions options) : DbContext(options)
     public DbSet<Car> Cars { get; init; }
     public DbSet<Traction> Tractions { get; init; }
     public DbSet<Transmission> Transmissions { get; init; }
-    public DbSet<FeatureInterior> FeaturesInterior { get; init; }
-    public DbSet<FeatureExterior> FeaturesExterior { get; init; }
+    public DbSet<Feature> Features { get; init; }
     public DbSet<ListingImage> ListingImages { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -83,21 +82,13 @@ public class ListingDbContext(DbContextOptions options) : DbContext(options)
         modelBuilder.Entity<Listing>()
             .HasOne(m => m.Traction)
             .WithMany(m => m.Listings);
-
-        modelBuilder.Entity<Listing>()
-            .HasOne(m => m.InteriorColor)
-            .WithMany(c => c.ListingsInterior);
         
         modelBuilder.Entity<Listing>()
-            .HasOne(m => m.ExteriorColor)
-            .WithMany(m => m.ListingsExterior);
-
-        modelBuilder.Entity<Listing>()
-            .HasMany(m => m.FeaturesExterior)
+            .HasOne(m => m.Color)
             .WithMany(m => m.Listings);
 
         modelBuilder.Entity<Listing>()
-            .HasMany(m => m.FeaturesInterior)
+            .HasMany(m => m.Features)
             .WithMany(m => m.Listings);
 
         modelBuilder.Entity<Listing>()

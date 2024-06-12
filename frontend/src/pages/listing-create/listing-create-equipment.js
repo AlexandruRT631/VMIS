@@ -3,8 +3,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {getAllColors} from "../../api/color-api";
 import {Button, Checkbox, Grid} from "@mui/material";
 import CommonSubPaper from "../../common/common-sub-paper";
-import {getAllFeaturesExterior} from "../../api/features-exterior-api";
-import {getAllFeaturesInterior} from "../../api/features-interior-api";
+import {getAllFeatures} from "../../api/feature-api";
 
 const SelectColor = ({colors, setColor, color}) => {
     return (
@@ -52,14 +51,10 @@ const SelectFeatures = ({features, setFeatures, selectedFeatures}) => {
 
 const ListingCreateEquipment = ({setEquipment}) => {
     const [colors, setColors] = useState([]);
-    const [exteriorColor, setExteriorColor] = useState(null);
-    const [interiorColor, setInteriorColor] = useState(null);
-    const [interiorFeatures, setInteriorFeatures] = useState([]);
-    const [selectedInteriorFeatures, setSelectedInteriorFeatures] = useState([]);
-    const [exteriorFeatures, setExteriorFeatures] = useState([]);
-    const [selectedExteriorFeatures, setSelectedExteriorFeatures] = useState([]);
-    const exteriorColorRef = useRef(null);
-    const interiorColorRef = useRef(null);
+    const [color, setColor] = useState(null);
+    const [features, setFeatures] = useState([]);
+    const [selectedFeatures, setSelectedFeatures] = useState([]);
+    const colorRef = useRef(null);
     const featuresRef = useRef(null);
 
     useEffect(() => {
@@ -70,64 +65,42 @@ const ListingCreateEquipment = ({setEquipment}) => {
 
     useEffect(() => {
         if (colors.length > 0) {
-            exteriorColorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            colorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }, [colors]);
 
     useEffect(() => {
-        if (exteriorColor) {
-            interiorColorRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    }, [exteriorColor]);
-
-    useEffect(() => {
-        if (interiorColor) {
-            getAllFeaturesExterior()
-                .then(setExteriorFeatures)
-                .catch(console.error);
-            getAllFeaturesInterior()
-                .then(setInteriorFeatures)
+        if (color) {
+            getAllFeatures()
+                .then(setFeatures)
                 .catch(console.error);
         }
-    }, [interiorColor]);
+    }, [color]);
 
     useEffect(() => {
-        if (exteriorFeatures.length > 0) {
+        if (features.length > 0) {
             featuresRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-    }, [exteriorFeatures]);
+    }, [features]);
 
     const handleNext = () => {
         setEquipment({
-            exteriorColor: exteriorColor,
-            interiorColor: interiorColor,
-            featuresExterior: selectedExteriorFeatures,
-            featuresInterior: selectedInteriorFeatures
+            color: color,
+            features: selectedFeatures
         });
     }
 
     return (
         <CommonPaper title={"Equipment"}>
-            <div ref={exteriorColorRef}>
+            <div ref={colorRef}>
                 <CommonSubPaper title={"Exterior Color"}>
-                    <SelectColor colors={colors} setColor={setExteriorColor} color={exteriorColor}/>
+                    <SelectColor colors={colors} setColor={setColor} color={color}/>
                 </CommonSubPaper>
             </div>
-            {exteriorColor !== null ?
-                <div ref={interiorColorRef}>
-                    <CommonSubPaper title={"Interior Color"}>
-                        <SelectColor colors={colors.filter((color) => color.isInteriorCommon)} setColor={setInteriorColor} color={interiorColor}/>
-                    </CommonSubPaper>
-                </div>
-                : null
-            }
-            {interiorColor !== null ?
+            {color !== null ?
                 <div ref={featuresRef}>
                     <CommonSubPaper title={"Exterior Features"}>
-                        <SelectFeatures features={exteriorFeatures} setFeatures={setSelectedExteriorFeatures} selectedFeatures={selectedExteriorFeatures}/>
-                    </CommonSubPaper>
-                    <CommonSubPaper title={"Interior Features"}>
-                        <SelectFeatures features={interiorFeatures} setFeatures={setSelectedInteriorFeatures} selectedFeatures={selectedInteriorFeatures}/>
+                        <SelectFeatures features={features} setFeatures={setSelectedFeatures} selectedFeatures={selectedFeatures}/>
                     </CommonSubPaper>
                     <Button
                         variant="contained"

@@ -5,5 +5,4 @@ public class ColorDto
     public int Id { get; init; }
     public string? Name { get; init; }
     public string? HexCode { get; init; }
-    public bool? IsInteriorCommon { get; init; }
 }

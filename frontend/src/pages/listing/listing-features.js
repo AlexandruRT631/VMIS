@@ -3,7 +3,7 @@ import {Box, Table, TableBody, TableCell, TableRow, Typography} from "@mui/mater
 import CheckIcon from '@mui/icons-material/Check';
 
 const ListingFeatures = ({ listing }) => {
-    const features = [...listing.featuresExterior, ...listing.featuresInterior].sort((a, b) => a.name.localeCompare(b.name));
+    const features = listing.features.sort((a, b) => a.name.localeCompare(b.name));
 
     return(
         <CommonPaper title={"Features"}>

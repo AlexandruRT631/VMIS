@@ -31,8 +31,7 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<IColorRepository, ColorRepository>();
         services.AddScoped<IDoorTypeRepository, DoorTypeRepository>();
         services.AddScoped<IEngineRepository, EngineRepository>();
-        services.AddScoped<IFeatureExteriorRepository, FeatureExteriorRepository>();
-        services.AddScoped<IFeatureInteriorRepository, FeatureInteriorRepository>();
+        services.AddScoped<IFeatureRepository, FeatureRepository>();
         services.AddScoped<IFuelRepository, FuelRepository>();
         services.AddScoped<IListingRepository, ListingRepository>();
         services.AddScoped<IMakeRepository, MakeRepository>();
@@ -45,8 +44,7 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<IColorService, ColorService>();
         services.AddScoped<IDoorTypeService, DoorTypeService>();
         services.AddScoped<IEngineService, EngineService>();
-        services.AddScoped<IFeatureExteriorService, FeatureExteriorService>();
-        services.AddScoped<IFeatureInteriorService, FeatureInteriorService>();
+        services.AddScoped<IFeatureService, FeatureService>();
         services.AddScoped<IFuelService, FuelService>();
         services.AddScoped<IImageService, ImageService>();
         services.AddScoped<IListingService, ListingService>();

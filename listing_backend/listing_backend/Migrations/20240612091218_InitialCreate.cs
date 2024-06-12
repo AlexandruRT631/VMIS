@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using MySql.EntityFrameworkCore.Metadata;
 
 #nullable disable
@@ -34,7 +35,8 @@ namespace listing_backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
+                    HexCode = table.Column<string>(type: "longtext", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -57,7 +59,7 @@ namespace listing_backend.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "FeaturesExterior",
+                name: "Features",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -66,21 +68,7 @@ namespace listing_backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FeaturesExterior", x => x.Id);
-                })
-                .Annotation("MySQL:Charset", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "FeaturesInterior",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FeaturesInterior", x => x.Id);
+                    table.PrimaryKey("PK_Features", x => x.Id);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -146,10 +134,10 @@ namespace listing_backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    MakeId = table.Column<int>(type: "int", nullable: false),
+                    MakeId = table.Column<int>(type: "int", nullable: true),
                     EngineCode = table.Column<string>(type: "longtext", nullable: false),
                     Displacement = table.Column<int>(type: "int", nullable: false),
-                    FuelId = table.Column<int>(type: "int", nullable: false),
+                    FuelId = table.Column<int>(type: "int", nullable: true),
                     Power = table.Column<int>(type: "int", nullable: false),
                     Torque = table.Column<int>(type: "int", nullable: false)
                 },
@@ -160,14 +148,12 @@ namespace listing_backend.Migrations
                         name: "FK_Engines_Fuels_FuelId",
                         column: x => x.FuelId,
                         principalTable: "Fuels",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Engines_Makes_MakeId",
                         column: x => x.MakeId,
                         principalTable: "Makes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -177,8 +163,8 @@ namespace listing_backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    MakeId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                    MakeId = table.Column<int>(type: "int", nullable: true),
+                    Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -187,8 +173,7 @@ namespace listing_backend.Migrations
                         name: "FK_Models_Makes_MakeId",
                         column: x => x.MakeId,
                         principalTable: "Makes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -198,7 +183,7 @@ namespace listing_backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    ModelId = table.Column<int>(type: "int", nullable: false),
+                    ModelId = table.Column<int>(type: "int", nullable: true),
                     StartYear = table.Column<int>(type: "int", nullable: false),
                     EndYear = table.Column<int>(type: "int", nullable: false)
                 },
@@ -209,8 +194,7 @@ namespace listing_backend.Migrations
                         name: "FK_Cars_Models_ModelId",
                         column: x => x.ModelId,
                         principalTable: "Models",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -345,16 +329,20 @@ namespace listing_backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Title = table.Column<string>(type: "longtext", nullable: false),
                     SellerId = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
-                    CarId = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "longtext", nullable: false),
+                    CarId = table.Column<int>(type: "int", nullable: true),
                     Year = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
-                    EngineId = table.Column<int>(type: "int", nullable: false),
-                    DoorTypeId = table.Column<int>(type: "int", nullable: false),
-                    InteriorColorId = table.Column<int>(type: "int", nullable: false),
-                    ExteriorColorId = table.Column<int>(type: "int", nullable: false),
-                    Mileage = table.Column<int>(type: "int", nullable: false)
+                    CategoryId = table.Column<int>(type: "int", nullable: true),
+                    EngineId = table.Column<int>(type: "int", nullable: true),
+                    DoorTypeId = table.Column<int>(type: "int", nullable: true),
+                    TransmissionId = table.Column<int>(type: "int", nullable: true),
+                    TractionId = table.Column<int>(type: "int", nullable: true),
+                    ColorId = table.Column<int>(type: "int", nullable: true),
+                    Mileage = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -363,59 +351,58 @@ namespace listing_backend.Migrations
                         name: "FK_Listings_Cars_CarId",
                         column: x => x.CarId,
                         principalTable: "Cars",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Listings_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Listings_Colors_ExteriorColorId",
-                        column: x => x.ExteriorColorId,
+                        name: "FK_Listings_Colors_ColorId",
+                        column: x => x.ColorId,
                         principalTable: "Colors",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Listings_Colors_InteriorColorId",
-                        column: x => x.InteriorColorId,
-                        principalTable: "Colors",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Listings_DoorTypes_DoorTypeId",
                         column: x => x.DoorTypeId,
                         principalTable: "DoorTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Listings_Engines_EngineId",
                         column: x => x.EngineId,
                         principalTable: "Engines",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Listings_Tractions_TractionId",
+                        column: x => x.TractionId,
+                        principalTable: "Tractions",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Listings_Transmissions_TransmissionId",
+                        column: x => x.TransmissionId,
+                        principalTable: "Transmissions",
+                        principalColumn: "Id");
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "FeatureExteriorListing",
+                name: "FeatureListing",
                 columns: table => new
                 {
-                    FeaturesExteriorId = table.Column<int>(type: "int", nullable: false),
+                    FeaturesId = table.Column<int>(type: "int", nullable: false),
                     ListingsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FeatureExteriorListing", x => new { x.FeaturesExteriorId, x.ListingsId });
+                    table.PrimaryKey("PK_FeatureListing", x => new { x.FeaturesId, x.ListingsId });
                     table.ForeignKey(
-                        name: "FK_FeatureExteriorListing_FeaturesExterior_FeaturesExteriorId",
-                        column: x => x.FeaturesExteriorId,
-                        principalTable: "FeaturesExterior",
+                        name: "FK_FeatureListing_Features_FeaturesId",
+                        column: x => x.FeaturesId,
+                        principalTable: "Features",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_FeatureExteriorListing_Listings_ListingsId",
+                        name: "FK_FeatureListing_Listings_ListingsId",
                         column: x => x.ListingsId,
                         principalTable: "Listings",
                         principalColumn: "Id",
@@ -424,24 +411,20 @@ namespace listing_backend.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "FeatureInteriorListing",
+                name: "ListingImages",
                 columns: table => new
                 {
-                    FeaturesInteriorId = table.Column<int>(type: "int", nullable: false),
-                    ListingsId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Url = table.Column<string>(type: "longtext", nullable: true),
+                    ListingId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FeatureInteriorListing", x => new { x.FeaturesInteriorId, x.ListingsId });
+                    table.PrimaryKey("PK_ListingImages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FeatureInteriorListing_FeaturesInterior_FeaturesInteriorId",
-                        column: x => x.FeaturesInteriorId,
-                        principalTable: "FeaturesInterior",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_FeatureInteriorListing_Listings_ListingsId",
-                        column: x => x.ListingsId,
+                        name: "FK_ListingImages_Listings_ListingId",
+                        column: x => x.ListingId,
                         principalTable: "Listings",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -489,14 +472,14 @@ namespace listing_backend.Migrations
                 column: "MakeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FeatureExteriorListing_ListingsId",
-                table: "FeatureExteriorListing",
+                name: "IX_FeatureListing_ListingsId",
+                table: "FeatureListing",
                 column: "ListingsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FeatureInteriorListing_ListingsId",
-                table: "FeatureInteriorListing",
-                column: "ListingsId");
+                name: "IX_ListingImages_ListingId",
+                table: "ListingImages",
+                column: "ListingId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Listings_CarId",
@@ -509,6 +492,11 @@ namespace listing_backend.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Listings_ColorId",
+                table: "Listings",
+                column: "ColorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Listings_DoorTypeId",
                 table: "Listings",
                 column: "DoorTypeId");
@@ -519,14 +507,14 @@ namespace listing_backend.Migrations
                 column: "EngineId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Listings_ExteriorColorId",
+                name: "IX_Listings_TractionId",
                 table: "Listings",
-                column: "ExteriorColorId");
+                column: "TractionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Listings_InteriorColorId",
+                name: "IX_Listings_TransmissionId",
                 table: "Listings",
-                column: "InteriorColorId");
+                column: "TransmissionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Models_MakeId",
@@ -553,22 +541,13 @@ namespace listing_backend.Migrations
                 name: "CarTransmission");
 
             migrationBuilder.DropTable(
-                name: "FeatureExteriorListing");
+                name: "FeatureListing");
 
             migrationBuilder.DropTable(
-                name: "FeatureInteriorListing");
+                name: "ListingImages");
 
             migrationBuilder.DropTable(
-                name: "Tractions");
-
-            migrationBuilder.DropTable(
-                name: "Transmissions");
-
-            migrationBuilder.DropTable(
-                name: "FeaturesExterior");
-
-            migrationBuilder.DropTable(
-                name: "FeaturesInterior");
+                name: "Features");
 
             migrationBuilder.DropTable(
                 name: "Listings");
@@ -587,6 +566,12 @@ namespace listing_backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "Engines");
+
+            migrationBuilder.DropTable(
+                name: "Tractions");
+
+            migrationBuilder.DropTable(
+                name: "Transmissions");
 
             migrationBuilder.DropTable(
                 name: "Models");

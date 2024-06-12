@@ -10,5 +10,5 @@ public interface ICarRepository
     public Car UpdateCar(Car car);
     public bool DeleteCar(Car car);
     public bool DoesCarExist(int id);
-    public List<Car> GetCarsByMakeModelYear(int makeId, int modelId, int year);
+    public List<Car> GetCarsByModelYear(int modelId, int year);
 }

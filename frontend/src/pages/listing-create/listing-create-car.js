@@ -3,7 +3,7 @@ import {getAllMakes} from "../../api/make-api";
 import {getAllModelsByMakeId} from "../../api/model-api";
 import {Autocomplete, Box, Button, Grid, TextField} from "@mui/material";
 import CommonPaper from "../../common/common-paper";
-import {getCarByMakeModelYear} from "../../api/car-api";
+import {getCarByModelYear} from "../../api/car-api";
 
 const ListingCreateCar = ({setPossibleCars, setYear, possibleCars}) => {
     const [loading, setLoading] = useState(true);
@@ -57,7 +57,7 @@ const ListingCreateCar = ({setPossibleCars, setYear, possibleCars}) => {
 
     const handleNext = () => {
         if (possibleCars.length === 0) {
-            getCarByMakeModelYear(selectedMake.id, selectedModel.id, selectedYear)
+            getCarByModelYear(selectedModel.id, selectedYear)
                 .then(setPossibleCars)
                 .catch(console.error);
             setYear(parseInt(selectedYear, 10));

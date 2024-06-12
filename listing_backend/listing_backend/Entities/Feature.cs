@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace listing_backend.Entities;
 
-public class FeatureExterior
+public class Feature
 {
     [Key]
     public int Id { get; set; }

@@ -9,6 +9,7 @@ public class Listing
     public string Title { get; set; }
     public int SellerId { get; set; }
     public int Price { get; set; }
+    public string Description { get; set; }
     public virtual Car? Car { get; set; }
     public int Year { get; set; }
     public virtual Category? Category { get; set; }
@@ -16,11 +17,9 @@ public class Listing
     public virtual DoorType? DoorType { get; set; }
     public virtual Transmission? Transmission { get; set; }
     public virtual Traction? Traction { get; set; }
-    public virtual Color? InteriorColor { get; set; }
-    public virtual Color? ExteriorColor { get; set; }
+    public virtual Color? Color { get; set; }
     public int Mileage { get; set; }
-    public virtual List<FeatureExterior>? FeaturesExterior { get; set; } = [];
-    public virtual List<FeatureInterior>? FeaturesInterior { get; set; } = [];
+    public virtual List<Feature>? Features { get; set; } = [];
     public virtual List<ListingImage>? ListingImages { get; set; } = [];
     public DateTime CreatedAt { get; set; }
 }

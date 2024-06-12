@@ -19,8 +19,7 @@ public class ListingRepository(ListingDbContext context) : IListingRepository
     public Listing? GetListingById(int id)
     {
         return context.Listings
-            .Include(existingListing => existingListing.FeaturesExterior!)
-            .Include(existingListing => existingListing.FeaturesInterior!)
+            .Include(existingListing => existingListing.Features!)
             .Include(existingListing => existingListing.ListingImages!)
             .FirstOrDefault(e => e.Id == id);
     }
@@ -35,15 +34,13 @@ public class ListingRepository(ListingDbContext context) : IListingRepository
     public Listing UpdateListing(Listing listing)
     {
         var existingListing = context.Listings
-            .Include(existingListing => existingListing.FeaturesExterior!)
-            .Include(existingListing => existingListing.FeaturesInterior!)
+            .Include(existingListing => existingListing.Features!)
             .Include(existingListing => existingListing.ListingImages!)
             .FirstOrDefault(e => e.Id == listing.Id);
         
         context.Entry(existingListing!).CurrentValues.SetValues(listing);
         
-        Utilities.UpdateCollection(existingListing!.FeaturesExterior!, listing!.FeaturesExterior!);
-        Utilities.UpdateCollection(existingListing!.FeaturesInterior!, listing!.FeaturesInterior!);
+        Utilities.UpdateCollection(existingListing!.Features!, listing!.Features!);
         Utilities.UpdateCollection(existingListing!.ListingImages!, listing!.ListingImages!);
         
         context.SaveChanges();

@@ -52,10 +52,6 @@ public class ColorService(IColorRepository colorRepository) : IColorService
         {
             throw new InvalidArgumentException(ExceptionMessages.RequiredHexCode);
         }
-        if (color.IsInteriorCommon == null)
-        {
-            throw new InvalidArgumentException(ExceptionMessages.RequiredIsInteriorCommon);
-        }
         
         return colorRepository.CreateColor(color);
     }
@@ -87,10 +83,6 @@ public class ColorService(IColorRepository colorRepository) : IColorService
         if (!string.IsNullOrWhiteSpace(color.HexCode))
         {
             existingColor!.HexCode = color.HexCode;
-        }
-        if (color.IsInteriorCommon != null)
-        {
-            existingColor!.IsInteriorCommon = color.IsInteriorCommon;
         }
         
         return colorRepository.UpdateColor(existingColor!);

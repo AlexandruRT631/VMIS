@@ -8,8 +8,8 @@ import {
     ImageListItemBar,
     Input,
     InputAdornment,
-    InputLabel,
-    Typography
+    InputLabel, TextareaAutosize,
+    Typography, useTheme
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -17,6 +17,7 @@ const ListingCreateFinalDetails = ({setFinalDetails}) => {
     const [title, setTitle] = useState("");
     const [price, setPrice] = useState("");
     const [mileage, setMileage] = useState("");
+    const [description, setDescription] = useState("");
     const [priceError, setPriceError] = useState(false);
     const [mileageError, setMileageError] = useState(false);
     const [images, setImages] = useState([]);
@@ -25,6 +26,7 @@ const ListingCreateFinalDetails = ({setFinalDetails}) => {
     const [postingError, setPostingError] = useState(null);
     const sellerId = 1;
     const componentRef = useRef(null);
+    const theme = useTheme();
 
     useEffect(() => {
         if (componentRef.current) {
@@ -120,6 +122,7 @@ const ListingCreateFinalDetails = ({setFinalDetails}) => {
             mileage: parseInt(mileage, 10),
             images: images,
             sellerId: sellerId,
+            description: description
         });
     }
 
@@ -153,6 +156,20 @@ const ListingCreateFinalDetails = ({setFinalDetails}) => {
                             onChange={handleMileageChange}
                             error={mileageError}
                             endAdornment={<InputAdornment position="end">km</InputAdornment>}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <InputLabel>Description</InputLabel>
+                        <TextareaAutosize
+                            minRows={3}
+                            value={description}
+                            style={{
+                                width: "100%",
+                                backgroundColor: theme.palette.background.paper,
+                                color: theme.palette.text.primary,
+                                resize: "none"
+                            }}
+                            onChange={(event) => setDescription(event.target.value)}
                         />
                     </Grid>
                     <Grid item xs={12}>

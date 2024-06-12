@@ -14,12 +14,11 @@ public class ListingService(
     ITransmissionRepository transmissionRepository,
     ITractionRepository tractionRepository,
     IColorRepository colorRepository,
-    IFeatureExteriorRepository featureExteriorRepository,
-    IFeatureInteriorRepository featureInteriorRepository,
+    IFeatureRepository featureRepository,
     IImageService imageService
 ) : IListingService
 {
-    private static readonly string[] AllowedFileTypes = [".jpg", ".jpeg", ".png"];
+    private static readonly string[] AllowedFileTypes = [".jpg", ".jpeg", ".png", ".webp"];
     private const long MaxFileSize = 10 * 1024 * 1024; // 5 MB
     private const int MaxFileCount = 30;
     
@@ -77,6 +76,10 @@ public class ListingService(
         if (listing.Price < 0)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidPrice);
+        }
+        if (string.IsNullOrWhiteSpace(listing.Description))
+        {
+            throw new InvalidArgumentException(ExceptionMessages.RequiredDescription);
         }
         if (listing.Year < 1900)
         {
@@ -196,88 +199,46 @@ public class ListingService(
         {
             throw new InvalidArgumentException(ExceptionMessages.TractionNameConflict);
         }
-        if (listing.InteriorColor == null)
+        if (listing.Color == null)
         {
-            throw new InvalidArgumentException(ExceptionMessages.RequiredInteriorColor);
+            throw new InvalidArgumentException(ExceptionMessages.RequiredColor);
         }
-        if (listing.InteriorColor.Id <= 0)
+        if (listing.Color.Id <= 0)
         {
-            throw new InvalidArgumentException(ExceptionMessages.InvalidInteriorColor);
+            throw new InvalidArgumentException(ExceptionMessages.InvalidColor);
         }
-        if (!colorRepository.DoesColorExist(listing.InteriorColor.Id))
+        if (!colorRepository.DoesColorExist(listing.Color.Id))
         {
-            throw new ObjectNotFoundException(ExceptionMessages.InteriorColorNotFound);
+            throw new ObjectNotFoundException(ExceptionMessages.ColorNotFound);
         }
-        var interiorColor = colorRepository.GetColorById(listing.InteriorColor.Id);
-        if (!string.IsNullOrWhiteSpace(listing.InteriorColor.Name) && listing.InteriorColor.Name != interiorColor!.Name)
+        var color = colorRepository.GetColorById(listing.Color.Id);
+        if (!string.IsNullOrWhiteSpace(listing.Color.Name) && listing.Color.Name != color!.Name)
         {
-            throw new InvalidArgumentException(ExceptionMessages.InteriorColorNameConflict);
+            throw new InvalidArgumentException(ExceptionMessages.ColorNameConflict);
         }
-        if (listing.ExteriorColor == null)
+        if (listing.Features == null || listing.Features.Count == 0)
         {
-            throw new InvalidArgumentException(ExceptionMessages.RequiredExteriorColor);
+            throw new InvalidArgumentException(ExceptionMessages.RequiredFeatures);
         }
-        if (listing.ExteriorColor.Id <= 0)
+        var features = new List<Feature>();
+        foreach (var feature in listing.Features)
         {
-            throw new InvalidArgumentException(ExceptionMessages.InvalidExteriorColor);
-        }
-        if (!colorRepository.DoesColorExist(listing.ExteriorColor.Id))
-        {
-            throw new ObjectNotFoundException(ExceptionMessages.ExteriorColorNotFound);
-        }
-        var exteriorColor = colorRepository.GetColorById(listing.ExteriorColor.Id);
-        if (!string.IsNullOrWhiteSpace(listing.ExteriorColor.Name) && listing.ExteriorColor.Name != exteriorColor!.Name)
-        {
-            throw new InvalidArgumentException(ExceptionMessages.ExteriorColorNameConflict);
-        }
-        if (listing.FeaturesExterior == null || listing.FeaturesExterior.Count == 0)
-        {
-            throw new InvalidArgumentException(ExceptionMessages.RequiredFeaturesExterior);
-        }
-        var featuresExterior = new List<FeatureExterior>();
-        foreach (var featureExterior in listing.FeaturesExterior)
-        {
-            if (featureExterior.Id <= 0)
+            if (feature.Id <= 0)
             {
-                throw new InvalidArgumentException(ExceptionMessages.InvalidFeatureExterior + " ID: " + featureExterior.Id);
+                throw new InvalidArgumentException(ExceptionMessages.InvalidFeature + " ID: " + feature.Id);
             }
-            if (!featureExteriorRepository.DoesFeatureExteriorExist(featureExterior.Id))
+            if (!featureRepository.DoesFeatureExist(feature.Id))
             {
-                throw new ObjectNotFoundException(ExceptionMessages.FeatureExteriorNotFound);
+                throw new ObjectNotFoundException(ExceptionMessages.FeatureNotFound);
             }
-            var featureExteriorEntity = featureExteriorRepository.GetFeatureExteriorById(featureExterior.Id);
-            if (!string.IsNullOrWhiteSpace(featureExterior.Name) && featureExterior.Name != featureExteriorEntity!.Name)
+            var featureEntity = featureRepository.GetFeatureById(feature.Id);
+            if (!string.IsNullOrWhiteSpace(feature.Name) && feature.Name != featureEntity!.Name)
             {
-                throw new InvalidArgumentException(ExceptionMessages.FeatureExteriorNameConflict);
+                throw new InvalidArgumentException(ExceptionMessages.FeatureNameConflict);
             }
-            if (!featuresExterior.Contains(featureExteriorEntity!))
+            if (!features.Contains(featureEntity!))
             {
-                featuresExterior.Add(featureExteriorEntity!);
-            }
-        }
-        if (listing.FeaturesInterior == null || listing.FeaturesInterior.Count == 0)
-        {
-            throw new InvalidArgumentException(ExceptionMessages.RequiredFeaturesInterior);
-        }
-        var featuresInterior = new List<FeatureInterior>();
-        foreach (var featureInterior in listing.FeaturesInterior)
-        {
-            if (featureInterior.Id <= 0)
-            {
-                throw new InvalidArgumentException(ExceptionMessages.InvalidFeatureInterior + " ID: " + featureInterior.Id);
-            }
-            if (!featureInteriorRepository.DoesFeatureInteriorExist(featureInterior.Id))
-            {
-                throw new ObjectNotFoundException(ExceptionMessages.FeatureInteriorNotFound);
-            }
-            var featureInteriorEntity = featureInteriorRepository.GetFeatureInteriorById(featureInterior.Id);
-            if (!string.IsNullOrWhiteSpace(featureInterior.Name) && featureInterior.Name != featureInteriorEntity!.Name)
-            {
-                throw new InvalidArgumentException(ExceptionMessages.FeatureInteriorNameConflict);
-            }
-            if (!featuresInterior.Contains(featureInteriorEntity!))
-            {
-                featuresInterior.Add(featureInteriorEntity!);
+                features.Add(featureEntity!);
             }
         }
         if (images == null || images.Count == 0)
@@ -312,12 +273,10 @@ public class ListingService(
         listing.Category = category;
         listing.Engine = engine;
         listing.DoorType = doorType;
-        listing.InteriorColor = interiorColor;
-        listing.ExteriorColor = exteriorColor;
+        listing.Color = color;
         listing.Transmission = transmission;
         listing.Traction = traction;
-        listing.FeaturesExterior = featuresExterior;
-        listing.FeaturesInterior = featuresInterior;
+        listing.Features = features;
         listing.ListingImages = listingImages;
         return listingRepository.CreateListing(listing);
     }
@@ -348,6 +307,10 @@ public class ListingService(
         if (listing.Price > 0)
         {
             existingListing!.Price = listing.Price;
+        }
+        if (!string.IsNullOrWhiteSpace(listing.Description))
+        {
+            existingListing!.Description = listing.Description;
         }
         if (listing.Car != null)
         {
@@ -472,89 +435,47 @@ public class ListingService(
             }
             existingListing!.Traction = traction;
         }
-        if (listing.InteriorColor != null)
+        if (listing.Color != null)
         {
-            if (listing.InteriorColor.Id <= 0)
+            if (listing.Color.Id <= 0)
             {
-                throw new InvalidArgumentException(ExceptionMessages.InvalidInteriorColor);
+                throw new InvalidArgumentException(ExceptionMessages.InvalidColor);
             }
-            if (!colorRepository.DoesColorExist(listing.InteriorColor.Id))
+            if (!colorRepository.DoesColorExist(listing.Color.Id))
             {
-                throw new ObjectNotFoundException(ExceptionMessages.InteriorColorNotFound);
+                throw new ObjectNotFoundException(ExceptionMessages.ColorNotFound);
             }
-            var interiorColor = colorRepository.GetColorById(listing.InteriorColor.Id);
-            if (!string.IsNullOrWhiteSpace(listing.InteriorColor.Name) && listing.InteriorColor.Name != interiorColor!.Name)
+            var color = colorRepository.GetColorById(listing.Color.Id);
+            if (!string.IsNullOrWhiteSpace(listing.Color.Name) && listing.Color.Name != color!.Name)
             {
-                throw new InvalidArgumentException(ExceptionMessages.InteriorColorNameConflict);
+                throw new InvalidArgumentException(ExceptionMessages.ColorNameConflict);
             }
-            existingListing!.InteriorColor = interiorColor;
+            existingListing!.Color = color;
         }
-        if (listing.ExteriorColor != null)
+        if (listing.Features != null && listing.Features.Count > 0)
         {
-            if (listing.ExteriorColor.Id <= 0)
+            var features = new List<Feature>();
+            foreach (var feature in listing.Features)
             {
-                throw new InvalidArgumentException(ExceptionMessages.InvalidExteriorColor);
-            }
-            if (!colorRepository.DoesColorExist(listing.ExteriorColor.Id))
-            {
-                throw new ObjectNotFoundException(ExceptionMessages.ExteriorColorNotFound);
-            }
-            var exteriorColor = colorRepository.GetColorById(listing.ExteriorColor.Id);
-            if (!string.IsNullOrWhiteSpace(listing.ExteriorColor.Name) && listing.ExteriorColor.Name != exteriorColor!.Name)
-            {
-                throw new InvalidArgumentException(ExceptionMessages.ExteriorColorNameConflict);
-            }
-            existingListing!.ExteriorColor = exteriorColor;
-        }
-        if (listing.FeaturesExterior != null && listing.FeaturesExterior.Count > 0)
-        {
-            var featuresExterior = new List<FeatureExterior>();
-            foreach (var featureExterior in listing.FeaturesExterior)
-            {
-                if (featureExterior.Id <= 0)
+                if (feature.Id <= 0)
                 {
-                    throw new InvalidArgumentException(ExceptionMessages.InvalidFeatureExterior + " ID: " + featureExterior.Id);
+                    throw new InvalidArgumentException(ExceptionMessages.InvalidFeature + " ID: " + feature.Id);
                 }
-                if (!featureExteriorRepository.DoesFeatureExteriorExist(featureExterior.Id))
+                if (!featureRepository.DoesFeatureExist(feature.Id))
                 {
-                    throw new ObjectNotFoundException(ExceptionMessages.FeatureExteriorNotFound);
+                    throw new ObjectNotFoundException(ExceptionMessages.FeatureNotFound);
                 }
-                var featureExteriorEntity = featureExteriorRepository.GetFeatureExteriorById(featureExterior.Id);
-                if (!string.IsNullOrWhiteSpace(featureExterior.Name) && featureExterior.Name != featureExteriorEntity!.Name)
+                var featureEntity = featureRepository.GetFeatureById(feature.Id);
+                if (!string.IsNullOrWhiteSpace(feature.Name) && feature.Name != featureEntity!.Name)
                 {
-                    throw new InvalidArgumentException(ExceptionMessages.FeatureExteriorNameConflict);
+                    throw new InvalidArgumentException(ExceptionMessages.FeatureNameConflict);
                 }
-                if (!featuresExterior.Contains(featureExteriorEntity!))
+                if (!features.Contains(featureEntity!))
                 {
-                    featuresExterior.Add(featureExteriorEntity!);
+                    features.Add(featureEntity!);
                 }
             }
-            existingListing!.FeaturesExterior = featuresExterior;
-        }
-        if (listing.FeaturesInterior != null && listing.FeaturesInterior.Count > 0)
-        {
-            var featuresInterior = new List<FeatureInterior>();
-            foreach (var featureInterior in listing.FeaturesInterior)
-            {
-                if (featureInterior.Id <= 0)
-                {
-                    throw new InvalidArgumentException(ExceptionMessages.InvalidFeatureInterior + " ID: " + featureInterior.Id);
-                }
-                if (!featureInteriorRepository.DoesFeatureInteriorExist(featureInterior.Id))
-                {
-                    throw new ObjectNotFoundException(ExceptionMessages.FeatureInteriorNotFound);
-                }
-                var featureInteriorEntity = featureInteriorRepository.GetFeatureInteriorById(featureInterior.Id);
-                if (!string.IsNullOrWhiteSpace(featureInterior.Name) && featureInterior.Name != featureInteriorEntity!.Name)
-                {
-                    throw new InvalidArgumentException(ExceptionMessages.FeatureInteriorNameConflict);
-                }
-                if (!featuresInterior.Contains(featureInteriorEntity!))
-                {
-                    featuresInterior.Add(featureInteriorEntity!);
-                }
-            }
-            existingListing!.FeaturesInterior = featuresInterior;
+            existingListing!.Features = features;
         }
         if (images != null && images.Count > 0)
         {

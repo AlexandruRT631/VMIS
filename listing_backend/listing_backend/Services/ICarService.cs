@@ -9,5 +9,5 @@ public interface ICarService
     public Car CreateCar(Car car);
     public Car UpdateCar(Car car);
     public bool DeleteCar(int id);
-    public List<Car> GetCarByMakeModelYear(int makeId, int modelId, int year);
+    public List<Car> GetCarByModelYear(int modelId, int year);
 }

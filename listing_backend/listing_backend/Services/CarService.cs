@@ -409,16 +409,8 @@ public class CarService(
         return carRepository.DeleteCar(car!);
     }
     
-    public List<Car> GetCarByMakeModelYear(int makeId, int modelId, int year)
+    public List<Car> GetCarByModelYear(int modelId, int year)
     {
-        if (makeId <= 0)
-        {
-            throw new InvalidArgumentException(ExceptionMessages.InvalidMake);
-        }
-        if (!makeRepository.DoesMakeExist(makeId))
-        {
-            throw new ObjectNotFoundException(ExceptionMessages.MakeNotFound);
-        }
         if (modelId <= 0)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidModel);
@@ -431,7 +423,7 @@ public class CarService(
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidYear);
         }
-        var possibleCars = carRepository.GetCarsByMakeModelYear(makeId, modelId, year);
+        var possibleCars = carRepository.GetCarsByModelYear(modelId, year);
         if (possibleCars.Count == 0)
         {
             throw new ObjectNotFoundException(ExceptionMessages.CarNotFound);

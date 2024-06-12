@@ -97,16 +97,15 @@ public class CarController(ICarService carService, IMapper mapper) : ControllerB
         }
     }
     
-    [HttpGet("getCarByMakeModelYear")]
-    public IActionResult GetCarByMakeModelYear([FromQuery] int? makeId, [FromQuery] int? modelId, [FromQuery] int? year)
+    [HttpGet("getCarByModelYear")]
+    public IActionResult GetCarByModelYear([FromQuery] int? modelId, [FromQuery] int? year)
     {
         try
         {
-            var methodMakeId = makeId.GetValueOrDefault();
             var methodModelId = modelId.GetValueOrDefault();
             var methodYear = year.GetValueOrDefault();
             
-            var carDtos = carService.GetCarByMakeModelYear(methodMakeId, methodModelId, methodYear).Select(mapper.Map<CarDto>).ToList();
+            var carDtos = carService.GetCarByModelYear(methodModelId, methodYear).Select(mapper.Map<CarDto>).ToList();
             return Ok(carDtos);
         }
         catch (InvalidArgumentException e)
