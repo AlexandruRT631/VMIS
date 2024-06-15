@@ -6,6 +6,7 @@ import ListingCreateEquipment from "./listing-create-equipment";
 import ListingCreateGeneration from "./listing-create-generation";
 import ListingCreateFinalDetails from "./listing-create-final-details";
 import {createListing} from "../../api/listing-api";
+import {useNavigate} from "react-router-dom";
 
 const ListingCreate = () => {
     const [possibleCars, setPossibleCars] = useState([]);
@@ -14,6 +15,7 @@ const ListingCreate = () => {
     const [technical, setTechnical] = useState(null);
     const [equipment, setEquipment] = useState(null);
     const [finalDetails, setFinalDetails] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (possibleCars.length === 1) {
@@ -61,7 +63,10 @@ const ListingCreate = () => {
                 Year: year,
                 CreatedAt: new Date(),
             }, finalDetails.images)
-                .then(console.log)
+                .then(r => {
+                    console.log(r);
+                    navigate(`/listing/${r.id}`, {replace: true});
+                })
                 .catch(console.error);
         }
     }, [finalDetails]);

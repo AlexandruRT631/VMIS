@@ -1,7 +1,7 @@
 import CommonPaper from "../../common/common-paper";
 import React, {useEffect, useRef, useState} from "react";
 import {getAllColors} from "../../api/color-api";
-import {Button, Checkbox, Grid} from "@mui/material";
+import {Button, Checkbox, Grid, Typography, Box} from "@mui/material";
 import CommonSubPaper from "../../common/common-sub-paper";
 import {getAllFeatures} from "../../api/feature-api";
 
@@ -10,17 +10,33 @@ const SelectColor = ({colors, setColor, color}) => {
         <Grid container spacing={2}>
             {colors.map((selectedColor, index) => (
                 <Grid item key={index} xs={2}>
-                    <Checkbox
-                        sx={{
-                            color: selectedColor.hexCode,
-                            '&.Mui-checked': {
-                                color: selectedColor.hexCode,
-                            },
-                        }}
-                        onChange={() => setColor(selectedColor)}
-                        checked={selectedColor === color}
-                    />
-                    {selectedColor.name.charAt(0).toUpperCase() + selectedColor.name.slice(1)}
+                    <Grid container>
+                        <Grid item xs={4}>
+                            <Checkbox
+                                sx={{
+                                    color: selectedColor.hexCode,
+                                    '&.Mui-checked': {
+                                        color: selectedColor.hexCode,
+                                    },
+                                }}
+                                onChange={() => setColor(selectedColor)}
+                                checked={selectedColor === color}
+                            />
+                        </Grid>
+                        <Grid item xs={8}>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    height: '100%'
+                                }}
+                            >
+                                <Typography sx={{ lineHeight: 'normal' }}>
+                                    {selectedColor.name.charAt(0).toUpperCase() + selectedColor.name.slice(1)}
+                                </Typography>
+                            </Box>
+                        </Grid>
+                    </Grid>
                 </Grid>
             ))}
         </Grid>
@@ -30,19 +46,35 @@ const SelectColor = ({colors, setColor, color}) => {
 const SelectFeatures = ({features, setFeatures, selectedFeatures}) => {
     return (
         <Grid container spacing={2}>
-            {features.map((feature, index) => (
-                <Grid item key={index} xs={2}>
-                    <Checkbox
-                        onChange={() => {
-                            if (selectedFeatures.includes(feature)) {
-                                setFeatures(selectedFeatures.filter((selectedFeature) => selectedFeature !== feature));
-                            } else {
-                                setFeatures([...selectedFeatures, feature]);
-                            }
-                        }}
-                        checked={selectedFeatures.includes(feature)}
-                    />
-                    {feature.name.charAt(0).toUpperCase() + feature.name.slice(1)}
+            {features.sort((a, b) => a.name.localeCompare(b.name)).map((feature, index) => (
+                <Grid item key={index} xs={4}>
+                    <Grid container>
+                        <Grid item xs={2}>
+                            <Checkbox
+                                onChange={() => {
+                                    if (selectedFeatures.includes(feature)) {
+                                        setFeatures(selectedFeatures.filter((selectedFeature) => selectedFeature !== feature));
+                                    } else {
+                                        setFeatures([...selectedFeatures, feature]);
+                                    }
+                                }}
+                                checked={selectedFeatures.includes(feature)}
+                            />
+                        </Grid>
+                        <Grid item xs={10}>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    height: '100%'
+                                }}
+                            >
+                                <Typography sx={{ lineHeight: 'normal' }}>
+                                    {feature.name.charAt(0).toUpperCase() + feature.name.slice(1)}
+                                </Typography>
+                            </Box>
+                        </Grid>
+                    </Grid>
                 </Grid>
             ))}
         </Grid>

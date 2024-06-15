@@ -89,4 +89,23 @@ public static class ExceptionMessages
     public const string InvalidPageIndex = "Invalid page index.";
     public const string InvalidPageSize = "Invalid page size.";
     public const string RequiredDescription = "Description is required.";
+    public const string ModelMakeConflict = "Make in the model database for this id differs.";
+    public const string InvalidMinYear = "Invalid min year.";
+    public const string InvalidMaxYear = "Invalid max year.";
+    public const string InvalidYearRange = "Invalid year range.";
+    public const string InvalidMinMileage = "Invalid min mileage.";
+    public const string InvalidMaxMileage = "Invalid max mileage.";
+    public const string InvalidMileageRange = "Invalid mileage range.";
+    public const string InvalidMinPower = "Invalid min power.";
+    public const string InvalidMaxPower = "Invalid max power.";
+    public const string InvalidPowerRange = "Invalid power range.";
+    public const string InvalidMinTorque = "Invalid min torque.";
+    public const string InvalidMaxTorque = "Invalid max torque.";
+    public const string InvalidTorqueRange = "Invalid torque range.";
+    public const string InvalidMinDisplacement = "Invalid min displacement.";
+    public const string InvalidMaxDisplacement = "Invalid max displacement.";
+    public const string InvalidDisplacementRange = "Invalid displacement range.";
+    public const string InvalidMinPrice = "Invalid min price.";
+    public const string InvalidMaxPrice = "Invalid max price.";
+    public const string InvalidPriceRange = "Invalid price range.";
 }

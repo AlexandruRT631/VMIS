@@ -1,4 +1,6 @@
+using System.Text.RegularExpressions;
 using listing_backend.Constants;
+using listing_backend.DTOs;
 using listing_backend.Entities;
 using listing_backend.Exceptions;
 using listing_backend.Repositories;
@@ -15,6 +17,9 @@ public class ListingService(
     ITractionRepository tractionRepository,
     IColorRepository colorRepository,
     IFeatureRepository featureRepository,
+    IMakeRepository makeRepository,
+    IModelRepository modelRepository,
+    IFuelRepository fuelRepository,
     IImageService imageService
 ) : IListingService
 {
@@ -534,5 +539,286 @@ public class ListingService(
         }
         
         return listingRepository.DeleteListing(listing!);
+    }
+
+    public List<Listing> GetListingsBySearch(ListingSearchDto listingSearchDto, int pageIndex, int pageSize)
+    {
+        if (pageIndex <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidPageIndex);
+        }
+        if (pageSize <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidPageSize);
+        }
+
+        if (listingSearchDto.MakeId != null)
+        {
+            if (listingSearchDto.MakeId.Value < 0)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidMake);
+            }
+            if (!makeRepository.DoesMakeExist(listingSearchDto.MakeId.Value))
+            {
+                throw new ObjectNotFoundException(ExceptionMessages.MakeNotFound);
+            }
+        }
+        
+        if (listingSearchDto.ModelId != null)
+        {
+            if (listingSearchDto.ModelId.Value < 0)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidModel);
+            }
+            if (!modelRepository.DoesModelExist(listingSearchDto.ModelId.Value))
+            {
+                throw new ObjectNotFoundException(ExceptionMessages.ModelNotFound);
+            }
+            var model = modelRepository.GetModelById(listingSearchDto.ModelId.Value);
+            if (listingSearchDto.MakeId != null && model!.Make!.Id != listingSearchDto.MakeId)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.ModelMakeConflict);
+            }
+        }
+        
+        if (listingSearchDto.StartYear != null)
+        {
+            if (listingSearchDto.ModelId == null)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.RequiredModel);
+            }
+            if (listingSearchDto.StartYear.Value < 1900)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidStartYear);
+            }
+        }
+        
+        if (listingSearchDto.MinYear != null)
+        {
+            if (listingSearchDto.MinYear.Value < 1900)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidMinYear);
+            }
+        }
+        if (listingSearchDto.MaxYear != null)
+        {
+            if (listingSearchDto.MaxYear.Value < 1900)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidMaxYear);
+            }
+            if (listingSearchDto.MinYear != null && listingSearchDto.MinYear > listingSearchDto.MaxYear)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidYearRange);
+            }
+        }
+        
+        if (listingSearchDto.MinMileage != null)
+        {
+            if (listingSearchDto.MinMileage.Value < 0)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidMinMileage);
+            }
+        }
+        if (listingSearchDto.MaxMileage != null)
+        {
+            if (listingSearchDto.MaxMileage.Value < 0)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidMaxMileage);
+            }
+            if (listingSearchDto.MinMileage != null && listingSearchDto.MinMileage > listingSearchDto.MaxMileage)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidMileageRange);
+            }
+        }
+
+        if (listingSearchDto.Categories is { Count: > 0 })
+        {
+            foreach (var categoryId in listingSearchDto.Categories)
+            {
+                if (categoryId < 0)
+                {
+                    throw new InvalidArgumentException(ExceptionMessages.InvalidCategory + " ID: " + categoryId);
+                }
+                if (!categoryRepository.DoesCategoryExist(categoryId))
+                {
+                    throw new ObjectNotFoundException(ExceptionMessages.CategoryNotFound + " ID: " + categoryId);
+                }
+            }
+        }
+
+        if (listingSearchDto.Fuels is { Count: > 0 })
+        {
+            foreach (var fuelId in listingSearchDto.Fuels)
+            {
+                if (fuelId < 0)
+                {
+                    throw new InvalidArgumentException(ExceptionMessages.InvalidFuel + " ID: " + fuelId);
+                }
+                if (!fuelRepository.DoesFuelExist(fuelId))
+                {
+                    throw new ObjectNotFoundException(ExceptionMessages.FuelNotFound + " ID: " + fuelId);
+                }
+            }
+        }
+        
+        if (listingSearchDto.MinPower != null)
+        {
+            if (listingSearchDto.MinPower.Value < 0)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidMinPower);
+            }
+        }
+        if (listingSearchDto.MaxPower != null)
+        {
+            if (listingSearchDto.MaxPower.Value < 0)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidMaxPower);
+            }
+            if (listingSearchDto.MinPower != null && listingSearchDto.MinPower > listingSearchDto.MaxPower)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidPowerRange);
+            }
+        }
+        
+        if (listingSearchDto.MinTorque != null)
+        {
+            if (listingSearchDto.MinTorque.Value < 0)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidMinTorque);
+            }
+        }
+        if (listingSearchDto.MaxTorque != null)
+        {
+            if (listingSearchDto.MaxTorque.Value < 0)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidMaxTorque);
+            }
+            if (listingSearchDto.MinTorque != null && listingSearchDto.MinTorque > listingSearchDto.MaxTorque)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidTorqueRange);
+            }
+        }
+        
+        if (listingSearchDto.MinDisplacement != null)
+        {
+            if (listingSearchDto.MinDisplacement.Value < 0)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidMinDisplacement);
+            }
+        }
+        if (listingSearchDto.MaxDisplacement != null)
+        {
+            if (listingSearchDto.MaxDisplacement.Value < 0)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidMaxDisplacement);
+            }
+            if (listingSearchDto.MinDisplacement != null && listingSearchDto.MinDisplacement > listingSearchDto.MaxDisplacement)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidDisplacementRange);
+            }
+        }
+        
+        if (listingSearchDto.DoorTypes is { Count: > 0 })
+        {
+            foreach (var doorTypeId in listingSearchDto.DoorTypes)
+            {
+                if (doorTypeId < 0)
+                {
+                    throw new InvalidArgumentException(ExceptionMessages.InvalidDoorType + " ID: " + doorTypeId);
+                }
+                if (!doorTypeRepository.DoesDoorTypeExist(doorTypeId))
+                {
+                    throw new ObjectNotFoundException(ExceptionMessages.DoorTypeNotFound + " ID: " + doorTypeId);
+                }
+            }
+        }
+
+        if (listingSearchDto.Transmissions is { Count: > 0 })
+        {
+            foreach (var transmissionId in listingSearchDto.Transmissions)
+            {
+                if (transmissionId < 0)
+                {
+                    throw new InvalidArgumentException(ExceptionMessages.InvalidTransmission + " ID: " +
+                                                       transmissionId);
+                }
+                if (!transmissionRepository.DoesTransmissionExist(transmissionId))
+                {
+                    throw new ObjectNotFoundException(ExceptionMessages.TransmissionNotFound + " ID: " +
+                                                      transmissionId);
+                }
+            }
+        }
+        
+        if (listingSearchDto.Tractions is { Count: > 0 })
+        {
+            foreach (var tractionId in listingSearchDto.Tractions)
+            {
+                if (tractionId < 0)
+                {
+                    throw new InvalidArgumentException(ExceptionMessages.InvalidTraction + " ID: " + tractionId);
+                }
+                if (!tractionRepository.DoesTractionExist(tractionId))
+                {
+                    throw new ObjectNotFoundException(ExceptionMessages.TractionNotFound + " ID: " + tractionId);
+                }
+            }
+        }
+        
+        if (listingSearchDto.Colors is { Count: > 0 })
+        {
+            foreach (var colorId in listingSearchDto.Colors)
+            {
+                if (colorId < 0)
+                {
+                    throw new InvalidArgumentException(ExceptionMessages.InvalidColor + " ID: " + colorId);
+                }
+                if (!colorRepository.DoesColorExist(colorId))
+                {
+                    throw new ObjectNotFoundException(ExceptionMessages.ColorNotFound + " ID: " + colorId);
+                }
+            }
+        }
+        
+        if (listingSearchDto.Features is { Count: > 0 })
+        {
+            foreach (var featureId in listingSearchDto.Features)
+            {
+                if (featureId < 0)
+                {
+                    throw new InvalidArgumentException(ExceptionMessages.InvalidFeature + " ID: " + featureId);
+                }
+                if (!featureRepository.DoesFeatureExist(featureId))
+                {
+                    throw new ObjectNotFoundException(ExceptionMessages.FeatureNotFound + " ID: " + featureId);
+                }
+            }
+        }
+        
+        if (listingSearchDto.MinPrice != null)
+        {
+            if (listingSearchDto.MinPrice.Value < 0)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidMinPrice);
+            }
+        }
+        if (listingSearchDto.MaxPrice != null)
+        {
+            if (listingSearchDto.MaxPrice.Value < 0)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidMaxPrice);
+            }
+            if (listingSearchDto.MinPrice != null && listingSearchDto.MinPrice > listingSearchDto.MaxPrice)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.InvalidPriceRange);
+            }
+        }
+        
+        if (!string.IsNullOrWhiteSpace(listingSearchDto.Keywords))
+        {
+            listingSearchDto.Keywords = Regex.Replace(listingSearchDto.Keywords, @"\s+", " ");
+        }
+
+        return listingRepository.GetListingsBySearch(listingSearchDto, pageIndex, pageSize);
     }
 }

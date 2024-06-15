@@ -1,3 +1,4 @@
+using listing_backend.DTOs;
 using listing_backend.Entities;
 
 namespace listing_backend.Services;
@@ -9,4 +10,5 @@ public interface IListingService
     public Listing CreateListing(Listing listing, List<IFormFile>? images);
     public Listing UpdateListing(Listing listing, List<IFormFile>? images);
     public bool DeleteListing(int id);
+    public List<Listing> GetListingsBySearch(ListingSearchDto listingSearchDto, int pageIndex, int pageSize);
 }

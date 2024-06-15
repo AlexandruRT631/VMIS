@@ -15,7 +15,9 @@ public class ListingController(IListingService listingService, IMapper mapper) :
     [HttpGet]
     public IActionResult GetAllListings(int pageIndex = 1, int pageSize = 1)
     {
-        var listingDtos = listingService.GetAllListings(pageIndex, pageSize).Select(mapper.Map<ListingDto>).ToList();
+        var listingDtos = listingService.GetAllListings(pageIndex, pageSize)
+            .Select(mapper.Map<ListingDto>)
+            .ToList();
         return Ok(listingDtos);
     }
     
@@ -88,6 +90,27 @@ public class ListingController(IListingService listingService, IMapper mapper) :
         try
         {
             return Ok(listingService.DeleteListing(id));
+        }
+        catch (InvalidArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ObjectNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+    
+    [HttpPost("search")]
+    public IActionResult GetListingsBySearch([FromForm] ListingSearchDto listingSearchDto, int pageIndex = 1, int pageSize = 1)
+    {
+        try
+        {
+            var listingDtos = listingService
+                .GetListingsBySearch(listingSearchDto, pageIndex, pageSize)
+                .Select(mapper.Map<ListingDto>)
+                .ToList();
+            return Ok(listingDtos);
         }
         catch (InvalidArgumentException e)
         {
