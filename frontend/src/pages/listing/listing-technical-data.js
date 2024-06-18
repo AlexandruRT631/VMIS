@@ -35,7 +35,7 @@ const ListingTechnicalData = ({listing}) => {
                     </TableRow>
                     <TableRow>
                         <TableCell>Cubic Capacity</TableCell>
-                        <TableCell>{numberFormat.format(listing.engine.displacement)} cm<sup>2</sup></TableCell>
+                        <TableCell>{numberFormat.format(listing.engine.displacement)} cm<sup>3</sup></TableCell>
                     </TableRow>
                     <TableRow>
                         <TableCell>Power</TableCell>

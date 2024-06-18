@@ -15,10 +15,15 @@ public class ListingController(IListingService listingService, IMapper mapper) :
     [HttpGet]
     public IActionResult GetAllListings(int pageIndex = 1, int pageSize = 1)
     {
-        var listingDtos = listingService.GetAllListings(pageIndex, pageSize)
+        var (listings, totalPages) = listingService.GetAllListings(pageIndex, pageSize);
+        var listingDtos = listings
             .Select(mapper.Map<ListingDto>)
             .ToList();
-        return Ok(listingDtos);
+        return Ok(new
+        {
+            Listings = listingDtos,
+            TotalPages = totalPages
+        });
     }
     
     [HttpGet("{id:int}")]
@@ -102,15 +107,20 @@ public class ListingController(IListingService listingService, IMapper mapper) :
     }
     
     [HttpPost("search")]
-    public IActionResult GetListingsBySearch([FromForm] ListingSearchDto listingSearchDto, int pageIndex = 1, int pageSize = 1)
+    public IActionResult GetListingsBySearch([FromForm] ListingSearchDto listingSearchDto,[FromForm] int pageIndex = 1,[FromForm] int pageSize = 1)
     {
         try
         {
-            var listingDtos = listingService
-                .GetListingsBySearch(listingSearchDto, pageIndex, pageSize)
+            var (listings, totalPages) = listingService
+                .GetListingsBySearch(listingSearchDto, pageIndex, pageSize);
+            var listingDtos = listings
                 .Select(mapper.Map<ListingDto>)
                 .ToList();
-            return Ok(listingDtos);
+            return Ok(new
+            {
+                Listings = listingDtos,
+                TotalPages = totalPages
+            });
         }
         catch (InvalidArgumentException e)
         {

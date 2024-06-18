@@ -11,3 +11,13 @@ export const getCarByModelYear = async (modelId, year) => {
         throw error;
     }
 }
+
+export const getCarsByModel = async (modelId) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/getCarsByModel?modelId=${modelId}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching cars with modelId ${modelId}:`, error);
+        throw error;
+    }
+}

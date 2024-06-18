@@ -65,7 +65,7 @@ const ListingCreate = () => {
             }, finalDetails.images)
                 .then(r => {
                     console.log(r);
-                    navigate(`/listing/${r.id}`, {replace: true});
+                    navigate(`/listing/${r.id}`);
                 })
                 .catch(console.error);
         }

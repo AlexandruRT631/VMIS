@@ -5,10 +5,10 @@ namespace listing_backend.Services;
 
 public interface IListingService
 {
-    public List<Listing> GetAllListings(int pageIndex, int pageSize);
+    public (List<Listing>, int) GetAllListings(int pageIndex, int pageSize);
     public Listing? GetListingById(int id);
     public Listing CreateListing(Listing listing, List<IFormFile>? images);
     public Listing UpdateListing(Listing listing, List<IFormFile>? images);
     public bool DeleteListing(int id);
-    public List<Listing> GetListingsBySearch(ListingSearchDto listingSearchDto, int pageIndex, int pageSize);
+    public (List<Listing>, int) GetListingsBySearch(ListingSearchDto listingSearchDto, int pageIndex, int pageSize);
 }

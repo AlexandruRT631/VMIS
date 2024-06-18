@@ -77,3 +77,31 @@ export const deleteListing = async (id) => {
         throw error;
     }
 };
+
+export const searchListings = async (listingSearchDto, pageIndex = 1, pageSize = 10) => {
+    try {
+        const formData = new FormData();
+        if (listingSearchDto) {
+            Object.keys(listingSearchDto).forEach(key => {
+                const value = listingSearchDto[key];
+                if (Array.isArray(value)) {
+                    value.forEach(item => formData.append(key, item));
+                } else if (value !== null) {
+                    formData.append(key, value);
+                }
+            });
+        }
+        formData.append('pageIndex', pageIndex);
+        formData.append('pageSize', pageSize);
+
+        const response = await axios.post(`${BASE_URL}/search`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error searching listings:', error);
+        throw error;
+    }
+}

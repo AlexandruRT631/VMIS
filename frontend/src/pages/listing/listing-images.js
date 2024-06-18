@@ -1,49 +1,9 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Box, Stack, Button, useTheme, IconButton, Dialog, Paper} from '@mui/material';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import CloseIcon from '@mui/icons-material/Close';
+import NavigationButtons from "../../common/navigation-buttons";
 
 const BASE_URL = process.env.REACT_APP_LISTING_API_URL;
-
-const NavigationButtons = ({handleNext, handlePrev}) => {
-    return (
-        <React.Fragment>
-            <IconButton
-                onClick={handlePrev}
-                sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '10px',
-                    transform: 'translateY(-50%)',
-                    backgroundColor: 'rgba(0,0,0,0.5)',
-                    color: 'white',
-                    '&:hover': {
-                        backgroundColor: 'rgba(0,0,0,0.7)',
-                    },
-                }}
-            >
-                <NavigateBeforeIcon />
-            </IconButton>
-            <IconButton
-                onClick={handleNext}
-                sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    right: '10px',
-                    transform: 'translateY(-50%)',
-                    backgroundColor: 'rgba(0,0,0,0.5)',
-                    color: 'white',
-                    '&:hover': {
-                        backgroundColor: 'rgba(0,0,0,0.7)',
-                    },
-                }}
-            >
-                <NavigateNextIcon />
-            </IconButton>
-        </React.Fragment>
-    )
-}
 
 const ImageList = ({listing, selectedImage, handleSelectImage, refs, theme}) => {
     return (
@@ -52,6 +12,7 @@ const ImageList = ({listing, selectedImage, handleSelectImage, refs, theme}) => 
             spacing={2}
             sx={{
                 overflowX: 'auto',
+                overflowY: 'hidden',
                 maxWidth: '100%',
                 mt: 2,
                 px: 2,

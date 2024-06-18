@@ -117,4 +117,22 @@ public class CarController(ICarService carService, IMapper mapper) : ControllerB
             return NotFound(e.Message);
         }
     }
+    
+    [HttpGet("getCarsByModel")]
+    public IActionResult GetCarsByModel([FromQuery] int modelId)
+    {
+        try
+        {
+            var carDtos = carService.GetCarsByModel(modelId).Select(mapper.Map<CarDto>).ToList();
+            return Ok(carDtos);
+        }
+        catch (InvalidArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ObjectNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
 }

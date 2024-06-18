@@ -25,9 +25,9 @@ public class ListingService(
 {
     private static readonly string[] AllowedFileTypes = [".jpg", ".jpeg", ".png", ".webp"];
     private const long MaxFileSize = 10 * 1024 * 1024; // 5 MB
-    private const int MaxFileCount = 30;
+    private const int MaxFileCount = 50;
     
-    public List<Listing> GetAllListings(int pageIndex, int pageSize)
+    public (List<Listing>, int) GetAllListings(int pageIndex, int pageSize)
     {
         if (pageIndex <= 0)
         {
@@ -541,7 +541,7 @@ public class ListingService(
         return listingRepository.DeleteListing(listing!);
     }
 
-    public List<Listing> GetListingsBySearch(ListingSearchDto listingSearchDto, int pageIndex, int pageSize)
+    public (List<Listing>, int) GetListingsBySearch(ListingSearchDto listingSearchDto, int pageIndex, int pageSize)
     {
         if (pageIndex <= 0)
         {

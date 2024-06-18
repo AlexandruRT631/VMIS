@@ -431,4 +431,18 @@ public class CarService(
         
         return possibleCars;
     }
+
+    public List<Car> GetCarsByModel(int modelId)
+    {
+        if (modelId <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidModel);
+        }
+        if (!modelRepository.DoesModelExist(modelId))
+        {
+            throw new ObjectNotFoundException(ExceptionMessages.ModelNotFound);
+        }
+        
+        return modelRepository.GetModelById(modelId)!.PossibleCars;
+    }
 }

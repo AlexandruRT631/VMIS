@@ -4,6 +4,7 @@ import Home from "./pages/home/home";
 import Listing from "./pages/listing/listing";
 import {Container, createTheme, CssBaseline, ThemeProvider} from "@mui/material";
 import ListingCreate from "./pages/listing-create/listing-create";
+import Search from "./pages/search/search";
 
 const theme = createTheme({
     palette: {
@@ -32,6 +33,7 @@ class App extends Component {
                             <Route path="/" element={<Home/>}/>
                             <Route path="/listing/:id" element={<Listing/>}/>
                             <Route path="/createListing" element={<ListingCreate/>}/>
+                            <Route path="/search" element={<Search/>}/>
                         </Routes>
                     </Router>
                 </Container>

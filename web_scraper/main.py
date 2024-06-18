@@ -57,7 +57,6 @@ for URL in URLs:
     if ("model" not in listing_details
             or "make" not in listing_details
             or "year" not in listing_details
-            or "generation" not in listing_details
             or "body_type" not in listing_details
             or "door_count" not in listing_details
             or "engine_capacity" not in listing_details
@@ -87,7 +86,7 @@ for URL in URLs:
     car = None
     if len(cars) == 1:
         car = cars[0]
-    else:
+    elif "generation" in listing_details:
         startYear = re.search(r'\[(\d{4})', listing_details["generation"]).group(1)
         for c in cars:
             if c["startYear"] == int(startYear):
@@ -285,6 +284,10 @@ for URL in URLs:
     # Replacing <p></p> and <br> with \n.
     description = re.sub(r"<p>|</p>", "\n", description)
     description = re.sub(r"<br\s*/?>", "\n", description)
+    # Replacing lines
+    description = re.sub(r"</?ul>", "", description)
+    description = re.sub(r"<li>", "-", description)
+    description = re.sub(r"</li>", "\n", description)
 
     # Creating the new listing object.
     newListing = {

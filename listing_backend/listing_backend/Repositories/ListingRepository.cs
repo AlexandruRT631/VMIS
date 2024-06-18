@@ -9,13 +9,13 @@ namespace listing_backend.Repositories;
 
 public class ListingRepository(ListingDbContext context) : IListingRepository
 {
-    public List<Listing> GetAllListings(int pageIndex, int pageSize)
+    public (List<Listing>, int) GetAllListings(int pageIndex, int pageSize)
     {
         var orderedListings = context.Listings
             .OrderBy(l => l.CreatedAt);
+        var totalPages = (int) Math.Ceiling(orderedListings.Count() / (double) pageSize);
         var listings = QueryUtilities.Paginate(orderedListings, pageIndex, pageSize);
-        return listings
-            .ToList();
+        return (listings.ToList(), totalPages);
     }
 
     public Listing? GetListingById(int id)
@@ -61,7 +61,7 @@ public class ListingRepository(ListingDbContext context) : IListingRepository
         return context.Listings.Any(e => e.Id == id);
     }
 
-    public List<Listing> GetListingsBySearch(ListingSearchDto listingSearchDto, int pageIndex, int pageSize)
+    public (List<Listing>, int) GetListingsBySearch(ListingSearchDto listingSearchDto, int pageIndex, int pageSize)
     {
         var listings = from l in context.Listings
             select l;
@@ -108,7 +108,7 @@ public class ListingRepository(ListingDbContext context) : IListingRepository
         {
             listings = QueryUtilities.AddGreaterOrEqual(
                 listings,
-                l => l.Car!.StartYear,
+                l => l.Year,
                 listingSearchDto.MinYear.Value
             );
         }
@@ -117,7 +117,7 @@ public class ListingRepository(ListingDbContext context) : IListingRepository
         {
             listings = QueryUtilities.AddLessOrEqual(
                 listings,
-                l => l.Car!.StartYear,
+                l => l.Year,
                 listingSearchDto.MaxYear.Value
             );
         }
@@ -285,9 +285,9 @@ public class ListingRepository(ListingDbContext context) : IListingRepository
                 listingSearchDto.MaxPrice.Value
             );
         }
-
+        
+        var totalPages = (int) Math.Ceiling(listings.Count() / (double) pageSize);
         listings = QueryUtilities.Paginate(listings.OrderBy(l => l.CreatedAt), pageIndex, pageSize);
-        return listings
-            .ToList();
+        return (listings.ToList(), totalPages);
     }
 }
