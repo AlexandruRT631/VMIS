@@ -1,4 +1,4 @@
-import CommonPaper from "../../common/common-paper";
+import CommonPaper from "../common-paper";
 import React, {useEffect, useRef, useState} from "react";
 import {
     Button,
@@ -12,8 +12,11 @@ import {
     Typography, useTheme
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
+import {createThumbnail} from "../create-thumbnail";
 
-const ListingCreateFinalDetails = ({setFinalDetails}) => {
+const BASE_URL = process.env.REACT_APP_LISTING_API_URL;
+
+const ListingSelectFinalDetails = ({listing, setFinalDetails}) => {
     const [title, setTitle] = useState("");
     const [price, setPrice] = useState("");
     const [mileage, setMileage] = useState("");
@@ -24,13 +27,38 @@ const ListingCreateFinalDetails = ({setFinalDetails}) => {
     const [thumbnails, setThumbnails] = useState([]);
     const [uploadingImages, setUploadingImages] = useState(false);
     const [postingError, setPostingError] = useState(null);
-    const sellerId = 1;
     const componentRef = useRef(null);
     const theme = useTheme();
 
     useEffect(() => {
+        const fetchImages = async () => {
+            const imageUrls = listing.listingImages.map(img => BASE_URL + img.url);
+            const imageFiles = await Promise.all(
+                imageUrls.map(async (url) => {
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        mode: 'cors',
+                        cache: 'no-store',
+                    });
+                    const blob = await response.blob();
+                    return new File([blob], url.split('/').pop(), { type: blob.type });
+                })
+            );
+            setImages(imageFiles);
+
+            const thumbnailPromises = imageFiles.map(file => createThumbnail(file));
+            const newThumbnails = await Promise.all(thumbnailPromises);
+            setThumbnails(newThumbnails);
+        };
         if (componentRef.current) {
             componentRef.current.scrollIntoView({behavior: "smooth"});
+        }
+        if (listing) {
+            setTitle(listing.title);
+            setPrice(listing.price.toString());
+            setMileage(listing.mileage.toString());
+            setDescription(listing.description);
+            fetchImages();
         }
     }, []);
 
@@ -53,41 +81,6 @@ const ListingCreateFinalDetails = ({setFinalDetails}) => {
             setMileageError(false);
         }
     }
-
-    const createThumbnail = (file) => {
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = (event) => {
-                const img = new Image();
-                img.src = event.target.result;
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    const maxSize = 100; // set the size of the thumbnail
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > maxSize) {
-                            height *= maxSize / width;
-                            width = maxSize;
-                        }
-                    } else {
-                        if (height > maxSize) {
-                            width *= maxSize / height;
-                            height = maxSize;
-                        }
-                    }
-
-                    canvas.width = width;
-                    canvas.height = height;
-                    ctx.drawImage(img, 0, 0, width, height);
-                    resolve(canvas.toDataURL());
-                };
-            };
-        });
-    };
 
     const handleImageChange = async (event) => {
         setUploadingImages(true);
@@ -121,7 +114,6 @@ const ListingCreateFinalDetails = ({setFinalDetails}) => {
             price: parseInt(price, 10),
             mileage: parseInt(mileage, 10),
             images: images,
-            sellerId: sellerId,
             description: description
         });
     }
@@ -224,11 +216,11 @@ const ListingCreateFinalDetails = ({setFinalDetails}) => {
                         },
                     }}
                 >
-                    Post Listing
+                    {listing ? "Update Listing" : "Post Listing"}
                 </Button>
             </div>
         </CommonPaper>
     )
 }
 
-export default ListingCreateFinalDetails;
+export default ListingSelectFinalDetails;

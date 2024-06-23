@@ -1,7 +1,7 @@
-import CommonPaper from "../../common/common-paper";
+import CommonPaper from "../common-paper";
 import {alpha, Button, ButtonGroup, Grid} from "@mui/material";
 import React, {useEffect, useRef, useState} from "react";
-import CommonSubPaper from "../../common/common-sub-paper";
+import CommonSubPaper from "../common-sub-paper";
 
 const SelectTechnical = ({title, listDetails, setDetail, detail}) => {
     const maxButtonGroupSize = 6;
@@ -38,7 +38,7 @@ const SelectTechnical = ({title, listDetails, setDetail, detail}) => {
     );
 }
 
-const ListingCreateTechnical = ({setTechnical, car}) => {
+const ListingSelectTechnical = ({listing, technical, setTechnical, car}) => {
     const [category, setCategory] = useState(null);
     const [doorType, setDoorType] = useState(null);
     const [fuel, setFuel] = useState(null);
@@ -52,6 +52,21 @@ const ListingCreateTechnical = ({setTechnical, car}) => {
     const transmissionRef = useRef(null);
     const tractionRef = useRef(null);
     const nextButtonRef = useRef(null);
+    const [firstLoad, setFirstLoad] = useState(true);
+    const firstLoadRef = useRef(firstLoad);
+
+    useEffect(() => {
+        if (listing && technical) {
+            setTechnical(technical);
+            setCategory(technical.category);
+            setDoorType(technical.doorType);
+            setFuel(technical.engine.fuel);
+            setEngine(technical.engine);
+            setTransmission(technical.transmission);
+            setTraction(technical.traction);
+        }
+        setFirstLoad(false);
+    }, []);
 
     useEffect(() => {
         if (car) {
@@ -60,55 +75,68 @@ const ListingCreateTechnical = ({setTechnical, car}) => {
     }, [car]);
 
     useEffect(() => {
-        if (category) {
-            doorTypeRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        else if (category === null) {
-            setDoorType(null);
+        if (!firstLoadRef.current) {
+            if (category) {
+                doorTypeRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            else if (category === null) {
+                setDoorType(null);
+            }
         }
     }, [category]);
 
     useEffect(() => {
-        if (doorType) {
-            fuelRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        else if (doorType === null) {
-            setFuel(null);
+        if (!firstLoadRef.current) {
+            if (doorType) {
+                fuelRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
+            } else if (doorType === null) {
+                setFuel(null);
+            }
         }
     }, [doorType]);
 
     useEffect(() => {
-        if (fuel) {
-            powerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        else if (fuel === null) {
-            setEngine(null);
+        if (!firstLoadRef.current) {
+            if (fuel) {
+                powerRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
+            } else if (fuel === null) {
+                setEngine(null);
+            }
         }
     }, [fuel]);
 
     useEffect(() => {
-        if (engine) {
-            transmissionRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        else if (engine === null) {
-            setTransmission(null);
+        if (!firstLoadRef.current) {
+            if (engine) {
+                transmissionRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
+            } else if (engine === null) {
+                setTransmission(null);
+            }
         }
     }, [engine]);
 
     useEffect(() => {
-        if (transmission) {
-            tractionRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        else if (transmission === null) {
-            setTraction(null);
+        if (!firstLoadRef.current) {
+            if (transmission) {
+                tractionRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
+            } else if (transmission === null) {
+                setTraction(null);
+            }
         }
     }, [transmission]);
 
     useEffect(() => {
-        if (traction) {
-            nextButtonRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (!firstLoadRef.current) {
+            if (traction) {
+                if (listing) {
+                    handleNext();
+                }
+                else {
+                    nextButtonRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
+                }
+            }
         }
-    }, [traction]);
+    }, [traction, listing]);
 
     const handleChange = (setCurrent, newCurrent, setNext) => {
         setTechnical(null);
@@ -151,7 +179,7 @@ const ListingCreateTechnical = ({setTechnical, car}) => {
                 <div ref={fuelRef}>
                     <SelectTechnical
                         title={"Fuel"}
-                        listDetails={[...new Set(car.possibleEngines.map(engine => engine.fuel))]}
+                        listDetails={Array.from(new Map(car.possibleEngines.map(engine => [engine.fuel.id, engine.fuel])).values())}
                         setDetail={(newFuel) => handleChange(setFuel, newFuel, setEngine)}
                         detail={fuel}
                     />
@@ -163,13 +191,13 @@ const ListingCreateTechnical = ({setTechnical, car}) => {
                     <SelectTechnical
                         title={"Power"}
                         listDetails={
-                        car.possibleEngines
-                            .filter(engine => engine.fuel === fuel)
-                            .map(engine => ({
-                                id: engine.id,
-                                name: String(engine.power) + " hp"
-                            }))
-                    }
+                            car.possibleEngines
+                                .filter(engine => engine.fuel.id === fuel.id)
+                                .map(engine => ({
+                                    id: engine.id,
+                                    name: String(engine.power) + " hp"
+                                }))
+                        }
                         setDetail={(newEngine) => handleChange(setEngine, {id: newEngine.id}, setTransmission)}
                         detail={engine}
                     />
@@ -198,7 +226,7 @@ const ListingCreateTechnical = ({setTechnical, car}) => {
                 </div>
                 : null
             }
-            {traction !== null ?
+            {traction !== null && !listing ?
                 <Grid container style={{ flexGrow: 1 }}>
                     <Grid mt={2} item xs={12}>
                         <Button
@@ -221,4 +249,4 @@ const ListingCreateTechnical = ({setTechnical, car}) => {
     );
 }
 
-export default ListingCreateTechnical;
+export default ListingSelectTechnical;

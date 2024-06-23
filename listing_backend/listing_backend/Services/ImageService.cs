@@ -5,10 +5,11 @@ namespace listing_backend.Services;
 public class ImageService(IConfiguration configuration) : IImageService
 {
     private readonly string _filesFolderPath = configuration["FilesFolderPath"]!;
+    private readonly string _imagesFolderName = "images";
     
     public string SaveImage(IFormFile image, Car car)
     {
-        var imageFolderPath = Path.Combine(_filesFolderPath, "images");
+        var imageFolderPath = Path.Combine(_filesFolderPath, _imagesFolderName);
         var fileName = Path.GetRandomFileName() + Path.GetExtension(image.FileName);
         var makePath = Path.Combine(imageFolderPath, car.Model!.Make!.Name);
         if (!Directory.Exists(makePath))
@@ -32,7 +33,7 @@ public class ImageService(IConfiguration configuration) : IImageService
             image.CopyTo(stream);
         }
 
-        return $"/images/{car.Model!.Make!.Name}/{car.Model!.Name!}/{car.StartYear.ToString()}/{fileName}";
+        return $"/{_imagesFolderName}/{car.Model!.Make!.Name}/{car.Model!.Name!}/{car.StartYear.ToString()}/{fileName}";
     }
 
     public void DeleteImage(string url)
@@ -42,5 +43,15 @@ public class ImageService(IConfiguration configuration) : IImageService
         {
             File.Delete(filePath);
         }
+    }
+    
+    public string MoveImage(string url, Car car)
+    {
+        var oldFilePath = Path.Combine(_filesFolderPath, url.TrimStart('/'));
+        var fileBytes = File.ReadAllBytes(oldFilePath);
+        var fileName = Path.GetFileName(oldFilePath);
+        var newFilePath = SaveImage(new FormFile(new MemoryStream(fileBytes), 0, fileBytes.Length, "image", fileName), car);
+        File.Delete(oldFilePath);
+        return newFilePath;
     }
 }

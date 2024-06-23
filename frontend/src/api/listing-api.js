@@ -52,9 +52,16 @@ export const updateListing = async (listingDto, images) => {
     try {
         const formData = new FormData();
         formData.append('listingDto', JSON.stringify(listingDto));
-        images.forEach((image, index) => {
-            formData.append('images', image);
-        });
+        if (images) {
+            for (const image of images) {
+                const compressedImage = await imageCompression(image, {
+                    maxSizeMB: 1,
+                    maxWidthOrHeight: 1920,
+                    useWebWorker: true,
+                });
+                formData.append('images', compressedImage, compressedImage.name);
+            }
+        }
 
         const response = await axios.put(BASE_URL, formData, {
             headers: {
@@ -105,3 +112,33 @@ export const searchListings = async (listingSearchDto, pageIndex = 1, pageSize =
         throw error;
     }
 }
+
+export const getActiveListingsByUserId = async (id, pageIndex = 1, pageSize = 10) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/active/${id}`, {
+            params: {
+                pageIndex,
+                pageSize
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching listing with ID ${id}:`, error);
+        throw error;
+    }
+};
+
+export const getInactiveListingsByUserId = async (id, pageIndex = 1, pageSize = 10) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/inactive/${id}`, {
+            params: {
+                pageIndex,
+                pageSize
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching listing with ID ${id}:`, error);
+        throw error;
+    }
+};

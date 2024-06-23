@@ -46,7 +46,7 @@ const Listing = () => {
                 mt={4}
                 mb={4}
             >
-                <Grid item xs={8} sx={{ position: 'sticky', top: 0, alignSelf: 'flex-start' }}>
+                <Grid item xs={8} sx={{ position: 'sticky', top: 96, alignSelf: 'flex-start' }}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <ListingImages listing={listing} />

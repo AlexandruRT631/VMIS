@@ -17,8 +17,9 @@ public interface IAuthenticationService
     /// Register a user and authenticate them
     /// </summary>
     /// <param name="user"></param>
+    /// <param name="profileImage"></param>
     /// <returns>Jwt Token</returns>
-    public string RegisterUser(User user);
+    public string RegisterUser(User? user, IFormFile? profileImage);
     
     /// <summary>
     /// Generates a refresh token, and stores it in the user database

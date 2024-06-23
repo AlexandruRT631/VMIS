@@ -21,15 +21,17 @@ public interface IUserService
     /// Creates a new user
     /// </summary>
     /// <param name="user"></param>
+    /// <param name="profileImage"></param>
     /// <returns>User created</returns>
-    public User CreateUser(User user);
+    public User CreateUser(User? user, IFormFile? profileImage);
     
     /// <summary>
     /// Updates a user by the id
     /// </summary>
     /// <param name="user"></param>
+    /// <param name="profileImage"></param>
     /// <returns>User updated</returns>
-    public User UpdateUser(User user);
+    public User UpdateUser(User? user, IFormFile? profileImage);
     
     /// <summary>
     /// Deletes a user by id

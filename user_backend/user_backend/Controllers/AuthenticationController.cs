@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using user_backend.DTOs;
 using user_backend.Entities;
@@ -26,12 +27,13 @@ public class AuthenticationController(IAuthenticationService authenticationServi
     }
     
     [HttpPost("register")]
-    public IActionResult Register(User user)
+    public IActionResult Register([FromForm] string user, [FromForm] IFormFile? profileImage)
     {
         try
         {
-            var accessToken = authenticationService.RegisterUser(user);
-            var refreshToken = authenticationService.GenerateRefreshToken(user.Email!);
+            var userObject = JsonSerializer.Deserialize<User>(user);
+            var accessToken = authenticationService.RegisterUser(userObject, profileImage);
+            var refreshToken = authenticationService.GenerateRefreshToken(userObject!.Email!);
             return Ok(new TokenDto(accessToken, refreshToken));
         }
         catch (InvalidArgumentException e)

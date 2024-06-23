@@ -12,4 +12,6 @@ public interface IListingRepository
     public bool DeleteListing(Listing listing);
     public bool DoesListingExist(int id);
     public (List<Listing>, int) GetListingsBySearch(ListingSearchDto listingSearchDto, int pageIndex, int pageSize);
+    public (List<Listing>, int) GetActiveListingsByUserId(int sellerId, int pageIndex, int pageSize);
+    public (List<Listing>, int) GetInactiveListingsByUserId(int sellerId, int pageIndex, int pageSize);
 }

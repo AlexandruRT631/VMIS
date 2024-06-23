@@ -1,10 +1,16 @@
-import CommonPaper from "../../common/common-paper";
+import CommonPaper from "../common-paper";
 import {alpha, Button, ButtonGroup, Grid} from "@mui/material";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
-const ListingCreateGeneration = ({setCar, possibleCars, car}) => {
+const ListingSelectGeneration = ({listing, car, setCar, possibleCars}) => {
     const [selectedCar, setSelectedCar] = useState(null);
     const maxButtonGroupSize = 6;
+
+    useEffect(() => {
+        if (listing && car) {
+            setSelectedCar(car);
+        }
+    }, []);
 
     const handleSelect = (selectCar) => {
         setSelectedCar(selectCar);
@@ -66,4 +72,4 @@ const ListingCreateGeneration = ({setCar, possibleCars, car}) => {
     )
 }
 
-export default ListingCreateGeneration;
+export default ListingSelectGeneration;

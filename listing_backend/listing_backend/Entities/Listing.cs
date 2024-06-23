@@ -22,4 +22,5 @@ public class Listing
     public virtual List<Feature>? Features { get; set; } = [];
     public virtual List<ListingImage>? ListingImages { get; set; } = [];
     public DateTime CreatedAt { get; set; }
+    public bool? IsSold { get; set; }
 }

@@ -11,8 +11,11 @@ using user_backend.Repositories;
 
 namespace user_backend.Services;
 
-public class AuthenticationService(IUserRepository userRepository, IConfiguration configuration)
-    : IAuthenticationService
+public class AuthenticationService(
+    IUserRepository userRepository, 
+    IImageService imageService,
+    IConfiguration configuration
+) : IAuthenticationService
 {
     public string AuthenticateUser(string email, string password)
     {
@@ -29,7 +32,7 @@ public class AuthenticationService(IUserRepository userRepository, IConfiguratio
         return GenerateJwtToken(user);
     }
     
-    public string RegisterUser(User user)
+    public string RegisterUser(User? user, IFormFile? profileImage)
     {
         if (user == null)
         {
@@ -62,6 +65,9 @@ public class AuthenticationService(IUserRepository userRepository, IConfiguratio
         
         user.Id = 0;
         user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+        user.ProfilePictureUrl = profileImage == null
+            ? imageService.GetDefaultImageUrl()
+            : imageService.SaveImage(profileImage);
         user = userRepository.CreateUser(user);
         return GenerateJwtToken(user);
     }
@@ -142,7 +148,8 @@ public class AuthenticationService(IUserRepository userRepository, IConfiguratio
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Name!),
-                new Claim(ClaimTypes.Role, user.Role.ToString())
+                new Claim(ClaimTypes.Role, user.Role.ToString()),
+                new Claim("ProfilePictureUrl", user.ProfilePictureUrl!)
             }),
             Expires = DateTime.UtcNow.AddMinutes(30),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

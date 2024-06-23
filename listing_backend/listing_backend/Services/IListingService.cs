@@ -11,4 +11,6 @@ public interface IListingService
     public Listing UpdateListing(Listing listing, List<IFormFile>? images);
     public bool DeleteListing(int id);
     public (List<Listing>, int) GetListingsBySearch(ListingSearchDto listingSearchDto, int pageIndex, int pageSize);
+    public (List<Listing>, int) GetActiveListingsByUserId(int sellerId, int pageIndex, int pageSize);
+    public (List<Listing>, int) GetInactiveListingsByUserId(int sellerId, int pageIndex, int pageSize);
 }

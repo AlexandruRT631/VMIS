@@ -5,7 +5,7 @@ using user_backend.Repositories;
 
 namespace user_backend.Services;
 
-public class UserService(IUserRepository userRepository) : IUserService
+public class UserService(IUserRepository userRepository, IImageService imageService) : IUserService
 {
     public List<User> GetAllUsers()
     {
@@ -26,7 +26,7 @@ public class UserService(IUserRepository userRepository) : IUserService
         return userRepository.GetUserById(id);
     }
     
-    public User CreateUser(User user)
+    public User CreateUser(User? user, IFormFile? profileImage = null)
     {
         if (user == null)
         {
@@ -62,10 +62,13 @@ public class UserService(IUserRepository userRepository) : IUserService
         }
         
         user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+        user.ProfilePictureUrl = profileImage == null
+            ? imageService.GetDefaultImageUrl()
+            : imageService.SaveImage(profileImage);
         return userRepository.CreateUser(user);
     }
     
-    public User UpdateUser(User user)
+    public User UpdateUser(User? user, IFormFile? profileImage = null)
     {
         if (user == null)
         {
@@ -104,6 +107,22 @@ public class UserService(IUserRepository userRepository) : IUserService
         if (user.Role != UserRole.None)
         {
             existingUser!.Role = user.Role;
+        }
+        if (user.ProfilePictureUrl is "delete")
+        {
+            if (existingUser!.ProfilePictureUrl! != imageService.GetDefaultImageUrl())
+            {
+                imageService.DeleteImage(existingUser!.ProfilePictureUrl!);
+            }
+            existingUser!.ProfilePictureUrl = imageService.GetDefaultImageUrl();
+        }
+        else if (profileImage != null)
+        {
+            if (existingUser!.ProfilePictureUrl! != imageService.GetDefaultImageUrl())
+            {
+                imageService.DeleteImage(existingUser!.ProfilePictureUrl!);
+            }
+            existingUser!.ProfilePictureUrl = imageService.SaveImage(profileImage);
         }
         return userRepository.UpdateUser(existingUser!);
     }

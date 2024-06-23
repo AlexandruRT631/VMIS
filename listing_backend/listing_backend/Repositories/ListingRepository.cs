@@ -12,7 +12,8 @@ public class ListingRepository(ListingDbContext context) : IListingRepository
     public (List<Listing>, int) GetAllListings(int pageIndex, int pageSize)
     {
         var orderedListings = context.Listings
-            .OrderBy(l => l.CreatedAt);
+            .Where(l => l.IsSold == false)
+            .OrderByDescending(l => l.CreatedAt);
         var totalPages = (int) Math.Ceiling(orderedListings.Count() / (double) pageSize);
         var listings = QueryUtilities.Paginate(orderedListings, pageIndex, pageSize);
         return (listings.ToList(), totalPages);
@@ -65,6 +66,7 @@ public class ListingRepository(ListingDbContext context) : IListingRepository
     {
         var listings = from l in context.Listings
             select l;
+        listings = listings.Where(l => l.IsSold == false);
 
         if (!string.IsNullOrWhiteSpace(listingSearchDto.Keywords))
         {
@@ -287,7 +289,27 @@ public class ListingRepository(ListingDbContext context) : IListingRepository
         }
         
         var totalPages = (int) Math.Ceiling(listings.Count() / (double) pageSize);
-        listings = QueryUtilities.Paginate(listings.OrderBy(l => l.CreatedAt), pageIndex, pageSize);
+        listings = QueryUtilities.Paginate(listings.OrderByDescending(l => l.CreatedAt), pageIndex, pageSize);
+        return (listings.ToList(), totalPages);
+    }
+
+    public (List<Listing>, int) GetActiveListingsByUserId(int sellerId, int pageIndex, int pageSize)
+    {
+        var orderedListings = context.Listings
+            .Where(l => l.SellerId == sellerId && l.IsSold == false)
+            .OrderByDescending(l => l.CreatedAt);
+        var totalPages = (int) Math.Ceiling(orderedListings.Count() / (double) pageSize);
+        var listings = QueryUtilities.Paginate(orderedListings, pageIndex, pageSize);
+        return (listings.ToList(), totalPages);
+    }
+
+    public (List<Listing>, int) GetInactiveListingsByUserId(int sellerId, int pageIndex, int pageSize)
+    {
+        var orderedListings = context.Listings
+            .Where(l => l.SellerId == sellerId && l.IsSold == true)
+            .OrderByDescending(l => l.CreatedAt);
+        var totalPages = (int) Math.Ceiling(orderedListings.Count() / (double) pageSize);
+        var listings = QueryUtilities.Paginate(orderedListings, pageIndex, pageSize);
         return (listings.ToList(), totalPages);
     }
 }

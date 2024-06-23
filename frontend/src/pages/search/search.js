@@ -1,8 +1,10 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { searchListings } from "../../api/listing-api";
 import {useNavigate, useSearchParams} from "react-router-dom";
-import {Box, Button, Grid} from "@mui/material";
-import ListingThumbnail from "./listing-thumbnail";
+import {Box, Button, Grid, Typography} from "@mui/material";
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import ListingThumbnail from "../../common/listing/listing-thumbnail";
 import SearchField from "./search-field";
 import { debounce } from "lodash";
 
@@ -38,7 +40,9 @@ const Search = () => {
         if (JSON.stringify(prevListingSearchDto.current) !== JSON.stringify(listingSearchDto)) {
             prevListingSearchDto.current = listingSearchDto;
             fetchListings(listingSearchDto, page);
-            navigate(`?page=1`);
+            if (page > 1) {
+                navigate(`?page=1`);
+            }
         }
         else if (prevPage.current !== page) {
             prevPage.current = page;
@@ -49,7 +53,7 @@ const Search = () => {
     console.log(listingSearchDto);
 
     return (
-        <Box>
+        <Box sx={{ pb: 4 }}>
             <SearchField setListingSearchDto={setListingSearchDto} />
             <Grid
                 container
@@ -70,7 +74,7 @@ const Search = () => {
                     ))
                 )}
             </Grid>
-            <Grid container justifyContent="center" spacing={2}>
+            <Grid container justifyContent="center" alignItems="center" spacing={2}>
                 <Grid item>
                     <Button
                         variant="contained"
@@ -81,18 +85,25 @@ const Search = () => {
                         }}
                         disabled={page <= 1}
                     >
-                        Previous
+                        <NavigateBeforeIcon />
                     </Button>
+                </Grid>
+                <Grid item>
+                    <Typography>
+                        Page {page} of {totalPages}
+                    </Typography>
                 </Grid>
                 <Grid item>
                     <Button
                         variant="contained"
                         onClick={() => {
-                            navigate(`?page=${page + 1}`)
+                            if (page < totalPages) {
+                                navigate(`?page=${page + 1}`);
+                            }
                         }}
                         disabled={page >= totalPages}
                     >
-                        Next
+                        <NavigateNextIcon />
                     </Button>
                 </Grid>
             </Grid>

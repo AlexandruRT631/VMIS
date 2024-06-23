@@ -1,23 +1,27 @@
+using System.Text.Json;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using user_backend.DTOs;
 using user_backend.Entities;
 using user_backend.Exceptions;
 using user_backend.Services;
 
 namespace user_backend.Controllers;
 
-[Authorize(Roles = "Admin")]
 [ApiController]
 [Route("api/[controller]")]
-public class UserController(IUserService userService) : ControllerBase
+public class UserController(IUserService userService, IMapper mapper) : ControllerBase
 {
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public IActionResult GetAllUsers()
     {
         return Ok(userService.GetAllUsers());
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult GetUserById(int id)
     {
         try
@@ -34,12 +38,31 @@ public class UserController(IUserService userService) : ControllerBase
         }
     }
 
-    [HttpPost]
-    public IActionResult CreateUser(User user)
+    [HttpGet("details/{id}")]
+    public IActionResult GetUserDetails(int id)
     {
         try
         {
-            return Ok(userService.CreateUser(user));
+            return Ok(mapper.Map<UserDto>(userService.GetUserById(id)));
+        }
+        catch (InvalidArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (UserNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    public IActionResult CreateUser([FromForm] string user, [FromForm] IFormFile? profileImage)
+    {
+        try
+        {
+            var userObject = JsonSerializer.Deserialize<User>(user);
+            return Ok(userService.CreateUser(userObject, profileImage));
         }
         catch (InvalidArgumentException e)
         {
@@ -52,11 +75,13 @@ public class UserController(IUserService userService) : ControllerBase
     }
 
     [HttpPut]
-    public IActionResult UpdateUser(User user)
+    [Authorize(Roles = "Admin")]
+    public IActionResult UpdateUser([FromForm] string user, [FromForm] IFormFile? profileImage)
     {
         try
         {
-            return Ok(userService.UpdateUser(user));
+            var userObject = JsonSerializer.Deserialize<User>(user);
+            return Ok(userService.UpdateUser(userObject, profileImage));
         }
         catch (InvalidArgumentException e)
         {
@@ -73,6 +98,7 @@ public class UserController(IUserService userService) : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult DeleteUser(int id)
     {
         try

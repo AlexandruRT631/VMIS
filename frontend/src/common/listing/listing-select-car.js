@@ -2,10 +2,10 @@ import React, {useEffect, useState} from "react";
 import {getAllMakes} from "../../api/make-api";
 import {getAllModelsByMakeId} from "../../api/model-api";
 import {Autocomplete, Box, Button, Grid, TextField} from "@mui/material";
-import CommonPaper from "../../common/common-paper";
+import CommonPaper from "../common-paper";
 import {getCarByModelYear} from "../../api/car-api";
 
-const ListingCreateCar = ({setPossibleCars, setYear, possibleCars}) => {
+const ListingSelectCar = ({listing, year, setPossibleCars, setYear, possibleCars}) => {
     const [loading, setLoading] = useState(true);
     const [makes, setMakes] = useState(null);
     const [selectedMake, setSelectedMake] = useState(null);
@@ -18,6 +18,14 @@ const ListingCreateCar = ({setPossibleCars, setYear, possibleCars}) => {
         getAllMakes()
             .then(setMakes)
             .catch(console.error);
+        if (year && possibleCars && listing) {
+            setSelectedMake(listing.car.model.make);
+            getAllModelsByMakeId(listing.car.model.make.id)
+                .then(setModels)
+                .catch(console.error);
+            setSelectedModel(listing.car.model);
+            setSelectedYear(listing.year);
+        }
         setLoading(false);
     }, []);
 
@@ -75,6 +83,7 @@ const ListingCreateCar = ({setPossibleCars, setYear, possibleCars}) => {
                                 getOptionLabel={(option) => option.name}
                                 onChange={(event, newValue) => changeMake(newValue)}
                                 value={selectedMake}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
                                 renderInput={(params) => <TextField {...params} label="Make" />}
                             />
                             : null
@@ -87,6 +96,7 @@ const ListingCreateCar = ({setPossibleCars, setYear, possibleCars}) => {
                                 getOptionLabel={(option) => option.name}
                                 onChange={(event, newValue) => changeModel(newValue)}
                                 value={selectedModel}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
                                 renderInput={(params) => <TextField {...params} label="Model" />}
                             />
                             : null
@@ -139,4 +149,4 @@ const ListingCreateCar = ({setPossibleCars, setYear, possibleCars}) => {
     )
 }
 
-export default ListingCreateCar;
+export default ListingSelectCar;

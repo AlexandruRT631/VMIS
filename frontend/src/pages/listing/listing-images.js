@@ -112,7 +112,7 @@ const ListingImages = ({listing}) => {
                 sx={{
                     width: '100%',
                     position: 'relative',
-                    paddingTop: '70%',
+                    paddingTop: '60%',
                 }}
             >
                 <Box

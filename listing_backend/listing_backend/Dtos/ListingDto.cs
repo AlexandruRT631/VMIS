@@ -19,4 +19,5 @@ public class ListingDto
     public List<FeatureDto>? Features { get; set; } = [];
     public List<ListingImageDto>? ListingImages { get; set; } = [];
     public DateTime CreatedAt { get; set; }
+    public bool? IsSold { get; set; }
 }

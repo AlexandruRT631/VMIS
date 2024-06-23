@@ -1,10 +1,10 @@
-import {Box, Grid, IconButton, Paper, Typography} from "@mui/material";
+import {Box, Grid, Paper, Typography} from "@mui/material";
 import {Link} from "react-router-dom";
 import React from "react";
 import AddRoadIcon from '@mui/icons-material/AddRoad';
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import NavigationButtons from "../../common/navigation-buttons";
+import NavigationButtons from "../navigation-buttons";
 
 const BASE_URL = process.env.REACT_APP_LISTING_API_URL;
 
@@ -38,7 +38,7 @@ const ListingThumbnail = ({listing}) => {
                     overflow: 'hidden',
                     position: 'relative',
                     width: '100%',
-                    paddingTop: '20%',
+                    paddingTop: '200px',
                 }}
             >
                 <Paper sx={{position: 'absolute', top: 0, left: 0, bottom: 0, width: '100%', height: '100%'}}>
@@ -74,14 +74,14 @@ const ListingThumbnail = ({listing}) => {
                             <Typography
                                 sx={{
                                     fontWeight: 'bold',
-                                    fontSize: 'calc(0.6em + 0.75vw)'
+                                    fontSize: 'calc(1em + 0.1vw)'
                                 }}
                             >
                                 {listing.title}
                             </Typography>
                             <Typography
                                 sx={{
-                                    fontSize: 'calc(0.3em + 0.75vw)'
+                                    fontSize: 'calc(1em + 0.05vw)'
                                 }}
                             >
                                 {numberFormat.format(listing.engine.power)} hp
@@ -89,20 +89,20 @@ const ListingThumbnail = ({listing}) => {
                             </Typography>
                             <Box sx={{ flexGrow: 1 }}></Box>
                             <Box sx={{display: 'flex', alignItems: 'center', mt: 1}}>
-                                <AddRoadIcon sx={{mr: 0.5, fontSize: 'calc(0.3em + 0.75vw)' }}/>
-                                <Typography sx={{ fontSize: 'calc(0.3em + 0.75vw)' }}>
+                                <AddRoadIcon sx={{mr: 0.5, fontSize: 'calc(1em + 0.03vw)' }}/>
+                                <Typography sx={{ fontSize: 'calc(1em + 0.03vw)' }}>
                                     {numberFormat.format(listing.mileage)}
                                 </Typography>
                             </Box>
                             <Box sx={{display: 'flex', alignItems: 'center', mt: 1}}>
-                                <LocalGasStationIcon sx={{mr: 0.5, fontSize: 'calc(0.3em + 0.75vw)' }}/>
-                                <Typography sx={{ fontSize: 'calc(0.3em + 0.75vw)' }}>
+                                <LocalGasStationIcon sx={{mr: 0.5, fontSize: 'calc(1em + 0.03vw)' }}/>
+                                <Typography sx={{ fontSize: 'calc(1em + 0.03vw)' }}>
                                     {listing.engine.fuel.name}
                                 </Typography>
                             </Box>
                             <Box sx={{display: 'flex', alignItems: 'center', mt: 1}}>
-                                <CalendarMonthIcon sx={{mr: 0.5, fontSize: 'calc(0.3em + 0.75vw)' }}/>
-                                <Typography sx={{ fontSize: 'calc(0.3em + 0.75vw)' }}>
+                                <CalendarMonthIcon sx={{mr: 0.5, fontSize: 'calc(1em + 0.03vw)' }}/>
+                                <Typography sx={{ fontSize: 'calc(1em + 0.03vw)' }}>
                                     {listing.year}
                                 </Typography>
                             </Box>
@@ -111,7 +111,7 @@ const ListingThumbnail = ({listing}) => {
                             <Typography
                                 sx={{
                                     fontWeight: 'bold',
-                                    fontSize: 'calc(1em + 0.75vw)'
+                                    fontSize: 'calc(1em + 0.1vw)'
                                 }}
                             >
                                 {numberFormat.format(listing.price)} €

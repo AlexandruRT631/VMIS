@@ -283,11 +283,15 @@ public class ListingService(
         listing.Traction = traction;
         listing.Features = features;
         listing.ListingImages = listingImages;
+        listing.IsSold = false;
         return listingRepository.CreateListing(listing);
     }
 
     public Listing UpdateListing(Listing listing, List<IFormFile>? images = null)
     {
+        List<IFormFile> imagesToSave = [];
+        Car? previousCar = null;
+        
         if (listing == null)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidListing);
@@ -317,6 +321,29 @@ public class ListingService(
         {
             existingListing!.Description = listing.Description;
         }
+        if (images != null && images.Count > 0)
+        {
+            if (images.Count > MaxFileCount)
+            {
+                throw new InvalidArgumentException(ExceptionMessages.TooManyImages);
+            }
+
+            for (int i = 0; i < images.Count; i++)
+            {
+                var extension = Path.GetExtension(images[i].FileName).ToLowerInvariant();
+                if (!AllowedFileTypes.Contains(extension))
+                {
+                    throw new InvalidArgumentException(ExceptionMessages.InvalidImageType + " File: " + i);
+                }
+
+                if (images[i].Length > MaxFileSize)
+                {
+                    throw new InvalidArgumentException(ExceptionMessages.ImageTooLarge + " File: " + i);
+                }
+                
+                imagesToSave.Add(images[i]);
+            }
+        }
         if (listing.Car != null)
         {
             if (listing.Car.Id <= 0)
@@ -332,6 +359,7 @@ public class ListingService(
             {
                 throw new InvalidArgumentException(ExceptionMessages.InvalidYear);
             }
+            previousCar = existingListing!.Car;
             existingListing!.Car = car;
         }
         if (listing.Year >= 1900)
@@ -482,31 +510,13 @@ public class ListingService(
             }
             existingListing!.Features = features;
         }
-        if (images != null && images.Count > 0)
+        if (listing.IsSold != null)
         {
-            if (images.Count > MaxFileCount)
-            {
-                throw new InvalidArgumentException(ExceptionMessages.TooManyImages);
-            }
-
-            var listingImages = new List<ListingImage>();
-            for (int i = 0; i < images.Count; i++)
-            {
-                var extension = Path.GetExtension(images[i].FileName).ToLowerInvariant();
-                if (!AllowedFileTypes.Contains(extension))
-                {
-                    throw new InvalidArgumentException(ExceptionMessages.InvalidImageType + " File: " + i);
-                }
-
-                if (images[i].Length > MaxFileSize)
-                {
-                    throw new InvalidArgumentException(ExceptionMessages.ImageTooLarge + " File: " + i);
-                }
-                
-                var url = imageService.SaveImage(images[i], existingListing!.Car!);
-                listingImages.Add(new ListingImage { Url = url });
-            }
-            
+            existingListing!.IsSold = listing.IsSold;
+        }
+        
+        if (imagesToSave.Count > 0)
+        {
             if (existingListing!.ListingImages != null)
             {
                 foreach (var listingImage in existingListing.ListingImages)
@@ -515,7 +525,22 @@ public class ListingService(
                 }
             }
             
-            existingListing.ListingImages = listingImages;
+            existingListing!.ListingImages = [];
+            foreach (var image in imagesToSave)
+            {
+                var url = imageService.SaveImage(image, previousCar ?? existingListing!.Car!);
+                existingListing!.ListingImages!.Add(new ListingImage { Url = url });
+            }
+        }
+        
+        if (previousCar != null)
+        {
+            List<ListingImage> newListingImages = [];
+            foreach (var listingImage in existingListing!.ListingImages!)
+            {
+                newListingImages.Add(new ListingImage { Url = imageService.MoveImage(listingImage.Url!, existingListing!.Car!) });
+            }
+            existingListing!.ListingImages = newListingImages;
         }
 
         return listingRepository.UpdateListing(existingListing!);
@@ -820,5 +845,43 @@ public class ListingService(
         }
 
         return listingRepository.GetListingsBySearch(listingSearchDto, pageIndex, pageSize);
+    }
+
+    public (List<Listing>, int) GetActiveListingsByUserId(int sellerId, int pageIndex, int pageSize)
+    {
+        if (sellerId <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidSellerId);
+        }
+        //TODO: Seller not found
+        if (pageIndex <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidPageIndex);
+        }
+        if (pageSize <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidPageSize);
+        }
+        
+        return listingRepository.GetActiveListingsByUserId(sellerId, pageIndex, pageSize);
+    }
+
+    public (List<Listing>, int) GetInactiveListingsByUserId(int sellerId, int pageIndex, int pageSize)
+    {
+        if (sellerId <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidSellerId);
+        }
+        //TODO: Seller not found
+        if (pageIndex <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidPageIndex);
+        }
+        if (pageSize <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidPageSize);
+        }
+        
+        return listingRepository.GetInactiveListingsByUserId(sellerId, pageIndex, pageSize);
     }
 }

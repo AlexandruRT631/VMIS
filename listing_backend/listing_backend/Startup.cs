@@ -140,12 +140,13 @@ public class Startup(IConfiguration configuration)
         }
 
         app.UseHttpsRedirection();
+        
+        app.UseCors("AllowAllOrigins");
+        
         app.UseStaticFiles();
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
-        
-        app.UseCors("AllowAllOrigins");
         
         app.UseSwagger();
         app.UseSwaggerUI(c =>

@@ -1,11 +1,73 @@
-import {Avatar, Button, Grid, Link, Paper, Stack, Typography} from "@mui/material";
-import React from "react";
+import {
+    Avatar,
+    Button,
+    Dialog, DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Grid,
+    Link,
+    Paper,
+    Stack,
+    Typography
+} from "@mui/material";
+import React, {useEffect, useState} from "react";
+import {getUserDetails} from "../../api/user-api";
+import {getUserId, getUserRole} from "../../common/token";
+import {deleteListing, updateListing} from "../../api/listing-api";
+
+const BASE_URL = process.env.REACT_APP_USER_API_URL;
 
 const ListingTitle = ({ listing }) => {
+    const [loading, setLoading] = useState(true);
+    const [userDetails, setUserDetails] = useState(null);
+    const [userId, setUserId] = useState(null);
+    const [userRole, setUserRole] = useState(null);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [markDialogOpen, setMarkDialogOpen] = useState(false);
     const numberFormat = new Intl.NumberFormat('en-US');
+
+    useEffect(() => {
+        setUserId(getUserId());
+        setUserRole(getUserRole());
+        getUserDetails(listing.sellerId)
+            .then((data) => {
+                setUserDetails(data);
+                setLoading(false);
+            })
+            .catch(console.error);
+    }, [listing.sellerId]);
+
+    const handleDeleteConfirm = () => {
+        deleteListing(listing.id)
+            .then(() => {
+                window.location.href = '/';
+            })
+            .catch(console.error);
+    }
+
+    const handleListingMark = () => {
+        updateListing({
+            Id: listing.id,
+            IsSold: !listing.isSold
+        }, null)
+            .then(() => {
+                window.location.reload();
+            })
+            .catch(console.error);
+    }
+
+    if (loading) {
+        return;
+    }
 
     return (
         <Paper variant="outlined" sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+            {listing.isSold && (
+                <Typography variant="h6" color="error" gutterBottom>
+                    {"(Inactive) "}
+                </Typography>
+            )}
             <Typography variant="h4" color="primary" gutterBottom sx={{ fontWeight: 'bold' }}>
                 {listing.title}
             </Typography>
@@ -16,44 +78,133 @@ const ListingTitle = ({ listing }) => {
                 </Grid>
                 <Grid item xs={6}>
                     <Typography variant="h6" >Seller</Typography>
-                    <Link href={'/'} sx={{ textDecoration: 'none', color: 'inherit' }}>
+                    <Link href={'/profile/' + userDetails.id} sx={{ textDecoration: 'none', color: 'inherit' }}>
                         <Stack direction={"row"} alignItems="center" spacing={2}>
-                            <Avatar src={"https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1"} />
-                            <Typography variant="h6" >Alexandru Radu-Todor</Typography>
+                            <Avatar src={BASE_URL + userDetails.profilePictureUrl} />
+                            <Typography variant="h6" >{userDetails.name}</Typography>
                         </Stack>
                     </Link>
                 </Grid>
             </Grid>
-            <Grid container sx={{mt: 2}}>
-                <Grid item xs={6}>
-                    <Button
-                        variant="contained"
-                        sx={{
-                            '&:focus': {
-                                outline: 'none',
-                            },
-                        }}
-                    >
-                        Save listing
-                    </Button>
-                </Grid>
-                <Grid item xs={6}>
-                    <Button
-                        variant="contained"
-                        sx={{
-                            '&:focus': {
-                                outline: 'none',
-                            },
-                        }}
-                    >
-                        Contact seller
-                    </Button>
-                </Grid>
+            <Grid container sx={{mt: 2}} spacing={2}>
+                {userId && userId !== listing.sellerId && (
+                    <React.Fragment>
+                        <Grid item xs={6}>
+                            <Button
+                                variant="contained"
+                                sx={{
+                                    '&:focus': {
+                                        outline: 'none',
+                                    },
+                                }}
+                            >
+                                Save listing
+                            </Button>
+                        </Grid>
+                        {!listing.isSold && (
+                            <Grid item xs={6}>
+                                <Button
+                                    variant="contained"
+                                    sx={{
+                                        '&:focus': {
+                                            outline: 'none',
+                                        },
+                                    }}
+                                >
+                                    Contact Seller
+                                </Button>
+                            </Grid>
+                        )}
+                    </React.Fragment>
+                )}
+
+                {userId && (userId === listing.sellerId || userRole === "Admin") && (
+                    <React.Fragment>
+                        <Grid item xs={6}>
+                            <Button
+                                variant="contained"
+                                sx={{
+                                    '&:focus': {
+                                        outline: 'none',
+                                    },
+                                }}
+                                onClick={() => setMarkDialogOpen(true)}
+                            >
+                                {listing.isSold ? "Mark as available" : "Mark as sold"}
+                            </Button>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Button
+                                variant="contained"
+                                sx={{
+                                    '&:focus': {
+                                        outline: 'none',
+                                    },
+                                }}
+                                onClick={() => window.location.href = '/modifyListing/' + listing.id}
+                            >
+                                Modify Listing
+                            </Button>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Button
+                                variant="contained"
+                                color="error"
+                                sx={{
+                                    '&:focus': {
+                                        outline: 'none',
+                                    },
+                                }}
+                                onClick={() => setDeleteDialogOpen(true)}
+                            >
+                                Delete Listing
+                            </Button>
+                        </Grid>
+                    </React.Fragment>
+                )}
             </Grid>
+
+            <Dialog
+                open={deleteDialogOpen}
+                onClose={() => setDeleteDialogOpen(false)}
+            >
+                <DialogTitle>Confirm Delete</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to delete this listing? This action cannot be undone.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setDeleteDialogOpen(false)} color="primary">
+                        No
+                    </Button>
+                    <Button onClick={handleDeleteConfirm} color="error" variant="contained">
+                        Yes
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={markDialogOpen}
+                onClose={() => setMarkDialogOpen(false)}
+            >
+                <DialogTitle>Confirm Mark</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to mark this listing as {listing.isSold ? "available" : "sold"}?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setMarkDialogOpen(false)} color="primary">
+                        No
+                    </Button>
+                    <Button onClick={handleListingMark} color="primary" variant="contained">
+                        Yes
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Paper>
     );
-
-    //TODO: fetch seller information from the user database
 }
 
 export default ListingTitle;

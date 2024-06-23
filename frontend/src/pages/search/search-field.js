@@ -417,17 +417,17 @@ const SearchField = ({ setListingSearchDto }) => {
                 }
             </Grid>
             <Grid container mt={2}>
-            <Button
-                variant="contained"
-                onClick={() => setMode(!more)}
-                sx={{
-                    '&:focus': {
-                        outline: 'none',
-                    },
-                }}
-            >
-                {more? "Show Less" : "Show More"}
-            </Button>
+                <Button
+                    variant="contained"
+                    onClick={() => setMode(!more)}
+                    sx={{
+                        '&:focus': {
+                            outline: 'none',
+                        },
+                    }}
+                >
+                    {more? "Show Less" : "Show More"}
+                </Button>
             </Grid>
         </Paper>
     );

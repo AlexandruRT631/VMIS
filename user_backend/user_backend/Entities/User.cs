@@ -13,6 +13,7 @@ public class User
     [MaxLength(100)]
     public string? Name { get; set; }
     public UserRole Role { get; set; }
+    public string? ProfilePictureUrl { get; set; }
     [MaxLength(512)]
     public string? RefreshToken { get; set; }
     public DateTime RefreshTokenExpiration { get; set; }

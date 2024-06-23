@@ -1,14 +1,18 @@
-import {Box, Grid} from "@mui/material";
-import ListingCreateCar from "./listing-create-car";
+import {Box, Grid, Typography} from "@mui/material";
+import ListingSelectCar from "../../common/listing/listing-select-car";
 import {useEffect, useState} from "react";
-import ListingCreateTechnical from "./listing-create-technical";
-import ListingCreateEquipment from "./listing-create-equipment";
-import ListingCreateGeneration from "./listing-create-generation";
-import ListingCreateFinalDetails from "./listing-create-final-details";
+import ListingSelectTechnical from "../../common/listing/listing-select-technical";
+import ListingSelectEquipment from "../../common/listing/listing-select-equipment";
+import ListingSelectGeneration from "../../common/listing/listing-select-generation";
+import ListingSelectFinalDetails from "../../common/listing/listing-select-final-details";
 import {createListing} from "../../api/listing-api";
 import {useNavigate} from "react-router-dom";
+import {getUserId, getUserRole} from "../../common/token";
 
 const ListingCreate = () => {
+    const [loading, setLoading] = useState(true);
+    const [userId, setUserId] = useState(null);
+    const [userRole, setUserRole] = useState(null);
     const [possibleCars, setPossibleCars] = useState([]);
     const [year, setYear] = useState(null);
     const [car, setCar] = useState(null);
@@ -16,6 +20,12 @@ const ListingCreate = () => {
     const [equipment, setEquipment] = useState(null);
     const [finalDetails, setFinalDetails] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setUserId(getUserId());
+        setUserRole(getUserRole());
+        setLoading(false);
+    }, []);
 
     useEffect(() => {
         if (possibleCars.length === 1) {
@@ -59,7 +69,7 @@ const ListingCreate = () => {
                 Price: finalDetails.price,
                 Title: finalDetails.title,
                 Description: finalDetails.description,
-                SellerId: finalDetails.sellerId,
+                SellerId: parseInt(userId),
                 Year: year,
                 CreatedAt: new Date(),
             }, finalDetails.images)
@@ -78,6 +88,22 @@ const ListingCreate = () => {
     console.log(equipment);
     console.log(finalDetails);
 
+    if (loading) {
+        return;
+    }
+
+    if (!userId) {
+        return (
+            <Typography variant={"h4"}>You must be logged in to create a listing</Typography>
+        );
+    }
+
+    if (userRole !== "Seller" && userRole !== "Admin") {
+        return (
+            <Typography variant={"h4"}>You must be a seller to create a listing</Typography>
+        );
+    }
+
     return (
         <Box>
             <Grid
@@ -90,29 +116,29 @@ const ListingCreate = () => {
                 mb={4}
             >
                 <Grid item xs={12}>
-                    <ListingCreateCar setPossibleCars={setPossibleCars} setYear={setYear} possibleCars={possibleCars}/>
+                    <ListingSelectCar setPossibleCars={setPossibleCars} setYear={setYear} possibleCars={possibleCars}/>
                 </Grid>
                 {possibleCars.length > 1?
                     <Grid item xs={12}>
-                        <ListingCreateGeneration setCar={setCar} possibleCars={possibleCars} car={car}/>
+                        <ListingSelectGeneration setCar={setCar} possibleCars={possibleCars} car={car}/>
                     </Grid>
                     : null
                 }
                 {car !== null?
                     <Grid item xs={12}>
-                        <ListingCreateTechnical setTechnical={setTechnical} car={car} />
+                        <ListingSelectTechnical setTechnical={setTechnical} car={car} />
                     </Grid>
                     : null
                 }
                 {technical !== null?
                     <Grid item xs={12}>
-                        <ListingCreateEquipment setEquipment={setEquipment}/>
+                        <ListingSelectEquipment setEquipment={setEquipment}/>
                     </Grid>
                     : null
                 }
                 {equipment !== null?
                     <Grid item xs={12}>
-                        <ListingCreateFinalDetails setFinalDetails={setFinalDetails}/>
+                        <ListingSelectFinalDetails setFinalDetails={setFinalDetails}/>
                     </Grid>
                     : null
                 }

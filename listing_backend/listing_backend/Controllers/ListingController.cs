@@ -70,11 +70,12 @@ public class ListingController(IListingService listingService, IMapper mapper) :
     }
     
     [HttpPut]
-    public IActionResult UpdateListing([FromForm] ListingDto listingDto, [FromForm] List<IFormFile> images)
+    public IActionResult UpdateListing([FromForm] string listingDto, [FromForm] List<IFormFile>? images)
     {
         try
         {
-            var inputListing = mapper.Map<Listing>(listingDto);
+            var listingDtoObject = JsonSerializer.Deserialize<ListingDto>(listingDto);
+            var inputListing = mapper.Map<Listing>(listingDtoObject);
             var listing = listingService.UpdateListing(inputListing, images);
             var outputListing = mapper.Map<ListingDto>(listing);
             return Ok(outputListing);
@@ -113,6 +114,58 @@ public class ListingController(IListingService listingService, IMapper mapper) :
         {
             var (listings, totalPages) = listingService
                 .GetListingsBySearch(listingSearchDto, pageIndex, pageSize);
+            var listingDtos = listings
+                .Select(mapper.Map<ListingDto>)
+                .ToList();
+            return Ok(new
+            {
+                Listings = listingDtos,
+                TotalPages = totalPages
+            });
+        }
+        catch (InvalidArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ObjectNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+    
+    [HttpGet("active/{sellerId:int}")]
+    public IActionResult GetActiveListingsByUserId(int sellerId, int pageIndex = 1, int pageSize = 1)
+    {
+        try
+        {
+            var (listings, totalPages) = listingService
+                .GetActiveListingsByUserId(sellerId, pageIndex, pageSize);
+            var listingDtos = listings
+                .Select(mapper.Map<ListingDto>)
+                .ToList();
+            return Ok(new
+            {
+                Listings = listingDtos,
+                TotalPages = totalPages
+            });
+        }
+        catch (InvalidArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ObjectNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+    
+    [HttpGet("inactive/{sellerId:int}")]
+    public IActionResult GetInactiveListingsByUserId(int sellerId, int pageIndex = 1, int pageSize = 1)
+    {
+        try
+        {
+            var (listings, totalPages) = listingService
+                .GetInactiveListingsByUserId(sellerId, pageIndex, pageSize);
             var listingDtos = listings
                 .Select(mapper.Map<ListingDto>)
                 .ToList();
