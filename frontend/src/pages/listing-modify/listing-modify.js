@@ -1,6 +1,6 @@
 import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useRef, useState} from "react";
-import {getUserId, getUserRole} from "../../common/token";
+import {getUserId} from "../../common/token";
 import {Box, Grid, Typography} from "@mui/material";
 import {getListingById, updateListing} from "../../api/listing-api";
 import ListingSelectCar from "../../common/listing/listing-select-car";
@@ -9,6 +9,7 @@ import {getCarByModelYear} from "../../api/car-api";
 import ListingSelectTechnical from "../../common/listing/listing-select-technical";
 import ListingSelectEquipment from "../../common/listing/listing-select-equipment";
 import ListingSelectFinalDetails from "../../common/listing/listing-select-final-details";
+import {getUserDetails} from "../../api/user-api";
 
 const ListingModify = () => {
     const { id } = useParams();
@@ -35,8 +36,12 @@ const ListingModify = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                setUserId(getUserId());
-                setUserRole(getUserRole());
+                const fetchedUserId = getUserId()
+                setUserId(fetchedUserId);
+                if (fetchedUserId) {
+                    const user = await getUserDetails(fetchedUserId);
+                    setUserRole(user.role);
+                }
                 const fetchedListing = await getListingById(id);
                 setListing(fetchedListing);
                 const fetchedPossibleCars = await getCarByModelYear(fetchedListing.car.model.id, fetchedListing.year);

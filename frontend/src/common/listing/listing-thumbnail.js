@@ -57,16 +57,16 @@ const ListingThumbnail = ({listing}) => {
                                     position: 'relative'
                                 }}
                             >
-                            <Box
-                                component="img"
-                                src={BASE_URL + listing.listingImages[selectedImage].url}
-                                alt={listing.listingImages[selectedImage].url}
-                                sx={{
-                                    objectFit: 'cover',
-                                    height: '100%',
-                                    width: '100%'
-                                }}
-                            />
+                                <Box
+                                    component="img"
+                                    src={BASE_URL + listing.listingImages[selectedImage].url}
+                                    alt={listing.listingImages[selectedImage].url}
+                                    sx={{
+                                        objectFit: 'cover',
+                                        height: '100%',
+                                        width: '100%'
+                                    }}
+                                />
                                 <NavigationButtons handleNext={handleNext} handlePrev={handlePrev}/>
                             </Box>
                         </Grid>

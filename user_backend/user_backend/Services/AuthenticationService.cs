@@ -44,7 +44,7 @@ public class AuthenticationService(
         }
         if (userRepository.DoesUserExist(user.Email))
         {
-            throw new UserAlreadyExistsException(ExceptionMessages.UsedEmail);
+            throw new ObjectAlreadyExistsException(ExceptionMessages.UsedEmail);
         }
         if (string.IsNullOrWhiteSpace(user.Password))
         {
@@ -81,7 +81,7 @@ public class AuthenticationService(
         var user = userRepository.GetUserByEmail(email);
         if (user == null)
         {
-            throw new UserNotFoundException(ExceptionMessages.UserNotFound);
+            throw new ObjectNotFoundException(ExceptionMessages.UserNotFound);
         }
         
         var token = GenerateRandomToken();

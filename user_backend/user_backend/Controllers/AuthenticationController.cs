@@ -1,4 +1,5 @@
 using System.Text.Json;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using user_backend.DTOs;
 using user_backend.Entities;
@@ -9,7 +10,7 @@ namespace user_backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthenticationController(IAuthenticationService authenticationService) : ControllerBase
+public class AuthenticationController(IAuthenticationService authenticationService, IMapper mapper) : ControllerBase
 {
     [HttpPost("login")]
     public IActionResult Login(UserLoginDto userLoginDto)
@@ -31,7 +32,8 @@ public class AuthenticationController(IAuthenticationService authenticationServi
     {
         try
         {
-            var userObject = JsonSerializer.Deserialize<User>(user);
+            var userDto = JsonSerializer.Deserialize<UserDto>(user);
+            var userObject = mapper.Map<User>(userDto);
             var accessToken = authenticationService.RegisterUser(userObject, profileImage);
             var refreshToken = authenticationService.GenerateRefreshToken(userObject!.Email!);
             return Ok(new TokenDto(accessToken, refreshToken));
@@ -40,7 +42,7 @@ public class AuthenticationController(IAuthenticationService authenticationServi
         {
             return BadRequest(e.Message);
         }
-        catch (UserAlreadyExistsException e)
+        catch (ObjectAlreadyExistsException e)
         {
             return Conflict(e.Message);
         }

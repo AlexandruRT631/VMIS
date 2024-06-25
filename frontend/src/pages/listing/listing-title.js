@@ -13,29 +13,42 @@ import {
 } from "@mui/material";
 import React, {useEffect, useState} from "react";
 import {getUserDetails} from "../../api/user-api";
-import {getUserId, getUserRole} from "../../common/token";
+import {getUserId} from "../../common/token";
 import {deleteListing, updateListing} from "../../api/listing-api";
+import {addFavouriteListing, removeFavouriteListing} from "../../api/favourite-api";
 
 const BASE_URL = process.env.REACT_APP_USER_API_URL;
 
 const ListingTitle = ({ listing }) => {
     const [loading, setLoading] = useState(true);
     const [userDetails, setUserDetails] = useState(null);
+    const [currentUserDetails, setCurrentUserDetails] = useState(null);
     const [userId, setUserId] = useState(null);
     const [userRole, setUserRole] = useState(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [markDialogOpen, setMarkDialogOpen] = useState(false);
     const numberFormat = new Intl.NumberFormat('en-US');
+    const [isSaveDisabled, setIsSaveDisabled] = useState(false);
 
     useEffect(() => {
-        setUserId(getUserId());
-        setUserRole(getUserRole());
-        getUserDetails(listing.sellerId)
-            .then((data) => {
-                setUserDetails(data);
-                setLoading(false);
-            })
-            .catch(console.error);
+        const fetchData = async () => {
+            try {
+                const fetchedUserId = getUserId();
+                setUserId(fetchedUserId);
+                const user = await getUserDetails(listing.sellerId);
+                setUserDetails(user);
+                if (fetchedUserId) {
+                    const currentUser = await getUserDetails(fetchedUserId);
+                    setCurrentUserDetails(currentUser);
+                    setUserRole(currentUser.role)
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        fetchData()
+            .then(() => setLoading(false));
     }, [listing.sellerId]);
 
     const handleDeleteConfirm = () => {
@@ -55,6 +68,29 @@ const ListingTitle = ({ listing }) => {
                 window.location.reload();
             })
             .catch(console.error);
+    }
+
+    console.log(userDetails);
+
+    const handleSave = () => {
+        setIsSaveDisabled(true);
+        if (currentUserDetails.favouriteListings.includes(listing.id)) {
+            removeFavouriteListing(currentUserDetails.id, listing.id)
+                .then(() => {
+                    const index = currentUserDetails.favouriteListings.indexOf(listing.id);
+                    currentUserDetails.favouriteListings.splice(index, 1);
+                })
+                .catch(console.error)
+                .finally(() => setIsSaveDisabled(false));
+        }
+        else {
+            addFavouriteListing(currentUserDetails.id, listing.id)
+                .then(() => {
+                    currentUserDetails.favouriteListings.push(listing.id);
+                })
+                .catch(console.error)
+                .finally(() => setIsSaveDisabled(false));
+        }
     }
 
     if (loading) {
@@ -97,8 +133,10 @@ const ListingTitle = ({ listing }) => {
                                         outline: 'none',
                                     },
                                 }}
+                                onClick={handleSave}
+                                disabled={isSaveDisabled}
                             >
-                                Save listing
+                                {currentUserDetails.favouriteListings.includes(listing.id) ? "Unsave listing" : "Save listing"}
                             </Button>
                         </Grid>
                         {!listing.isSold && (

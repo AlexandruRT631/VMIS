@@ -2,13 +2,12 @@ using user_backend.Entities;
 
 namespace user_backend.DTOs;
 
-public class UserDto
+public class UserDetailsDto
 {
     public int? Id { get; set; }
-    public string? Email { get; set; }
-    public string? Password { get; set; }
     public string? Name { get; set; }
-    public UserRole? Role { get; set; }
     public string? ProfilePictureUrl { get; set; }
-
+    public string? Role { get; set; }
+    public List<int>? FavouriteListings { get; set; }
+    public List<int>? FavouriteUsers { get; set; }
 }

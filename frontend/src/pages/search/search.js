@@ -90,7 +90,7 @@ const Search = () => {
                 </Grid>
                 <Grid item>
                     <Typography>
-                        Page {page} of {totalPages}
+                        Page {totalPages === 0 ? 0 : page} of {totalPages}
                     </Typography>
                 </Grid>
                 <Grid item>

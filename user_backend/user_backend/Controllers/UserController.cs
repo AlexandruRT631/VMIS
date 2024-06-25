@@ -17,7 +17,8 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
     [Authorize(Roles = "Admin")]
     public IActionResult GetAllUsers()
     {
-        return Ok(userService.GetAllUsers());
+        var userDtos = userService.GetAllUsers().Select(mapper.Map<UserDto>).ToList();
+        return Ok(userDtos);
     }
 
     [HttpGet("{id}")]
@@ -26,13 +27,14 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
     {
         try
         {
-            return Ok(userService.GetUserById(id));
+            var userDto = mapper.Map<UserDto>(userService.GetUserById(id));
+            return Ok(userDto);
         }
         catch (InvalidArgumentException e)
         {
             return BadRequest(e.Message);
         }
-        catch (UserNotFoundException e)
+        catch (ObjectNotFoundException e)
         {
             return NotFound(e.Message);
         }
@@ -43,13 +45,14 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
     {
         try
         {
-            return Ok(mapper.Map<UserDto>(userService.GetUserById(id)));
+            var userDetailsDto = mapper.Map<UserDetailsDto>(userService.GetUserById(id));
+            return Ok(userDetailsDto);
         }
         catch (InvalidArgumentException e)
         {
             return BadRequest(e.Message);
         }
-        catch (UserNotFoundException e)
+        catch (ObjectNotFoundException e)
         {
             return NotFound(e.Message);
         }
@@ -61,37 +64,40 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
     {
         try
         {
-            var userObject = JsonSerializer.Deserialize<User>(user);
-            return Ok(userService.CreateUser(userObject, profileImage));
+            var userDto = JsonSerializer.Deserialize<UserDto>(user);
+            var userObject = mapper.Map<User>(userDto);
+            var userCreated = userService.CreateUser(userObject, profileImage);
+            return Ok(mapper.Map<UserDto>(userCreated));
         }
         catch (InvalidArgumentException e)
         {
             return BadRequest(e.Message);
         }
-        catch (UserAlreadyExistsException e)
+        catch (ObjectAlreadyExistsException e)
         {
             return Conflict(e.Message);
         }
     }
 
     [HttpPut]
-    [Authorize(Roles = "Admin")]
     public IActionResult UpdateUser([FromForm] string user, [FromForm] IFormFile? profileImage)
     {
         try
         {
-            var userObject = JsonSerializer.Deserialize<User>(user);
-            return Ok(userService.UpdateUser(userObject, profileImage));
+            var userDto = JsonSerializer.Deserialize<UserDto>(user);
+            var userObject = mapper.Map<User>(userDto);
+            var userUpdated = userService.UpdateUser(userObject, profileImage);
+            return Ok(mapper.Map<UserDto>(userUpdated));
         }
         catch (InvalidArgumentException e)
         {
             return BadRequest(e.Message);
         }
-        catch (UserNotFoundException e)
+        catch (ObjectNotFoundException e)
         {
             return NotFound(e.Message);
         }
-        catch (UserAlreadyExistsException e)
+        catch (ObjectAlreadyExistsException e)
         {
             return Conflict(e.Message);
         }
@@ -109,7 +115,33 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
         {
             return BadRequest(e.Message);
         }
-        catch (UserNotFoundException e)
+        catch (ObjectNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+    
+    [HttpPost("details/ids")]
+    public IActionResult GetUsersDetailByIds(List<int> ids, int pageIndex, int pageSize)
+    {
+        try
+        {
+            var (users, totalPages) = userService
+                .GetUsersByIds(ids, pageIndex, pageSize);
+            var userDetailDtos = users
+                .Select(mapper.Map<UserDetailsDto>)
+                .ToList();
+            return Ok(new
+            {
+                Users = userDetailDtos,
+                TotalPages = totalPages
+            });
+        }
+        catch (InvalidArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ObjectNotFoundException e)
         {
             return NotFound(e.Message);
         }

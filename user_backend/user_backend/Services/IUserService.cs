@@ -39,4 +39,5 @@ public interface IUserService
     /// <param name="id"></param>
     /// <returns>True if the user was deleted</returns>
     public bool DeleteUser(int id);
+    public (List<User>, int) GetUsersByIds(List<int> ids, int pageIndex, int pageSize);
 }

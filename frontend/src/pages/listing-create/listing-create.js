@@ -7,7 +7,8 @@ import ListingSelectGeneration from "../../common/listing/listing-select-generat
 import ListingSelectFinalDetails from "../../common/listing/listing-select-final-details";
 import {createListing} from "../../api/listing-api";
 import {useNavigate} from "react-router-dom";
-import {getUserId, getUserRole} from "../../common/token";
+import {getUserId} from "../../common/token";
+import {getUserDetails} from "../../api/user-api";
 
 const ListingCreate = () => {
     const [loading, setLoading] = useState(true);
@@ -22,9 +23,18 @@ const ListingCreate = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        setUserId(getUserId());
-        setUserRole(getUserRole());
-        setLoading(false);
+        const fetchData = async () => {
+            const fetchedUserId = getUserId();
+            setUserId(fetchedUserId);
+            if (fetchedUserId) {
+                const user = await getUserDetails(fetchedUserId);
+                setUserRole(user.role);
+            }
+        }
+
+        fetchData()
+            .then(() => setLoading(false))
+            .catch(console.error);
     }, []);
 
     useEffect(() => {
@@ -87,6 +97,7 @@ const ListingCreate = () => {
     console.log(technical);
     console.log(equipment);
     console.log(finalDetails);
+    console.log(userRole);
 
     if (loading) {
         return;

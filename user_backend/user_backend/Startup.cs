@@ -18,17 +18,20 @@ public class Startup(IConfiguration configuration)
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddDbContext<UserDbContext>(options =>
-            options.UseMySQL(Configuration.GetConnectionString("UserDbConnection")!));
+            options.UseLazyLoadingProxies()
+                .UseMySQL(Configuration.GetConnectionString("UserDbConnection")!));
         
         services.AddScoped<DbContext>(provider => provider.GetService<UserDbContext>()!);
         
         services.AddAutoMapper(typeof(Startup));
 
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IFavouriteRepository, FavouriteRepository>();
 
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IImageService, ImageService>();
+        services.AddScoped<IFavouriteService, FavouriteService>();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>

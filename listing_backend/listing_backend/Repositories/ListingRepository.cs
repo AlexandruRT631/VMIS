@@ -312,4 +312,14 @@ public class ListingRepository(ListingDbContext context) : IListingRepository
         var listings = QueryUtilities.Paginate(orderedListings, pageIndex, pageSize);
         return (listings.ToList(), totalPages);
     }
+
+    public (List<Listing>, int) GetListingsByIds(List<int> ids, int pageIndex, int pageSize)
+    {
+        var orderedListings = context.Listings
+            .Where(l => ids.Contains(l.Id))
+            .OrderByDescending(l => l.CreatedAt);
+        var totalPages = (int) Math.Ceiling(orderedListings.Count() / (double) pageSize);
+        var listings = QueryUtilities.Paginate(orderedListings, pageIndex, pageSize);
+        return (listings.ToList(), totalPages);
+    }
 }

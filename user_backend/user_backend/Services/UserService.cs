@@ -20,7 +20,7 @@ public class UserService(IUserRepository userRepository, IImageService imageServ
         }
         if (!userRepository.DoesUserExist(id))
         {
-            throw new UserNotFoundException(ExceptionMessages.UserNotFound);
+            throw new ObjectNotFoundException(ExceptionMessages.UserNotFound);
         }
         
         return userRepository.GetUserById(id);
@@ -38,7 +38,7 @@ public class UserService(IUserRepository userRepository, IImageService imageServ
         }
         if (user.Id != 0 && userRepository.DoesUserExist(user.Id))
         {
-            throw new UserAlreadyExistsException(ExceptionMessages.UserAlreadyExists);
+            throw new ObjectAlreadyExistsException(ExceptionMessages.UserAlreadyExists);
         }
         if (string.IsNullOrWhiteSpace(user.Email))
         {
@@ -46,7 +46,7 @@ public class UserService(IUserRepository userRepository, IImageService imageServ
         }
         if (userRepository.DoesUserExist(user.Email))
         {
-            throw new UserAlreadyExistsException(ExceptionMessages.UsedEmail);
+            throw new ObjectAlreadyExistsException(ExceptionMessages.UsedEmail);
         }
         if (string.IsNullOrWhiteSpace(user.Password))
         {
@@ -65,6 +65,8 @@ public class UserService(IUserRepository userRepository, IImageService imageServ
         user.ProfilePictureUrl = profileImage == null
             ? imageService.GetDefaultImageUrl()
             : imageService.SaveImage(profileImage);
+        user.FavouriteListings = new List<FavouriteListing>();
+        user.FavouriteUsers = new List<FavouriteUser>();
         return userRepository.CreateUser(user);
     }
     
@@ -80,11 +82,11 @@ public class UserService(IUserRepository userRepository, IImageService imageServ
         }
         if (!userRepository.DoesUserExist(user.Id))
         {
-            throw new UserNotFoundException(ExceptionMessages.UserNotFound);
+            throw new ObjectNotFoundException(ExceptionMessages.UserNotFound);
         }
         if (!string.IsNullOrWhiteSpace(user.Email) && userRepository.DoesUserExist(user.Email))
         {
-            throw new UserAlreadyExistsException(ExceptionMessages.UsedEmail);
+            throw new ObjectAlreadyExistsException(ExceptionMessages.UsedEmail);
         }
         if (!Enum.IsDefined(typeof(UserRole), user.Role)) 
         {
@@ -135,10 +137,24 @@ public class UserService(IUserRepository userRepository, IImageService imageServ
         }
         if (!userRepository.DoesUserExist(id))
         {
-            throw new UserNotFoundException(ExceptionMessages.UserNotFound);
+            throw new ObjectNotFoundException(ExceptionMessages.UserNotFound);
         }
         
         var user = userRepository.GetUserById(id);
         return userRepository.DeleteUser(user!);
+    }
+
+    public (List<User>, int) GetUsersByIds(List<int> ids, int pageIndex, int pageSize)
+    {
+        if (pageIndex <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidPageIndex);
+        }
+        if (pageSize <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidPageSize);
+        }
+        
+        return userRepository.GetUsersByIds(ids, pageIndex, pageSize);
     }
 }

@@ -17,4 +17,6 @@ public class User
     [MaxLength(512)]
     public string? RefreshToken { get; set; }
     public DateTime RefreshTokenExpiration { get; set; }
+    public virtual List<FavouriteListing>? FavouriteListings { get; set; } = [];
+    public virtual List<FavouriteUser>? FavouriteUsers { get; set; } = [];
 }

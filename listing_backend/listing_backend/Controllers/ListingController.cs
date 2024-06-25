@@ -184,4 +184,30 @@ public class ListingController(IListingService listingService, IMapper mapper) :
             return NotFound(e.Message);
         }
     }
+    
+    [HttpPost("ids")]
+    public IActionResult GetListingsByIds(List<int> ids, int pageIndex = 1, int pageSize = 1)
+    {
+        try
+        {
+            var (listings, totalPages) = listingService
+                .GetListingsByIds(ids, pageIndex, pageSize);
+            var listingDtos = listings
+                .Select(mapper.Map<ListingDto>)
+                .ToList();
+            return Ok(new
+            {
+                Listings = listingDtos,
+                TotalPages = totalPages
+            });
+        }
+        catch (InvalidArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ObjectNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
 }

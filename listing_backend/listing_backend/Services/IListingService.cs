@@ -13,4 +13,5 @@ public interface IListingService
     public (List<Listing>, int) GetListingsBySearch(ListingSearchDto listingSearchDto, int pageIndex, int pageSize);
     public (List<Listing>, int) GetActiveListingsByUserId(int sellerId, int pageIndex, int pageSize);
     public (List<Listing>, int) GetInactiveListingsByUserId(int sellerId, int pageIndex, int pageSize);
+    public (List<Listing>, int) GetListingsByIds(List<int> ids, int pageIndex, int pageSize);
 }

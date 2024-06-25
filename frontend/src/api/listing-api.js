@@ -142,3 +142,13 @@ export const getInactiveListingsByUserId = async (id, pageIndex = 1, pageSize = 
         throw error;
     }
 };
+
+export const getListingsByIds = async (ids, pageIndex = 1, pageSize = 10) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/ids?pageIndex=${pageIndex}&pageSize=${pageSize}`, ids);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching listings with ids ${ids}:`, error);
+        throw error;
+    }
+};

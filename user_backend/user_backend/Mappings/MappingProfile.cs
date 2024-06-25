@@ -8,6 +8,33 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<User, UserDto>();
+        CreateMap<User, UserDetailsDto>()
+            .ForMember(
+                dest => dest.FavouriteListings,
+                opt =>
+                    opt.MapFrom(
+                        src => src.FavouriteListings!.Select(
+                            fl => fl.FavouriteListingId
+                        ).ToList()
+                    )
+            )
+            .ForMember(
+                dest => dest.FavouriteUsers,
+                opt =>
+                    opt.MapFrom(
+                        src => src.FavouriteUsers!.Select(
+                            fu => fu.FavouriteUserId
+                        ).ToList()
+                    )
+            )
+            .ForMember(
+                dest => dest.Role,
+                opt =>
+                    opt.MapFrom(
+                        src => src.Role.ToString()
+                    )
+            );
+        CreateMap<User, UserDto>()
+            .ReverseMap();
     }
 }

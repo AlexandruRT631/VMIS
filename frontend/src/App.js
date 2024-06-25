@@ -10,6 +10,8 @@ import Login from "./pages/login/login";
 import Register from "./pages/register/register";
 import ListingModify from "./pages/listing-modify/listing-modify";
 import Profile from "./pages/profile/profile";
+import Favourite from "./pages/favourite/favourite";
+import Account from "./pages/account/account";
 
 const theme = createTheme({
     palette: {
@@ -45,6 +47,8 @@ class App extends Component {
                             <Route path="/login" element={<Login/>}/>
                             <Route path="/register" element={<Register/>}/>
                             <Route path="/profile/:id" element={<Profile/>}/>
+                            <Route path="/favourites" element={<Favourite/>}/>
+                            <Route path="/account" element={<Account/>}/>
                         </Routes>
                     </Container>
                 </Router>

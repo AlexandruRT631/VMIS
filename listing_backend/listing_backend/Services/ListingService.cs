@@ -884,4 +884,18 @@ public class ListingService(
         
         return listingRepository.GetInactiveListingsByUserId(sellerId, pageIndex, pageSize);
     }
+
+    public (List<Listing>, int) GetListingsByIds(List<int> ids, int pageIndex, int pageSize)
+    {
+        if (pageIndex <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidPageIndex);
+        }
+        if (pageSize <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidPageSize);
+        }
+        
+        return listingRepository.GetListingsByIds(ids, pageIndex, pageSize);
+    }
 }
