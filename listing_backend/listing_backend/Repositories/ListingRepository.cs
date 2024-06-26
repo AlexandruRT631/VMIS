@@ -322,4 +322,15 @@ public class ListingRepository(ListingDbContext context) : IListingRepository
         var listings = QueryUtilities.Paginate(orderedListings, pageIndex, pageSize);
         return (listings.ToList(), totalPages);
     }
+
+    public List<int> DeleteListings(int sellerId)
+    {
+        var listingIds = context.Listings
+            .Where(l => l.SellerId == sellerId)
+            .Select(l => l.Id)
+            .ToList();
+        context.Listings.RemoveRange(context.Listings.Where(l => l.SellerId == sellerId));
+        context.SaveChanges();
+        return listingIds;
+    }
 }

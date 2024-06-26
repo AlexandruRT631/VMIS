@@ -15,4 +15,5 @@ public interface IListingRepository
     public (List<Listing>, int) GetActiveListingsByUserId(int sellerId, int pageIndex, int pageSize);
     public (List<Listing>, int) GetInactiveListingsByUserId(int sellerId, int pageIndex, int pageSize);
     public (List<Listing>, int) GetListingsByIds(List<int> ids, int pageIndex, int pageSize);
+    public List<int> DeleteListings(int sellerId);
 }

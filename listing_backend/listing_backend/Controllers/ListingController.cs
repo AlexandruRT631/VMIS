@@ -67,6 +67,10 @@ public class ListingController(IListingService listingService, IMapper mapper) :
         {
             return Conflict(e.Message);
         }
+        catch (EmailException e)
+        {
+            return Problem(e.Message);
+        }
     }
     
     [HttpPut]
@@ -200,6 +204,23 @@ public class ListingController(IListingService listingService, IMapper mapper) :
                 Listings = listingDtos,
                 TotalPages = totalPages
             });
+        }
+        catch (InvalidArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ObjectNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+    
+    [HttpDelete("seller/{sellerId:int}")]
+    public IActionResult DeleteListings(int sellerId)
+    {
+        try
+        {
+            return Ok(listingService.DeleteListings(sellerId));
         }
         catch (InvalidArgumentException e)
         {

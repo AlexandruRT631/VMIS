@@ -1,9 +1,11 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using user_backend.Config;
 using user_backend.Constants;
 using user_backend.DataAccess;
 using user_backend.Repositories;
@@ -32,6 +34,12 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IImageService, ImageService>();
         services.AddScoped<IFavouriteService, FavouriteService>();
+        services.AddScoped<IEmailService, EmailService>();
+        
+        services.AddHttpClient("listing_backend", client =>
+        {
+            client.BaseAddress = new Uri(Configuration["ListingBackendUrl"]!);
+        });
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -70,6 +78,9 @@ public class Startup(IConfiguration configuration)
                     .AllowAnyHeader()
                     .AllowAnyMethod());
         });
+        
+        services.Configure<SmtpConfig>(Configuration.GetSection("Smtp"));
+        services.AddSingleton(provider => provider.GetRequiredService<IOptions<SmtpConfig>>().Value);
         
         services.AddControllers();
         

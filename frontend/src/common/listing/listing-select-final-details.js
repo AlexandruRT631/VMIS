@@ -29,6 +29,7 @@ const ListingSelectFinalDetails = ({listing, setFinalDetails}) => {
     const [postingError, setPostingError] = useState(null);
     const componentRef = useRef(null);
     const theme = useTheme();
+    const [disableFinalButton, setDisableFinalButton] = useState(false);
 
     useEffect(() => {
         const fetchImages = async () => {
@@ -108,7 +109,7 @@ const ListingSelectFinalDetails = ({listing, setFinalDetails}) => {
             return;
         }
         setPostingError(null);
-
+        setDisableFinalButton(true);
         setFinalDetails({
             title: title,
             price: parseInt(price, 10),
@@ -215,8 +216,9 @@ const ListingSelectFinalDetails = ({listing, setFinalDetails}) => {
                             outline: 'none',
                         },
                     }}
+                    disabled={disableFinalButton}
                 >
-                    {listing ? "Update Listing" : "Post Listing"}
+                    {disableFinalButton? "Please wait, this might take a bit" : (listing ? "Update Listing" : "Post Listing")}
                 </Button>
             </div>
         </CommonPaper>

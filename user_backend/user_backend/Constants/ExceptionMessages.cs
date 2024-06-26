@@ -25,4 +25,9 @@ public static class ExceptionMessages
     public const string FavouriteUserNotFound = "Favourite user not found";
     public const string InvalidPageIndex = "Invalid page index.";
     public const string InvalidPageSize = "Invalid page size.";
+    public const string InvalidFavouriteUser = "Favourite user is not seller.";
+    public const string FavouriteListingSellerConflict = "Cannot add own listing to favourites.";
+    public const string FavouriteUserConflict = "Cannot add yourself to favourites.";
+    public const string InvalidListing = "Invalid listing.";
+    public const string ListingNotFound = "Listing not found.";
 }

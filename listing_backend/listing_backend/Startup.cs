@@ -53,6 +53,11 @@ public class Startup(IConfiguration configuration)
         services.AddScoped<ITractionService, TractionService>();
         services.AddScoped<ITransmissionService, TransmissionService>();
         
+        services.AddHttpClient("user_backend", client =>
+        {
+            client.BaseAddress = new Uri(Configuration["UserBackendUrl"]!);
+        });
+        
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {

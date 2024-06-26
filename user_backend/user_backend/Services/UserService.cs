@@ -5,7 +5,12 @@ using user_backend.Repositories;
 
 namespace user_backend.Services;
 
-public class UserService(IUserRepository userRepository, IImageService imageService) : IUserService
+public class UserService(
+    IUserRepository userRepository, 
+    IImageService imageService,
+    IFavouriteRepository favouriteRepository,
+    IHttpClientFactory httpClientFactory
+) : IUserService
 {
     public List<User> GetAllUsers()
     {
@@ -141,6 +146,17 @@ public class UserService(IUserRepository userRepository, IImageService imageServ
         }
         
         var user = userRepository.GetUserById(id);
+        var httpClient = httpClientFactory.CreateClient("listing_backend");
+        try
+        {
+            httpClient.DeleteAsync($"api/Listing/seller/{id}").GetAwaiter();
+        }
+        catch (Exception)
+        {
+            throw new ObjectNotFoundException(ExceptionMessages.UserNotFound);
+        }
+        
+        favouriteRepository.RemoveUserFromFavourites(id);
         return userRepository.DeleteUser(user!);
     }
 

@@ -1,5 +1,3 @@
-using user_backend.Entities;
-
 namespace user_backend.DTOs;
 
 public class UserDetailsDto

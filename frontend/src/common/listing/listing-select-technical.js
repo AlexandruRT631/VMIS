@@ -52,8 +52,7 @@ const ListingSelectTechnical = ({listing, technical, setTechnical, car}) => {
     const transmissionRef = useRef(null);
     const tractionRef = useRef(null);
     const nextButtonRef = useRef(null);
-    const [firstLoad, setFirstLoad] = useState(true);
-    const firstLoadRef = useRef(firstLoad);
+    const firstLoadRef = useRef(true);
 
     useEffect(() => {
         if (listing && technical) {
@@ -65,7 +64,7 @@ const ListingSelectTechnical = ({listing, technical, setTechnical, car}) => {
             setTransmission(technical.transmission);
             setTraction(technical.traction);
         }
-        setFirstLoad(false);
+        firstLoadRef.current = false;
     }, []);
 
     useEffect(() => {

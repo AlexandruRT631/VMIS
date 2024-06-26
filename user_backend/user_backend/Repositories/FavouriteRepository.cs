@@ -34,6 +34,24 @@ public class FavouriteRepository(UserDbContext context) : IFavouriteRepository
         );
     }
 
+    public bool RemoveListingFromFavourites(int favouriteListingId)
+    {
+        context.FavouriteListings.RemoveRange(
+            context.FavouriteListings.Where(fl => fl.FavouriteListingId == favouriteListingId)
+        );
+        context.SaveChanges();
+        return true;
+    }
+
+    public bool RemoveListingsFromFavourites(List<int> favouriteListingIds)
+    {
+        context.FavouriteListings.RemoveRange(
+            context.FavouriteListings.Where(fl => favouriteListingIds.Contains(fl.FavouriteListingId))
+        );
+        context.SaveChanges();
+        return true;
+    }
+
     public bool AddFavouriteUser(int userId, int favouriteUserId)
     {
         var user = context.Users.Find(userId);
@@ -61,5 +79,14 @@ public class FavouriteRepository(UserDbContext context) : IFavouriteRepository
         return context.FavouriteUsers.Any(
             fu => fu.User.Id == userId && fu.FavouriteUserId == favouriteUserId
         );
+    }
+
+    public bool RemoveUserFromFavourites(int favouriteUserId)
+    {
+        context.FavouriteUsers.RemoveRange(
+            context.FavouriteUsers.Where(fu => fu.FavouriteUserId == favouriteUserId)
+        );
+        context.SaveChanges();
+        return true;
     }
 }

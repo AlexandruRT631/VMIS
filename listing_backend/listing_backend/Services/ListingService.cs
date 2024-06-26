@@ -1,3 +1,5 @@
+using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using listing_backend.Constants;
 using listing_backend.DTOs;
@@ -20,7 +22,8 @@ public class ListingService(
     IMakeRepository makeRepository,
     IModelRepository modelRepository,
     IFuelRepository fuelRepository,
-    IImageService imageService
+    IImageService imageService,
+    IHttpClientFactory httpClientFactory
 ) : IListingService
 {
     private static readonly string[] AllowedFileTypes = [".jpg", ".jpeg", ".png", ".webp"];
@@ -77,7 +80,26 @@ public class ListingService(
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidSellerId);
         }
-        //TODO: Seller not found
+        var httpClient = httpClientFactory.CreateClient("user_backend");
+        UserDetailsDto? userDetailsDto;
+        try
+        { 
+            userDetailsDto = httpClient
+                .GetFromJsonAsync<UserDetailsDto>($"/api/User/details/{listing.SellerId}")
+                .GetAwaiter().GetResult();
+        }
+        catch (Exception)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.SellerNotFound);
+        }
+        if (userDetailsDto == null)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.SellerNotFound);
+        }
+        if (userDetailsDto.Role != "Admin" && userDetailsDto.Role != "Seller")
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidRole);
+        }
         if (listing.Price < 0)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidPrice);
@@ -284,7 +306,19 @@ public class ListingService(
         listing.Features = features;
         listing.ListingImages = listingImages;
         listing.IsSold = false;
-        return listingRepository.CreateListing(listing);
+        var newListing = listingRepository.CreateListing(listing);
+        
+        try
+        { 
+            httpClient.PostAsync($"/api/Email/sendNewListing/{newListing.SellerId}/{newListing.Id}", null)
+                .GetAwaiter();
+        }
+        catch (Exception)
+        {
+            throw new EmailException(ExceptionMessages.EmailNotSendNewListing + " Listing ID: " + newListing.Id);
+        }
+        
+        return newListing;
     }
 
     public Listing UpdateListing(Listing listing, List<IFormFile>? images = null)
@@ -543,7 +577,20 @@ public class ListingService(
             existingListing!.ListingImages = newListingImages;
         }
 
-        return listingRepository.UpdateListing(existingListing!);
+        var updatedListing = listingRepository.UpdateListing(existingListing!);
+        
+        var httpClient = httpClientFactory.CreateClient("user_backend");
+        try
+        { 
+            httpClient.PostAsync($"/api/Email/sendUpdateListing/{updatedListing.Id}", null)
+                .GetAwaiter();
+        }
+        catch (Exception)
+        {
+            throw new EmailException(ExceptionMessages.EmailNotSendNewListing + " Listing ID: " + updatedListing.Id);
+        }
+        
+        return updatedListing;
     }
 
     public bool DeleteListing(int id)
@@ -563,6 +610,15 @@ public class ListingService(
             imageService.DeleteImage(listingImage.Url!);
         }
         
+        var httpClient = httpClientFactory.CreateClient("user_backend");
+        try
+        {
+            httpClient.DeleteAsync($"api/Favourite/removeFavouriteListings/{id}");
+        }
+        catch (Exception)
+        {
+            throw new ObjectNotFoundException(ExceptionMessages.FavouritesDeleteError);
+        }
         return listingRepository.DeleteListing(listing!);
     }
 
@@ -853,7 +909,26 @@ public class ListingService(
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidSellerId);
         }
-        //TODO: Seller not found
+        var httpClient = httpClientFactory.CreateClient("user_backend");
+        UserDetailsDto? userDetailsDto;
+        try
+        { 
+            userDetailsDto = httpClient
+                .GetFromJsonAsync<UserDetailsDto>($"/api/User/details/{sellerId}")
+                .GetAwaiter().GetResult();
+        }
+        catch (Exception)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.SellerNotFound);
+        }
+        if (userDetailsDto == null)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.SellerNotFound);
+        }
+        if (userDetailsDto.Role != "Admin" && userDetailsDto.Role != "Seller")
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidRole);
+        }
         if (pageIndex <= 0)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidPageIndex);
@@ -872,7 +947,26 @@ public class ListingService(
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidSellerId);
         }
-        //TODO: Seller not found
+        var httpClient = httpClientFactory.CreateClient("user_backend");
+        UserDetailsDto? userDetailsDto;
+        try
+        { 
+            userDetailsDto = httpClient
+                .GetFromJsonAsync<UserDetailsDto>($"/api/User/details/{sellerId}")
+                .GetAwaiter().GetResult();
+        }
+        catch (Exception)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.SellerNotFound);
+        }
+        if (userDetailsDto == null)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.SellerNotFound);
+        }
+        if (userDetailsDto.Role != "Admin" && userDetailsDto.Role != "Seller")
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidRole);
+        }
         if (pageIndex <= 0)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidPageIndex);
@@ -897,5 +991,46 @@ public class ListingService(
         }
         
         return listingRepository.GetListingsByIds(ids, pageIndex, pageSize);
+    }
+
+    public bool DeleteListings(int sellerId)
+    {
+        if (sellerId <= 0)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidSellerId);
+        }
+        var httpClient = httpClientFactory.CreateClient("user_backend");
+        UserDetailsDto? userDetailsDto;
+        try
+        { 
+            userDetailsDto = httpClient
+                .GetFromJsonAsync<UserDetailsDto>($"/api/User/details/{sellerId}")
+                .GetAwaiter().GetResult();
+        }
+        catch (Exception)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.SellerNotFound);
+        }
+        if (userDetailsDto == null)
+        {
+            throw new InvalidArgumentException(ExceptionMessages.SellerNotFound);
+        }
+        if (userDetailsDto.Role != "Admin" && userDetailsDto.Role != "Seller")
+        {
+            throw new InvalidArgumentException(ExceptionMessages.InvalidRole);
+        }
+        
+        var listingIds = listingRepository.DeleteListings(sellerId);
+        try
+        {
+            var jsonContent = JsonSerializer.Serialize(listingIds);
+            var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            httpClient.PostAsync($"api/Favourite/removeFavouriteListings", httpContent);
+        }
+        catch (Exception)
+        {
+            throw new ObjectNotFoundException(ExceptionMessages.FavouritesDeleteError);
+        }
+        return true;
     }
 }

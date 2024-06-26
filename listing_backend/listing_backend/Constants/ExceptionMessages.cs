@@ -108,4 +108,8 @@ public static class ExceptionMessages
     public const string InvalidMinPrice = "Invalid min price.";
     public const string InvalidMaxPrice = "Invalid max price.";
     public const string InvalidPriceRange = "Invalid price range.";
+    public const string SellerNotFound = "Seller not found.";
+    public const string InvalidRole = "User with this role cannot complete action.";
+    public const string FavouritesDeleteError = "Listing couldn't be deleted from favourites";
+    public const string EmailNotSendNewListing = "Listing was created, but failed sending emails";
 }

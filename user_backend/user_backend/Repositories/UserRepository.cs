@@ -66,4 +66,20 @@ public class UserRepository(UserDbContext context) : IUserRepository
         var users = QueryUtilities.Paginate(orderedUsers, pageIndex, pageSize);
         return (users.ToList(), totalPages);
     }
+
+    public List<string> GetEmailsByListingInFavourites(int listingId)
+    {
+        return context.Users
+            .Where(u => u.FavouriteListings!.Any(fl => fl.FavouriteListingId == listingId))
+            .Select(u => u.Email)
+            .ToList()!;
+    }
+
+    public List<string> GetEmailsByUserInFavourites(int sellerId)
+    {
+        return context.Users
+            .Where(u => u.FavouriteUsers!.Any(fu => fu.FavouriteUserId == sellerId))
+            .Select(u => u.Email)
+            .ToList()!;
+    }
 }

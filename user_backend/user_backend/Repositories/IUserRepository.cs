@@ -66,4 +66,7 @@ public interface IUserRepository
     /// <returns>Boolean</returns>
     public bool DoesUserExist(string email);
     public (List<User>, int) GetUsersByIds(List<int> ids, int pageIndex, int pageSize);
+    public List<string> GetEmailsByListingInFavourites(int listingId);
+    public List<string> GetEmailsByUserInFavourites(int sellerId);
+
 }

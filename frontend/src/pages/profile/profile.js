@@ -39,15 +39,17 @@ const Profile = () => {
                     const currentUser = await getUserDetails(fetchedUserId);
                     setCurrentUserDetails(currentUser);
                 }
-                const activeListings = await getActiveListingsByUserId(id, pageActive);
-                setListingsActive(activeListings);
-                if (activeListings.totalPages === 0) {
-                    setPageActive(0);
-                }
-                const inactiveListings = await getInactiveListingsByUserId(id, pageInactive);
-                setListingsInactive(inactiveListings);
-                if (inactiveListings.totalPages === 0) {
-                    setPageInactive(0);
+                if (user.role === "Seller" || user.role === "Admin") {
+                    const activeListings = await getActiveListingsByUserId(id, pageActive);
+                    setListingsActive(activeListings);
+                    if (activeListings.totalPages === 0) {
+                        setPageActive(0);
+                    }
+                    const inactiveListings = await getInactiveListingsByUserId(id, pageInactive);
+                    setListingsInactive(inactiveListings);
+                    if (inactiveListings.totalPages === 0) {
+                        setPageInactive(0);
+                    }
                 }
             } catch (error) {
                 setError(error)
@@ -102,7 +104,7 @@ const Profile = () => {
 
     if (error) {
         if (error.response && error.response.status === 404) {
-            return <div>Error: listing not found</div>;
+            return <div>Error: profile not found</div>;
         }
         return <div>Error: {error.message}</div>;
     }

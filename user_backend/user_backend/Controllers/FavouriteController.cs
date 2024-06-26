@@ -87,4 +87,38 @@ public class FavouriteController(IFavouriteService favouriteService) : Controlle
             return NotFound(e.Message);
         }
     }
+    
+    [HttpDelete("removeFavouriteListings/{favouriteListingId:int}")]
+    public IActionResult RemoveListingFromFavourites(int favouriteListingId)
+    {
+        try
+        {
+            return Ok(favouriteService.RemoveListingFromFavourites(favouriteListingId));
+        }
+        catch (InvalidArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ObjectNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+    
+    [HttpPost("removeFavouriteListings")]
+    public IActionResult RemoveListingsFromFavourites(List<int> favouriteListingIds)
+    {
+        try
+        {
+            return Ok(favouriteService.RemoveListingsFromFavourites(favouriteListingIds));
+        }
+        catch (InvalidArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ObjectNotFoundException e)
+        {
+            return NotFound(e.Message);
+        }
+    }
 }
