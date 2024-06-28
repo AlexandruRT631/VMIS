@@ -11,3 +11,23 @@ export const getAllModelsByMakeId = async (makeId) => {
         throw error;
     }
 }
+
+export const createModel = async (model) => {
+    try {
+        const response = await axios.post(BASE_URL, model);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating model:', error);
+        throw error;
+    }
+}
+
+export const updateModel = async (model) => {
+    try {
+        const response = await axios.put(BASE_URL, model);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating model:', error);
+        throw error;
+    }
+}

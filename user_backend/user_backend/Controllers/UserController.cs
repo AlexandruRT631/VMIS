@@ -14,7 +14,7 @@ namespace user_backend.Controllers;
 public class UserController(IUserService userService, IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public IActionResult GetAllUsers()
     {
         var userDtos = userService.GetAllUsers().Select(mapper.Map<UserDto>).ToList();
@@ -59,7 +59,7 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public IActionResult CreateUser([FromForm] string user, [FromForm] IFormFile? profileImage)
     {
         try
@@ -104,7 +104,6 @@ public class UserController(IUserService userService, IMapper mapper) : Controll
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")]
     public IActionResult DeleteUser(int id)
     {
         try

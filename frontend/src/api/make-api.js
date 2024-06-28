@@ -11,3 +11,23 @@ export const getAllMakes = async () => {
         throw error;
     }
 }
+
+export const createMake = async (make) => {
+    try {
+        const response = await axios.post(BASE_URL, make);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating make:', error);
+        throw error;
+    }
+}
+
+export const updateMake = async (make) => {
+    try {
+        const response = await axios.put(BASE_URL, make);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating make:', error);
+        throw error;
+    }
+}

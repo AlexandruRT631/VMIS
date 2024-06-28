@@ -11,3 +11,23 @@ export const getAllFeatures = async () => {
         throw error;
     }
 }
+
+export const createFeature = async (feature) => {
+    try {
+        const response = await axios.post(BASE_URL, feature);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating feature:', error);
+        throw error;
+    }
+}
+
+export const updateFeature = async (feature) => {
+    try {
+        const response = await axios.put(BASE_URL, feature);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating feature:', error);
+        throw error;
+    }
+}

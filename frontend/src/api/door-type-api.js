@@ -11,3 +11,23 @@ export const getAllDoorTypes = async () => {
         throw error;
     }
 }
+
+export const createDoorType = async (doorType) => {
+    try {
+        const response = await axios.post(BASE_URL, doorType);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating door type:', error);
+        throw error;
+    }
+}
+
+export const updateDoorType = async (doorType) => {
+    try {
+        const response = await axios.put(BASE_URL, doorType);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating door type:', error);
+        throw error;
+    }
+}

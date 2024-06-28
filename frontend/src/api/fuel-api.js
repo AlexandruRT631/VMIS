@@ -11,3 +11,23 @@ export const getAllFuels = async () => {
         throw error;
     }
 }
+
+export const createFuel = async (fuel) => {
+    try {
+        const response = await axios.post(BASE_URL, fuel);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating fuel:', error);
+        throw error;
+    }
+}
+
+export const updateFuel = async (fuel) => {
+    try {
+        const response = await axios.put(BASE_URL, fuel);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating fuel:', error);
+        throw error;
+    }
+}

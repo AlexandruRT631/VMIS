@@ -10,6 +10,7 @@ import {getAllTractions} from "../../api/traction-api";
 import {getAllDoorTypes} from "../../api/door-type-api";
 import {getAllColors} from "../../api/color-api";
 import {getAllFeatures} from "../../api/feature-api";
+import GridAutocompleteList from "../../common/grid/grid-autocomplete-list";
 
 const GridAutocompleteElement = ({list, setSelect, select, name}) => {
     return (
@@ -19,89 +20,6 @@ const GridAutocompleteElement = ({list, setSelect, select, name}) => {
                 getOptionLabel={(option) => option.name}
                 onChange={(event, newValue) => setSelect(newValue)}
                 value={select}
-                renderInput={(params) => <TextField {...params} label={name} />}
-                disabled={list.length === 0}
-            />
-        </Grid>
-    );
-}
-
-const GridAutocompleteList = ({ list, setSelect, name }) => {
-    const [inputValue, setInputValue] = useState('');
-    const [localSelect, setLocalSelect] = useState([]);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-    const handleDropdownClose = () => {
-        setIsDropdownOpen(false);
-        setSelect(localSelect);
-    };
-
-    const handleDropdownOpen = () => {
-        setIsDropdownOpen(true);
-    };
-
-    const handleInputChange = (event, newValue) => {
-        setInputValue(newValue);
-        if (newValue === '' && !isDropdownOpen) {
-            setLocalSelect([]);
-            setSelect([]);
-        }
-    };
-
-    const handleChange = (event, newValue) => {
-        setLocalSelect(newValue);
-        if (newValue.length === 0 && !isDropdownOpen) {
-            setSelect([]);
-        }
-    };
-
-    return (
-        <Grid item xs={3}>
-            <Autocomplete
-                multiple
-                options={list}
-                disableCloseOnSelect
-                getOptionLabel={(option) => option.name}
-                inputValue={inputValue}
-                onInputChange={handleInputChange}
-                onChange={handleChange}
-                value={localSelect}
-                onClose={handleDropdownClose}
-                onOpen={handleDropdownOpen}
-                renderOption={(props, option, { selected }) => {
-                    const { key, ...rest } = props;
-                    return (
-                        <li key={key} {...rest}>
-                            <Checkbox
-                                sx={{
-                                    color: option.hexCode,
-                                    '&.Mui-checked': {
-                                        color: option.hexCode,
-                                    },
-                                }}
-                                checked={selected}
-                                style={{ marginRight: 8 }}
-                            />
-                            {option.name}
-                        </li>
-                    );
-                }}
-                renderTags={(value, getTagProps) => {
-                    if (inputValue || value.length === 0) return null;
-                    const firstOption = value[0];
-                    const additionalCount = value.length - 1;
-
-                    return (
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <span>{firstOption.name}</span>
-                            {additionalCount > 0 && (
-                                <span style={{ marginLeft: 4 }}>
-                                    {`+ ${additionalCount}`}
-                                </span>
-                            )}
-                        </div>
-                    );
-                }}
                 renderInput={(params) => <TextField {...params} label={name} />}
                 disabled={list.length === 0}
             />

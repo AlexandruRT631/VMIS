@@ -11,3 +11,23 @@ export const getAllTransmissions = async () => {
         throw error;
     }
 }
+
+export const createTransmission = async (transmission) => {
+    try {
+        const response = await axios.post(BASE_URL, transmission);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating transmission:', error);
+        throw error;
+    }
+}
+
+export const updateTransmission = async (transmission) => {
+    try {
+        const response = await axios.put(BASE_URL, transmission);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating transmission:', error);
+        throw error;
+    }
+}

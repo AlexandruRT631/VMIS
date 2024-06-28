@@ -12,8 +12,8 @@ import {
 } from "@mui/material";
 import CommonPaper from "../../common/common-paper";
 import {useEffect, useState} from "react";
-import {getUserId} from "../../common/token";
-import {getUserDetails, updateUser} from "../../api/user-api";
+import {getUserId, removeToken} from "../../common/token";
+import {deleteUser, getUserDetails, updateUser} from "../../api/user-api";
 
 const BASE_URL = process.env.REACT_APP_USER_API_URL;
 
@@ -205,6 +205,29 @@ const Account = () => {
             .finally(() => {
                 setDialogAcknowledgement(true);
                 setPassword('');
+            });
+    }
+
+    const handleDeleteAccountDialog = () => {
+        setDialogTitle("Delete Account");
+        setDialogText("Are you sure you want to delete your account? This action is irreversible.");
+        setDialogAcknowledgement(false);
+        setDialogYesAction(() => handleDeleteAccount);
+        setDialogYesDisabled(false);
+        setDialogOpen(true);
+    }
+
+    const handleDeleteAccount = () => {
+        setDialogYesDisabled(true);
+        deleteUser(parseInt(userId))
+            .then(() => {
+                removeToken();
+                window.location.href = '/';
+            })
+            .catch((error) => {
+                console.error(error);
+                setDialogText(error.message);
+                setDialogAcknowledgement(true);
             });
     }
 
@@ -405,6 +428,27 @@ const Account = () => {
                         </Grid>
                     </CommonPaper>
                 </Grid>
+                <Grid item xs={12}>
+                    <CommonPaper title={"Delete Account"}>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                minHeight: '106px',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <Button
+                                variant={"contained"}
+                                color={"error"}
+                                sx={{ alignSelf: 'flex-start' }}
+                                onClick={handleDeleteAccountDialog}
+                            >
+                                Delete account
+                            </Button>
+                        </Box>
+                    </CommonPaper>
+                </Grid>
             </Grid>
 
             <Dialog
@@ -427,7 +471,7 @@ const Account = () => {
                             <Button onClick={() => setDialogOpen(false)}>
                                 No
                             </Button>
-                            <Button onClick={dialogYesAction} disabled={dialogYesDisabled}>
+                            <Button onClick={dialogYesAction} disabled={dialogYesDisabled} color={dialogTitle === "Delete Account" ? "error" : "primary"}>
                                 Yes
                             </Button>
                         </React.Fragment>

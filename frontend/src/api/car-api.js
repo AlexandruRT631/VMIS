@@ -21,3 +21,23 @@ export const getCarsByModel = async (modelId) => {
         throw error;
     }
 }
+
+export const createCar = async (car) => {
+    try {
+        const response = await axios.post(BASE_URL, car);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating car:', error);
+        throw error;
+    }
+}
+
+export const updateCar = async (car) => {
+    try {
+        const response = await axios.put(BASE_URL, car);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating car:', error);
+        throw error;
+    }
+}

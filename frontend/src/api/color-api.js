@@ -11,3 +11,23 @@ export const getAllColors = async () => {
         throw error;
     }
 }
+
+export const createColor = async (color) => {
+    try {
+        const response = await axios.post(BASE_URL, color);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating color:', error);
+        throw error;
+    }
+}
+
+export const updateColor = async (color) => {
+    try {
+        const response = await axios.put(BASE_URL, color);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating color:', error);
+        throw error;
+    }
+}

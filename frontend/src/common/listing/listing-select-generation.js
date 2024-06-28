@@ -45,7 +45,7 @@ const ListingSelectGeneration = ({listing, car, setCar, possibleCars}) => {
                             },
                         }}
                     >
-                        {selectCar.startYear + ' - ' + selectCar.endYear}
+                        {selectCar.startYear + ' - ' + (selectCar.endYear !== 0 ? selectCar.endYear : 'current')}
                     </Button>
                 ))}
             </ButtonGroup>

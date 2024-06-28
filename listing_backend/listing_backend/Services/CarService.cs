@@ -247,6 +247,10 @@ public class CarService(
             }
             existingCar!.EndYear = car.EndYear;
         }
+        else if (car.EndYear == 1)
+        {
+            existingCar!.EndYear = 0;
+        }
         if (car.Model != null)
         {
             if (car.Model.Id <= 0)

@@ -3,6 +3,17 @@ import imageCompression from "browser-image-compression";
 
 const BASE_URL = process.env.REACT_APP_USER_API_URL + '/api/user';
 
+export const getAllUsers = async () => {
+    try {
+        const response = await axios.get(BASE_URL);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw error;
+    }
+
+}
+
 export const getUserDetails = async (id) => {
     try {
         const response = await axios.get(BASE_URL + `/details/${id}`);
@@ -22,6 +33,32 @@ export const getUsersDetailByIds = async (ids, pageIndex = 1, pageSize = 10) => 
         throw error;
     }
 };
+
+export const createUser = async (user, profileImage) => {
+    try {
+        const formData = new FormData();
+        formData.append('user', JSON.stringify(user));
+        if (profileImage) {
+            const compressedImage = await imageCompression(profileImage, {
+                maxSizeMB: 1,
+                maxWidthOrHeight: 1920,
+                useWebWorker: true,
+            });
+            formData.append('profileImage', compressedImage, compressedImage.name);
+        }
+
+        const response = await axios.post(BASE_URL, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error creating user:', error);
+        throw error;
+    }
+
+}
 
 export const updateUser = async (user, profileImage) => {
     try {
@@ -44,6 +81,16 @@ export const updateUser = async (user, profileImage) => {
         return response.data;
     } catch (error) {
         console.error('Error updating user:', error);
+        throw error;
+    }
+}
+
+export const deleteUser = async (id) => {
+    try {
+        const response = await axios.delete(BASE_URL + `/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting user:', error);
         throw error;
     }
 }

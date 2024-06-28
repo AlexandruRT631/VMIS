@@ -11,3 +11,23 @@ export const getAllTractions = async () => {
         throw error;
     }
 }
+
+export const createTraction = async (traction) => {
+    try {
+        const response = await axios.post(BASE_URL, traction);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating traction:', error);
+        throw error;
+    }
+}
+
+export const updateTraction = async (traction) => {
+    try {
+        const response = await axios.put(BASE_URL, traction);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating traction:', error);
+        throw error;
+    }
+}

@@ -68,7 +68,7 @@ public class CarRepository(ListingDbContext context) : ICarRepository
     public List<Car> GetCarsByModelYear(int modelId, int year)
     {
         return context.Cars
-            .Where(c => c.Model!.Id == modelId && c.StartYear <= year && c.EndYear >= year)
+            .Where(c => c.Model!.Id == modelId && c.StartYear <= year && (c.EndYear >= year || c.EndYear == 0))
             .ToList();
     }
 }
