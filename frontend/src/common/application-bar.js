@@ -55,6 +55,12 @@ const ApplicationBar = () => {
                         }
                     },
                     {
+                        title: 'Messages',
+                        action: () => {
+                            window.location.href = '/messages';
+                        }
+                    },
+                    {
                         title: 'Favourites',
                         action: () => {
                             window.location.href = '/favourites';

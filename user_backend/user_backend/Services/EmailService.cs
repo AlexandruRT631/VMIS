@@ -106,4 +106,58 @@ public class EmailService(
         }
         return true;
     }
+
+    public void SendEmailNewConversation(int userId)
+    {
+        var smtpClient = new SmtpClient(smtpConfig.Host)
+        {
+            Port = smtpConfig.Port,
+            Credentials = new System.Net.NetworkCredential(smtpConfig.Username, smtpConfig.Password),
+            EnableSsl = smtpConfig.EnableSsl
+        };
+        var mailMessage = new MailMessage
+        {
+            From = new MailAddress(smtpConfig.Username!),
+            Subject = EmailMessages.NewConversationSubject,
+            Body = EmailMessages.NewConversationBody,
+            IsBodyHtml = true
+        };
+        var user = userRepository.GetUserById(userId);
+        mailMessage.To.Add(user!.Email!);
+        try 
+        {
+            smtpClient.Send(mailMessage);
+        }
+        catch (Exception e)
+        {
+            throw new EmailException(e.Message);
+        }
+    }
+
+    public void SendEmailNewMessage(int userId)
+    {
+        var smtpClient = new SmtpClient(smtpConfig.Host)
+        {
+            Port = smtpConfig.Port,
+            Credentials = new System.Net.NetworkCredential(smtpConfig.Username, smtpConfig.Password),
+            EnableSsl = smtpConfig.EnableSsl
+        };
+        var mailMessage = new MailMessage
+        {
+            From = new MailAddress(smtpConfig.Username!),
+            Subject = EmailMessages.NewMessageSubject,
+            Body = EmailMessages.NewMessageBody,
+            IsBodyHtml = true
+        };
+        var user = userRepository.GetUserById(userId);
+        mailMessage.To.Add(user!.Email!);
+        try 
+        {
+            smtpClient.Send(mailMessage);
+        }
+        catch (Exception e)
+        {
+            throw new EmailException(e.Message);
+        }
+    }
 }

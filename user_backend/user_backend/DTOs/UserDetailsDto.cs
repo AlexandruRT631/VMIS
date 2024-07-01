@@ -8,4 +8,5 @@ public class UserDetailsDto
     public string? Role { get; set; }
     public List<int>? FavouriteListings { get; set; }
     public List<int>? FavouriteUsers { get; set; }
+    public List<ConversationDto>? Conversations { get; set; }
 }

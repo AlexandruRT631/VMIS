@@ -19,4 +19,5 @@ public class User
     public DateTime RefreshTokenExpiration { get; set; }
     public virtual List<FavouriteListing>? FavouriteListings { get; set; } = [];
     public virtual List<FavouriteUser>? FavouriteUsers { get; set; } = [];
+    public virtual List<Conversation>? Conversations { get; set; } = [];
 }

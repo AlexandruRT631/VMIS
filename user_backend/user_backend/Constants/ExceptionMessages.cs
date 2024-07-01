@@ -30,4 +30,11 @@ public static class ExceptionMessages
     public const string FavouriteUserConflict = "Cannot add yourself to favourites.";
     public const string InvalidListing = "Invalid listing.";
     public const string ListingNotFound = "Listing not found.";
+    public const string InvalidConversation = "Invalid conversation.";
+    public const string ConversationNotFound = "Conversation not found.";
+    public const string InvalidMessage = "Invalid message.";
+    public const string InvalidSender = "Invalid sender.";
+    public const string SenderNotFound = "Sender not found.";
+    public const string RequiredContent = "Content is required.";
+    public const string ConversationAlreadyExists = "Conversation already exists.";
 }

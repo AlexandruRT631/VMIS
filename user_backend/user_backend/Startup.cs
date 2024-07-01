@@ -1,3 +1,4 @@
+using System.Net.WebSockets;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using user_backend.Constants;
 using user_backend.DataAccess;
 using user_backend.Repositories;
 using user_backend.Services;
+using WebSocketManager = user_backend.WebSockets.WebSocketManager;
 
 namespace user_backend;
 
@@ -29,12 +31,16 @@ public class Startup(IConfiguration configuration)
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IFavouriteRepository, FavouriteRepository>();
+        services.AddScoped<IConversationRepository, ConversationRepository>();
+        services.AddScoped<IMessageRepository, MessageRepository>();
 
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<IImageService, ImageService>();
         services.AddScoped<IFavouriteService, FavouriteService>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IConversationService, ConversationService>();
+        services.AddScoped<IMessageService, MessageService>();
         
         services.AddHttpClient("listing_backend", client =>
         {
@@ -112,6 +118,8 @@ public class Startup(IConfiguration configuration)
             });
             c.OperationFilter<AddFileParamTypes>();
         });
+        
+        services.AddSingleton<WebSocketManager>();
     }
     
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -124,6 +132,25 @@ public class Startup(IConfiguration configuration)
         app.UseHttpsRedirection();
         app.UseStaticFiles();
         app.UseRouting();
+
+        app.UseWebSockets();
+        app.Use(async (context, next) =>
+        {
+            if (context.WebSockets.IsWebSocketRequest && context.Request.Path.StartsWithSegments("/ws/conversation"))
+            {
+                var conversationId = context.Request.Path.Value!.Split("/").Last();
+                var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                var webSocketManager = app.ApplicationServices.GetService<WebSocketManager>();
+                webSocketManager!.AddSocket(conversationId, webSocket);
+
+                await HandleWebSocketConnection(context, webSocket);
+            }
+            else
+            {
+                await next();
+            }
+        });
+        
         app.UseAuthentication();
         app.UseAuthorization();
         
@@ -174,5 +201,18 @@ public class Startup(IConfiguration configuration)
                 }
             };
         }
+    }
+
+    private async Task HandleWebSocketConnection(HttpContext context, WebSocket webSocket)
+    {
+        var buffer = new byte[1024 * 4];
+        WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+        while (!result.CloseStatus.HasValue)
+        {
+            result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+        }
+
+        await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
     }
 }

@@ -36,5 +36,9 @@ public class MappingProfile : Profile
             );
         CreateMap<User, UserDto>()
             .ReverseMap();
+        CreateMap<Conversation, ConversationDto>()
+            .ReverseMap();
+        CreateMap<Message, MessageDto>()
+            .ReverseMap();
     }
 }

@@ -8,7 +8,7 @@ import {
     Grid,
     Link,
     Paper,
-    Stack,
+    Stack, TextField,
     Typography
 } from "@mui/material";
 import React, {useEffect, useState} from "react";
@@ -16,6 +16,7 @@ import {getUserDetails} from "../../api/user-api";
 import {getUserId} from "../../common/token";
 import {deleteListing, updateListing} from "../../api/listing-api";
 import {addFavouriteListing, removeFavouriteListing} from "../../api/favourite-api";
+import {sendMessage} from "../../api/messages-api";
 
 const BASE_URL = process.env.REACT_APP_USER_API_URL;
 
@@ -29,6 +30,8 @@ const ListingTitle = ({ listing }) => {
     const [markDialogOpen, setMarkDialogOpen] = useState(false);
     const numberFormat = new Intl.NumberFormat('en-US');
     const [isSaveDisabled, setIsSaveDisabled] = useState(false);
+    const [contactDialogOpen, setContactDialogOpen] = useState(false);
+    const [contactMessage, setContactMessage] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -93,6 +96,17 @@ const ListingTitle = ({ listing }) => {
         }
     }
 
+    const handleContactSeller = () => {
+        sendMessage({
+            senderId: currentUserDetails.id,
+            content: contactMessage,
+        }, listing.id)
+            .then(() => {
+                window.location.href = '/messages';
+            })
+            .catch(console.error);
+    }
+
     if (loading) {
         return;
     }
@@ -141,16 +155,19 @@ const ListingTitle = ({ listing }) => {
                         </Grid>
                         {!listing.isSold && (
                             <Grid item xs={6}>
-                                <Button
-                                    variant="contained"
-                                    sx={{
-                                        '&:focus': {
-                                            outline: 'none',
-                                        },
-                                    }}
-                                >
-                                    Contact Seller
-                                </Button>
+                                {!currentUserDetails.conversations.some(conversation => conversation.listingId === listing.id) && (
+                                    <Button
+                                        variant="contained"
+                                        sx={{
+                                            '&:focus': {
+                                                outline: 'none',
+                                            },
+                                        }}
+                                        onClick={() => setContactDialogOpen(true)}
+                                    >
+                                        Contact Seller
+                                    </Button>
+                                )}
                             </Grid>
                         )}
                     </React.Fragment>
@@ -238,6 +255,35 @@ const ListingTitle = ({ listing }) => {
                     </Button>
                     <Button onClick={handleListingMark} color="primary" variant="contained">
                         Yes
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={contactDialogOpen}
+                onClose={() => setContactDialogOpen(false)}
+            >
+                <DialogTitle>Contact Seller</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        required
+                        margin="dense"
+                        label="Message"
+                        fullWidth
+                        variant="standard"
+                        onChange={(e) => setContactMessage(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setContactDialogOpen(false)} color="primary">
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={handleContactSeller}
+                        disabled={contactMessage.length === 0}
+                    >
+                        Send
                     </Button>
                 </DialogActions>
             </Dialog>

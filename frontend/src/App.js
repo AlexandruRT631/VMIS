@@ -13,6 +13,7 @@ import Profile from "./pages/profile/profile";
 import Favourite from "./pages/favourite/favourite";
 import Account from "./pages/account/account";
 import AdministratorPanel from "./pages/administrator-panel/administrator-panel";
+import Messages from "./pages/messages/messages";
 
 const theme = createTheme({
     palette: {
@@ -51,6 +52,7 @@ class App extends Component {
                             <Route path="/favourites" element={<Favourite/>}/>
                             <Route path="/account" element={<Account/>}/>
                             <Route path="/admin" element={<AdministratorPanel/>}/>
+                            <Route path="/messages" element={<Messages/>}/>
                         </Routes>
                     </Container>
                 </Router>
