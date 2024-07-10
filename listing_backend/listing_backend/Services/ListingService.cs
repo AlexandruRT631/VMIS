@@ -129,7 +129,7 @@ public class ListingService(
             throw new ObjectNotFoundException(ExceptionMessages.CarNotFound);
         }
         var car = carRepository.GetCarById(listing.Car.Id);
-        if (listing.Year < car!.StartYear || listing.Year > car!.EndYear)
+        if (listing.Year < car!.StartYear || (listing.Year > car!.EndYear && car!.EndYear != 0))
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidYear);
         }
@@ -305,7 +305,7 @@ public class ListingService(
         listing.Traction = traction;
         listing.Features = features;
         listing.ListingImages = listingImages;
-        listing.IsSold = false;
+        listing.IsSold = listing.IsSold ?? false;
         var newListing = listingRepository.CreateListing(listing);
         
         try

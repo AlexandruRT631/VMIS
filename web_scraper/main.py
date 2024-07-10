@@ -1,19 +1,27 @@
-import re
 import string
-
 import requests
 from bs4 import BeautifulSoup
 import json
 from io import BytesIO
 import random
 import re
+from googletrans import Translator
 
-# This file contains on each line a link to a listing from Autovit. 
+
+def translate_text(text, dest_language='en'):
+    translator = Translator()
+    return translator.translate(str(text), dest=dest_language).text
+
+
+# This file contains on each line a link to a listing from Autovit.
 with open("URLs.txt", "r") as file:
     URLs = [line.strip() for line in file.readlines()]
 
 outputFile = open("output.txt", "w")
 outputErrorFile = open("outputErrors.txt", "w")
+
+users = requests.get("http://localhost:5213/api/User").json()
+users = list(filter(lambda x: x["role"] == 2 or x["role"] == 3, users))
 
 for URL in URLs:
     # Opening the page and obtaining what the tag <script> contains, that being the details of the listing.
@@ -33,7 +41,7 @@ for URL in URLs:
             or len(json_data["props"]["pageProps"]["advert"]["equipment"]) == 0):
         outputErrorFile.write(f"Listing from URL {URL} is missing equipment. Continuing to next Listing.\n")
         continue
-    if ("description" not in json_data["props"]["pageProps"]["advert"]):
+    if ("description" not in json_data["props"]["pageProps"]["advert"] or str(json_data["props"]["pageProps"]["advert"]["description"]) == ""):
         outputErrorFile.write(f"Listing from URL {URL} is missing description. Continuing to next Listing.\n")
         continue
     if ("images" not in json_data["props"]["pageProps"]["advert"]
@@ -110,7 +118,8 @@ for URL in URLs:
                 category = c
                 car["possibleCategories"].append(category)
                 requests.put("http://localhost:5019/api/Car/", json=car)
-                outputFile.write(f"possibleCategories for car with id {car['id']} was updated with category {{id: {category['id']}, name: {category['name']}}}.\n")
+                outputFile.write(
+                    f"possibleCategories for car with id {car['id']} was updated with category {{id: {category['id']}, name: {category['name']}}}.\n")
                 break
     if category is None:
         response = requests.post("http://localhost:5019/api/Category", json={"name": listing_details["body_type"]})
@@ -133,7 +142,8 @@ for URL in URLs:
                 doorType = d
                 car["possibleDoorTypes"].append(doorType)
                 requests.put("http://localhost:5019/api/Car/", json=car)
-                outputFile.write(f"possibleDoorTypes for car with id {car['id']} was updated with door type {{id: {doorType['id']}, name: {doorType['name']}}}.\n")
+                outputFile.write(
+                    f"possibleDoorTypes for car with id {car['id']} was updated with door type {{id: {doorType['id']}, name: {doorType['name']}}}.\n")
                 break
     if doorType is None:
         response = requests.post("http://localhost:5019/api/DoorType", json={"name": listing_details["door_count"]})
@@ -163,7 +173,8 @@ for URL in URLs:
                 engine = e
                 car["possibleEngines"].append(engine)
                 requests.put("http://localhost:5019/api/Car/", json=car)
-                outputFile.write(f"An engine not in the list of possible engines was used, with id: {str(engine["id"])}. Please check if the engine is the right one. Engine was also added to possibleEngines for car with id {str(car["id"])}.\n")
+                outputFile.write(
+                    f"An engine not in the list of possible engines was used, with id: {str(engine["id"])}. Please check if the engine is the right one. Engine was also added to possibleEngines for car with id {str(car["id"])}.\n")
                 break
     if engine is None:
         fuel = None
@@ -175,13 +186,14 @@ for URL in URLs:
         if fuel is None:
             response = requests.post("http://localhost:5019/api/Fuel", json={"name": listing_details["fuel_type"]})
             fuel = response.json()
-            outputFile.write(f"A new fuel has been added with id: {str(fuel['id'])}. Please update the name. Fuel was also added to the engine.\n")
+            outputFile.write(
+                f"A new fuel has been added with id: {str(fuel['id'])}. Please update the name. Fuel was also added to the engine.\n")
 
         response = requests.post("http://localhost:5019/api/Engine", json={
             "make": {
                 "id": car["model"]["make"]["id"]
             },
-            "engineCode": ''.join(random.choices(string.ascii_uppercase + string.digits, k=8)),
+            "engineCode": 'AAA' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=5)),
             "displacement": int(listing_details["engine_capacity"].replace(" cm3", "").replace(" ", "")),
             "fuel": {
                 "id": fuel["id"]
@@ -192,7 +204,8 @@ for URL in URLs:
         engine = response.json()
         car["possibleEngines"].append(engine)
         requests.put("http://localhost:5019/api/Car/", json=car)
-        outputFile.write(f"A new engine has been added with id: {str(engine["id"])}. Please update the make, engineCode, and torque. Engine was also added to possibleEngines for car with id {str(car["id"])}.\n")
+        outputFile.write(
+            f"A new engine has been added with id: {str(engine["id"])}. Please update the make, engineCode, and torque. Engine was also added to possibleEngines for car with id {str(car["id"])}.\n")
     print(engine)
 
     # Obtaining the traction, and adding it to the possibleTractions if it doesn't have it, or creating a new one.
@@ -208,7 +221,8 @@ for URL in URLs:
                 traction = t
                 car["possibleTractions"].append(traction)
                 requests.put("http://localhost:5019/api/Car/", json=car)
-                outputFile.write(f"possibleTractions for car with id {car['id']} was updated with traction {{id: {traction['id']}, name: {traction['name']}}}.\n")
+                outputFile.write(
+                    f"possibleTractions for car with id {car['id']} was updated with traction {{id: {traction['id']}, name: {traction['name']}}}.\n")
                 break
     if traction is None:
         response = requests.post("http://localhost:5019/api/Traction", json={"name": listing_details["transmission"]})
@@ -232,14 +246,16 @@ for URL in URLs:
                 transmission = t
                 car["possibleTransmissions"].append(transmission)
                 requests.put("http://localhost:5019/api/Car/", json=car)
-                outputFile.write(f"possibleTransmissions for car with id {car['id']} was updated with transmission {{id: {transmission['id']}, name: {transmission['name']}}}.\n")
+                outputFile.write(
+                    f"possibleTransmissions for car with id {car['id']} was updated with transmission {{id: {transmission['id']}, name: {transmission['name']}}}.\n")
                 break
     if transmission is None:
         response = requests.post("http://localhost:5019/api/Transmission", json={"name": listing_details["gearbox"]})
         transmission = response.json()
         car["possibleTransmissions"].append(transmission)
         requests.put("http://localhost:5019/api/Car/", json=car)
-        outputFile.write(f"A new transmission has been added {{id: {transmission['id']}, name: {transmission['name']}}}.\n")
+        outputFile.write(
+            f"A new transmission has been added {{id: {transmission['id']}, name: {transmission['name']}}}.\n")
     print(transmission)
 
     # Obtaining the color, or creating a new one.
@@ -255,7 +271,8 @@ for URL in URLs:
             "hexCode": "#000000"
         })
         color = response.json()
-        outputFile.write(f"New color added: {listing_details["color"]} with id: {str(color["id"])}. Please update the hex code.\n")
+        outputFile.write(
+            f"New color added: {listing_details["color"]} with id: {str(color["id"])}. Please update the hex code.\n")
     print(color)
 
     # Obtaining the features, and creating those that doesn't exist.
@@ -270,7 +287,8 @@ for URL in URLs:
         if feature is None:
             response = requests.post("http://localhost:5019/api/Feature", json={"name": equipment})
             feature = response.json()
-            outputFile.write(f"A new exterior feature has been added with {{id: {str(feature["id"])}, name: {feature["name"]}}}.\n")
+            outputFile.write(
+                f"A new exterior feature has been added with {{id: {str(feature["id"])}, name: {feature["name"]}}}.\n")
         features.append({
             "Id": feature["id"]
         })
@@ -314,12 +332,13 @@ for URL in URLs:
         },
         "Features": features,
         "Mileage": int(listing_details["mileage"].replace(" km", "").replace(" ", "")),
-        "Price": int(json_data["props"]["pageProps"]["advert"]["price"]["value"]),
+        "Price": int(float(json_data["props"]["pageProps"]["advert"]["price"]["value"])),
         "Title": json_data["props"]["pageProps"]["advert"]["title"],
-        "Description": description,
-        "SellerId": 1,
+        "Description": translate_text(description),
+        "SellerId": random.choice(users)["id"],
         "Year": int(listing_details["year"]),
         "CreatedAt": json_data["props"]["pageProps"]["advert"]["createdAt"],
+        "IsSold": random.random() >= 0.8
     }
     print(newListing)
 
@@ -354,3 +373,5 @@ for URL in URLs:
     print(response.json())
     if response.status_code == 200:
         outputFile.write(f"Listing from URL {URL} added successfully.\n")
+
+    print("\n\n")

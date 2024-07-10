@@ -68,6 +68,10 @@ public class AuthenticationService(
         user.ProfilePictureUrl = profileImage == null
             ? imageService.GetDefaultImageUrl()
             : imageService.SaveImage(profileImage);
+        if (userRepository.GetAllUsers().Count == 0)
+        {
+            user.Role = UserRole.Admin;
+        }
         user = userRepository.CreateUser(user);
         return GenerateJwtToken(user);
     }

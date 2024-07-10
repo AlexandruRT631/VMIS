@@ -11,6 +11,7 @@ import {getAllDoorTypes} from "../../api/door-type-api";
 import {getAllColors} from "../../api/color-api";
 import {getAllFeatures} from "../../api/feature-api";
 import GridAutocompleteList from "../../common/grid/grid-autocomplete-list";
+import {getMakeModelYearFromImage} from "../../api/model_api";
 
 const GridAutocompleteElement = ({list, setSelect, select, name}) => {
     return (
@@ -22,6 +23,7 @@ const GridAutocompleteElement = ({list, setSelect, select, name}) => {
                 value={select}
                 renderInput={(params) => <TextField {...params} label={name} />}
                 disabled={list.length === 0}
+                isOptionEqualToValue={(option, value) => option.name === value.name}
             />
         </Grid>
     );
@@ -134,15 +136,56 @@ const GridText = ({text, setText, name, size}) => {
     )
 }
 
-const GridImageUpload = () => {
+const GridImageUpload = ({makes, setSelectedMake, setSelectedModel, setSelectedGeneration}) => {
+    const handleSubmit = async (event) => {
+        getMakeModelYearFromImage(event.target.files[0])
+            .then((result) => {
+                console.log(result);
+                const make = makes.find(make => make.name === result.make);
+                setSelectedMake(make);
+                getAllModelsByMakeId(make.id)
+                    .then((models) => {
+                        const model = models.find(model => model.name === result.model);
+                        setSelectedModel(model);
+                        getCarsByModel(model.id)
+                            .then((cars) => {
+                                const generation = cars.find(car => car.startYear === parseInt(result.year));
+                                setSelectedGeneration({
+                                    startYear: generation.startYear,
+                                    name: generation.startYear + ' - ' + (generation.endYear !== 0 ? generation.endYear : 'current'),
+                                });
+                            })
+                            .catch(console.error);
+                    })
+                    .catch(console.error);
+            })
+            .catch(console.error);
+    }
+
     return (
         <Grid item xs={3}>
-            <Typography>IMAGE UPLOAD TO DO</Typography>
+            <Button
+                variant="contained"
+                sx={{
+                    '&:focus': {
+                        outline: 'none',
+                    },
+                }}
+                component="label"
+            >
+                Search By Image
+                <input
+                    type="file"
+                    hidden
+                    accept="image/*"
+                    onChange={handleSubmit}
+                />
+            </Button>
         </Grid>
     )
 }
 
-const SearchField = ({ setListingSearchDto }) => {
+const SearchField = ({setListingSearchDto}) => {
     const [makes, setMakes] = useState([]);
     const [selectedMake, setSelectedMake] = useState(null);
     const [models, setModels] = useState([]);
@@ -228,7 +271,7 @@ const SearchField = ({ setListingSearchDto }) => {
                 .then((result) => {
                     setGenerations(result.map(car => ({
                         startYear: car.startYear,
-                        name: car.startYear + ' - ' + car.endYear,
+                        name: car.startYear + ' - ' + (car.endYear !== 0 ? car.endYear : 'current'),
                     })).sort((a, b) => a.startYear - b.startYear));
                 })
                 .catch(console.error);
@@ -318,7 +361,7 @@ const SearchField = ({ setListingSearchDto }) => {
                 <GridRange numberMin={minMileage} numberMax={maxMileage} setNumberMin={setMinMileage} setNumberMax={setMaxMileage} nameMin={"Min Mileage"} nameMax={"Max Mileage"} />
                 <GridAutocompleteList list={fuels} setSelect={setSelectedFuels} name={"Fuels"} />
                 <GridText text={keywords} setText={setKeywords} name={"Search by words"} size={9} />
-                <GridImageUpload />
+                <GridImageUpload makes={makes} setSelectedMake={setSelectedMake} setSelectedModel={setSelectedModel} setSelectedGeneration={setSelectedGeneration} />
                 {more?
                     <React.Fragment>
                         <GridAutocompleteList list={transmissions} setSelect={setSelectedTransmissions} name={"Transmissions"} />

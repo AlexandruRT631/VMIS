@@ -53,9 +53,13 @@ public class CarService(
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidStartYear);
         }
-        if (car.EndYear != 0 && car.EndYear < car.StartYear)
+        if (car.EndYear != 1 && car.EndYear < car.StartYear)
         {
             throw new InvalidArgumentException(ExceptionMessages.InvalidEndYear);
+        }
+        if (car.EndYear == 1)
+        {
+            car.EndYear = 0;
         }
         if (car.Model == null)
         {
@@ -233,7 +237,7 @@ public class CarService(
         var existingCar = carRepository.GetCarById(car.Id);
         if (car.StartYear >= 1900)
         {
-            if (car.StartYear > existingCar!.EndYear && car.EndYear < 1900)
+            if (car.StartYear > existingCar!.EndYear && existingCar!.EndYear != 0)
             {
                 throw new InvalidArgumentException(ExceptionMessages.InvalidStartYear);
             }

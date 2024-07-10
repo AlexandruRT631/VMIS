@@ -39,12 +39,12 @@ const SelectTechnical = ({title, listDetails, setDetail, detail}) => {
 }
 
 const ListingSelectTechnical = ({listing, technical, setTechnical, car}) => {
-    const [category, setCategory] = useState(null);
-    const [doorType, setDoorType] = useState(null);
-    const [fuel, setFuel] = useState(null);
-    const [engine, setEngine] = useState(null);
-    const [transmission, setTransmission] = useState(null);
-    const [traction, setTraction] = useState(null);
+    const [category, setCategory] = useState(listing && technical && technical.category ? technical.category : null);
+    const [doorType, setDoorType] = useState(listing && technical && technical.doorType ? technical.doorType : null);
+    const [fuel, setFuel] = useState(listing && technical && technical.engine ? technical.engine.fuel : null);
+    const [engine, setEngine] = useState(listing && technical && technical.engine ? {id: technical.engine.id} : null);
+    const [transmission, setTransmission] = useState(listing && technical && technical.transmission ? technical.transmission : null);
+    const [traction, setTraction] = useState(listing && technical && technical.traction ? technical.traction : null);
     const categoryRef = useRef(null);
     const doorTypeRef = useRef(null);
     const fuelRef = useRef(null);
@@ -52,20 +52,6 @@ const ListingSelectTechnical = ({listing, technical, setTechnical, car}) => {
     const transmissionRef = useRef(null);
     const tractionRef = useRef(null);
     const nextButtonRef = useRef(null);
-    const firstLoadRef = useRef(true);
-
-    useEffect(() => {
-        if (listing && technical) {
-            setTechnical(technical);
-            setCategory(technical.category);
-            setDoorType(technical.doorType);
-            setFuel(technical.engine.fuel);
-            setEngine(technical.engine);
-            setTransmission(technical.transmission);
-            setTraction(technical.traction);
-        }
-        firstLoadRef.current = false;
-    }, []);
 
     useEffect(() => {
         if (car) {
@@ -74,65 +60,53 @@ const ListingSelectTechnical = ({listing, technical, setTechnical, car}) => {
     }, [car]);
 
     useEffect(() => {
-        if (!firstLoadRef.current) {
-            if (category) {
-                doorTypeRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-            else if (category === null) {
-                setDoorType(null);
-            }
+        if (category) {
+            doorTypeRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        else if (category === null) {
+            setDoorType(null);
         }
     }, [category]);
 
     useEffect(() => {
-        if (!firstLoadRef.current) {
-            if (doorType) {
-                fuelRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
-            } else if (doorType === null) {
-                setFuel(null);
-            }
+        if (doorType) {
+            fuelRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
+        } else if (doorType === null) {
+            setFuel(null);
         }
     }, [doorType]);
 
     useEffect(() => {
-        if (!firstLoadRef.current) {
-            if (fuel) {
-                powerRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
-            } else if (fuel === null) {
-                setEngine(null);
-            }
+        if (fuel) {
+            powerRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
+        } else if (fuel === null) {
+            setEngine(null);
         }
     }, [fuel]);
 
     useEffect(() => {
-        if (!firstLoadRef.current) {
-            if (engine) {
-                transmissionRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
-            } else if (engine === null) {
-                setTransmission(null);
-            }
+        if (engine) {
+            transmissionRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
+        } else if (engine === null) {
+            setTransmission(null);
         }
     }, [engine]);
 
     useEffect(() => {
-        if (!firstLoadRef.current) {
-            if (transmission) {
-                tractionRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
-            } else if (transmission === null) {
-                setTraction(null);
-            }
+        if (transmission) {
+            tractionRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
+        } else if (transmission === null) {
+            setTraction(null);
         }
     }, [transmission]);
 
     useEffect(() => {
-        if (!firstLoadRef.current) {
-            if (traction) {
-                if (listing) {
-                    handleNext();
-                }
-                else {
-                    nextButtonRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
-                }
+        if (traction) {
+            if (listing) {
+                handleNext();
+            }
+            else {
+                nextButtonRef.current.scrollIntoView({behavior: 'smooth', block: 'center'});
             }
         }
     }, [traction, listing]);

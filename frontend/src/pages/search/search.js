@@ -24,7 +24,7 @@ const Search = () => {
         debounce(async (dto, page) => {
             setLoadingResults(true);
             try {
-                const result = await searchListings(dto, page);
+                const result = await searchListings(dto, page, 20);
                 setTotalPages(result.totalPages);
                 setSearchResults(result.listings);
             } catch (error) {
