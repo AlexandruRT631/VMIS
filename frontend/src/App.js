@@ -14,6 +14,7 @@ import Favourite from "./pages/favourite/favourite";
 import Account from "./pages/account/account";
 import AdministratorPanel from "./pages/administrator-panel/administrator-panel";
 import Messages from "./pages/messages/messages";
+import { styled } from '@mui/system';
 
 const theme = createTheme({
     palette: {
@@ -31,6 +32,18 @@ const theme = createTheme({
     },
 });
 
+const StyledContainer = styled(Container)(({ theme }) => ({
+    minWidth: '900px',
+    [theme.breakpoints.down('sm')]: { // 600px and below
+        transform: 'scale(0.75)',
+        transformOrigin: 'top left',
+    },
+    [theme.breakpoints.down(480)]: { // 480px and below
+        transform: 'scale(0.6)',
+        transformOrigin: 'top left',
+    },
+}));
+
 class App extends Component {
     render() {
         return (
@@ -39,7 +52,7 @@ class App extends Component {
                 <Router>
                     <ApplicationBar />
                     <Box sx={{height: '64px'}}/>
-                    <Container sx={{ mt: 2 }}>
+                    <StyledContainer sx={{ mt: 2 }}>
                         <Routes>
                             <Route path="/" element={<Home/>}/>
                             <Route path="/listing/:id" element={<Listing/>}/>
@@ -54,7 +67,7 @@ class App extends Component {
                             <Route path="/admin" element={<AdministratorPanel/>}/>
                             <Route path="/messages" element={<Messages/>}/>
                         </Routes>
-                    </Container>
+                    </StyledContainer>
                 </Router>
             </ThemeProvider>
         );

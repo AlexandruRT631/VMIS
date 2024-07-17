@@ -28,7 +28,7 @@ train_transform = transforms.Compose([
 ])
 
 # Validation transforms
-valid_transform = transforms.Compose([
+test_transform = transforms.Compose([
     transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
     transforms.ToTensor(),
     normalize
@@ -39,13 +39,13 @@ def get_datasets():
     """Creates the training and validation datasets."""
     return (
         datasets.ImageFolder(TRAIN_DIR, transform=train_transform),
-        datasets.ImageFolder(VALID_DIR, transform=valid_transform),
+        datasets.ImageFolder(VALID_DIR, transform=test_transform),
     )
 
 
-def get_data_loaders(dataset_train, dataset_valid):
+def get_data_loaders(dataset_train, dataset_test):
     """Creates the training and validation data loaders."""
     return (
         DataLoader(dataset_train, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS),
-        DataLoader(dataset_valid, batch_size=BATCH_SIZE, num_workers=NUM_WORKERS)
+        DataLoader(dataset_test, batch_size=BATCH_SIZE, num_workers=NUM_WORKERS)
     )

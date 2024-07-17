@@ -40,7 +40,7 @@ const Search = () => {
         if (JSON.stringify(prevListingSearchDto.current) !== JSON.stringify(listingSearchDto)) {
             prevListingSearchDto.current = listingSearchDto;
             fetchListings(listingSearchDto, page);
-            if (page > 1) {
+            if (page <= 1) {
                 navigate(`?page=1`);
             }
         }

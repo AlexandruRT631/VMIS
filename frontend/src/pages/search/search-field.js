@@ -12,6 +12,9 @@ import {getAllColors} from "../../api/color-api";
 import {getAllFeatures} from "../../api/feature-api";
 import GridAutocompleteList from "../../common/grid/grid-autocomplete-list";
 import {getMakeModelYearFromImage} from "../../api/model_api";
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 const GridAutocompleteElement = ({list, setSelect, select, name}) => {
     return (
@@ -173,6 +176,7 @@ const GridImageUpload = ({makes, setSelectedMake, setSelectedModel, setSelectedG
                 }}
                 component="label"
             >
+                <FileUploadIcon />
                 Search By Image
                 <input
                     type="file"
@@ -352,6 +356,8 @@ const SearchField = ({setListingSearchDto}) => {
             }}
         >
             <Grid container spacing={3}>
+                <GridImageUpload makes={makes} setSelectedMake={setSelectedMake} setSelectedModel={setSelectedModel} setSelectedGeneration={setSelectedGeneration} />
+                <Grid item xs={9} />
                 <GridAutocompleteElement list={makes} select={selectedMake} setSelect={setSelectedMake} name={"Make"} />
                 <GridAutocompleteElement list={models} select={selectedModel} setSelect={setSelectedModel} name={"Model"} />
                 <GridAutocompleteElement list={generations} select={selectedGeneration} setSelect={setSelectedGeneration} name={"Generation"} />
@@ -361,7 +367,7 @@ const SearchField = ({setListingSearchDto}) => {
                 <GridRange numberMin={minMileage} numberMax={maxMileage} setNumberMin={setMinMileage} setNumberMax={setMaxMileage} nameMin={"Min Mileage"} nameMax={"Max Mileage"} />
                 <GridAutocompleteList list={fuels} setSelect={setSelectedFuels} name={"Fuels"} />
                 <GridText text={keywords} setText={setKeywords} name={"Search by words"} size={9} />
-                <GridImageUpload makes={makes} setSelectedMake={setSelectedMake} setSelectedModel={setSelectedModel} setSelectedGeneration={setSelectedGeneration} />
+                <Grid item xs={3} />
                 {more?
                     <React.Fragment>
                         <GridAutocompleteList list={transmissions} setSelect={setSelectedTransmissions} name={"Transmissions"} />
@@ -387,7 +393,17 @@ const SearchField = ({setListingSearchDto}) => {
                         },
                     }}
                 >
-                    {more? "Show Less" : "Show More"}
+                    {more? (
+                        <React.Fragment>
+                            <Typography>Show Less</Typography>
+                            <ExpandLessIcon />
+                        </React.Fragment>
+                    ) : (
+                        <React.Fragment>
+                            <Typography>Show More</Typography>
+                            <ExpandMoreIcon />
+                        </React.Fragment>
+                    )}
                 </Button>
             </Grid>
         </Paper>

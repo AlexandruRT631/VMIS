@@ -32,6 +32,7 @@ const ListingTitle = ({ listing }) => {
     const [isSaveDisabled, setIsSaveDisabled] = useState(false);
     const [contactDialogOpen, setContactDialogOpen] = useState(false);
     const [contactMessage, setContactMessage] = useState('');
+    const [yesDisabled, setYesDisabled] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -63,6 +64,7 @@ const ListingTitle = ({ listing }) => {
     }
 
     const handleListingMark = () => {
+        setYesDisabled(true);
         updateListing({
             Id: listing.id,
             IsSold: !listing.isSold
@@ -253,7 +255,7 @@ const ListingTitle = ({ listing }) => {
                     <Button onClick={() => setMarkDialogOpen(false)} color="primary">
                         No
                     </Button>
-                    <Button onClick={handleListingMark} color="primary" variant="contained">
+                    <Button onClick={handleListingMark} color="primary" variant="contained" disabled={yesDisabled}>
                         Yes
                     </Button>
                 </DialogActions>
