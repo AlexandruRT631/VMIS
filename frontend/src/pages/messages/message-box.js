@@ -48,7 +48,7 @@ const MessageBox = ({ userId, conversation }) => {
 
     useEffect(() => {
         if (conversation) {
-            const ws = new WebSocket(`ws://localhost:5213/ws/conversation/${conversation.id}`);
+            const ws = new WebSocket(`${USER_BASE_WEBSOCKET}/conversation/${conversation.id}`);
             ws.onmessage = (event) => {
                 const message = JSON.parse(event.data);
                 setMessages((prevMessages) => [...prevMessages, {
